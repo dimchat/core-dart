@@ -15,4 +15,11 @@ export 'src/dkd/commands.dart';
 export 'src/dkd/groups.dart';
 export 'src/dkd/factory.dart';
 
+export 'src/msg/base.dart';
+export 'src/msg/envelope.dart';
+export 'src/msg/instant.dart';
+export 'src/msg/secure.dart';
+export 'src/msg/reliable.dart';
+export 'src/msg/factory.dart';
+
 export 'src/dimp_base.dart';
