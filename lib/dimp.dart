@@ -22,4 +22,13 @@ export 'src/msg/secure.dart';
 export 'src/msg/reliable.dart';
 export 'src/msg/factory.dart';
 
+export 'src/mkm/address.dart';
+export 'src/mkm/identifier.dart';
+export 'src/mkm/meta.dart';
+export 'src/mkm/document.dart';
+export 'src/mkm/docs.dart';
+export 'src/mkm/entity.dart';
+export 'src/mkm/user.dart';
+export 'src/mkm/group.dart';
+
 export 'src/dimp_base.dart';
