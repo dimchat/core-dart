@@ -31,4 +31,7 @@ export 'src/mkm/entity.dart';
 export 'src/mkm/user.dart';
 export 'src/mkm/group.dart';
 
-export 'src/dimp_base.dart';
+export 'src/barrack.dart';
+export 'src/transceiver.dart';
+export 'src/processor.dart';
+export 'src/packer.dart';
