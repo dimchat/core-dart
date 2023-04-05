@@ -173,7 +173,7 @@ class BaseUser extends BaseEntity implements User {
 
   @override
   Visa? get visa {
-    var doc = getDocument(type: Document.kBulletin);
+    var doc = getDocument(Document.kBulletin);
     return doc is Visa ? doc : null;
   }
 

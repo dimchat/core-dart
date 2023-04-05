@@ -64,8 +64,8 @@ class BaseDocument extends Dictionary implements Document {
   ///  Create a new empty document
   ///
   /// @param identifier - entity ID
-  /// @param type       - document type
-  BaseDocument.fromType(ID identifier, {required String type}) : super(null) {
+  /// @param docType    - document type
+  BaseDocument.fromType(ID identifier, String? docType) : super(null) {
     // ID
     setString('ID', identifier);
     _identifier = identifier;
@@ -73,10 +73,10 @@ class BaseDocument extends Dictionary implements Document {
     _json = null;
     _sig = null;
 
-    if (type.isEmpty) {
+    if (docType == null || docType.isEmpty) {
       _properties = null;
     } else {
-      _properties = {'type': type};
+      _properties = {'type': docType};
     }
 
     _status = 0;

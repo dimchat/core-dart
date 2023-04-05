@@ -43,8 +43,8 @@ import 'base.dart';
 class BaseFileContent extends BaseContent implements FileContent {
   BaseFileContent(super.dict) : _data = null, _key = null;
 
-  BaseFileContent.from(int type, String filename, Uint8List? binary, String? encoded)
-      : super.fromType(type) {
+  BaseFileContent.from(int msgType, String filename, Uint8List? binary, String? encoded)
+      : super.fromType(msgType) {
     if (filename.isNotEmpty) {
       this['filename'] = filename;
     }

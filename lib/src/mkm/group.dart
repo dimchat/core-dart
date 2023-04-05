@@ -95,7 +95,7 @@ class BaseGroup extends BaseEntity implements Group {
 
   @override
   Bulletin? get bulletin {
-    var doc = getDocument(type: Document.kBulletin);
+    var doc = getDocument(Document.kBulletin);
     return doc is Bulletin ? doc : null;
   }
 

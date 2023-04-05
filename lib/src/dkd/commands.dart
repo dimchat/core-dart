@@ -41,7 +41,7 @@ import 'base.dart';
 class BaseCommand extends BaseContent implements Command  {
   BaseCommand(super.dict);
 
-  BaseCommand.fromType(int type, String cmd) : super.fromType(type) {
+  BaseCommand.fromType(int msgType, String cmd) : super.fromType(msgType) {
     this['command'] = cmd;
   }
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);

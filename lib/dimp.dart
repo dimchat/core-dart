@@ -3,6 +3,9 @@
 /// More dartdocs go here.
 library dimp;
 
+export 'package:mkm/mkm.dart';
+export 'package:dkd/dkd.dart';
+
 export 'src/protocol/contents.dart';
 export 'src/protocol/files.dart';
 export 'src/protocol/commands.dart';

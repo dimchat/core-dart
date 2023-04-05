@@ -48,13 +48,13 @@ import 'package:mkm/mkm.dart';
 abstract class BaseMeta extends Dictionary implements Meta {
   BaseMeta(super.dict) : _type = 0, _key = null, _seed = null, _fingerprint = null;
 
-  BaseMeta.from(int type, VerifyKey key, String? seed, Uint8List? fingerprint)
+  BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
       : super(null) {
     //
     //  meta type
     //
-    this['type'] = type;
-    _type = type;
+    this['type'] = version;
+    _type = version;
     //
     //  public key
     //

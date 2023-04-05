@@ -50,8 +50,8 @@ class IdentifierFactory implements IDFactory {
   }
 
   @override
-  ID generateID(Meta meta, {int? type, String? terminal}) {
-    Address address = Address.generate(meta, type: type);
+  ID generateID(Meta meta, int? network, {String? terminal}) {
+    Address address = Address.generate(meta, network);
     return ID.create(name: meta.seed, address: address, terminal: terminal);
   }
 

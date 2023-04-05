@@ -106,12 +106,16 @@ class ListContent extends BaseContent implements ArrayContent {
 class AppCustomizedContent extends BaseContent implements CustomizedContent {
   AppCustomizedContent(super.dict);
 
-  AppCustomizedContent.from({int? type, required String app, required String mod, required String act})
-      : super.fromType(type ?? ContentType.kCustomized) {
+  AppCustomizedContent.fromType(int msgType,
+      {required String app, required String mod, required String act})
+      : super.fromType(msgType) {
     this['app'] = app;
     this['mod'] = mod;
     this['act'] = act;
   }
+  AppCustomizedContent.from(
+      {required String app, required String mod, required String act})
+      : this.fromType(ContentType.kCustomized, app: app, mod: mod, act: act);
 
   @override
   String get action => getString('app')!;
@@ -253,11 +257,14 @@ class WebPageContent extends BaseContent implements PageContent {
 class BaseMoneyContent extends BaseContent implements MoneyContent {
   BaseMoneyContent(super.dict);
 
-  BaseMoneyContent.from({int? type, required String currency, required int amount})
-      : super.fromType(type ?? ContentType.kMoney) {
+  BaseMoneyContent.fromType(int msgType,
+      {required String currency, required int amount})
+      : super.fromType(msgType) {
     this['currency'] = currency;
     this['amount'] = amount;
   }
+  BaseMoneyContent.from({required String currency, required int amount})
+      : this.fromType(ContentType.kMoney, currency: currency, amount: amount);
 
   @override
   String get currency => getString('currency')!;
@@ -274,7 +281,7 @@ class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
   TransferMoneyContent(super.dict);
 
   TransferMoneyContent.from({required String currency, required int amount})
-      : super.from(type: ContentType.kTransfer, currency: currency, amount: amount);
+      : super.fromType(ContentType.kTransfer, currency: currency, amount: amount);
 
   @override
   ID get remitter => ID.parse(getString('remitter'))!;

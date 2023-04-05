@@ -188,8 +188,13 @@ abstract class MoneyContent implements Content {
   //  Factory
   //
 
-  static MoneyContent create({int? type, required String currency, required int amount}) {
-    return BaseMoneyContent.from(type: type, currency: currency, amount: amount);
+  static MoneyContent create(int? msgType,
+      {required String currency, required int amount}) {
+    if (msgType == null) {
+      return BaseMoneyContent.from(currency: currency, amount: amount);
+    } else {
+      return BaseMoneyContent.fromType(msgType, currency: currency, amount: amount);
+    }
   }
 }
 

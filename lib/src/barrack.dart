@@ -41,7 +41,7 @@ import 'mkm/user.dart';
 abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSource {
 
   EncryptKey? _visaKey(ID user) {
-    Document? doc = getDocument(user, type: Document.kVisa);
+    Document? doc = getDocument(user, Document.kVisa);
     if (doc is Visa) {
       if (doc.isValid) {
         return doc.key;
@@ -168,7 +168,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   List<ID> getAssistants(ID group) {
-    Document? doc = getDocument(group, type: Document.kBulletin);
+    Document? doc = getDocument(group, Document.kBulletin);
     if (doc is Bulletin) {
       if (doc.isValid) {
         return doc.assistants;
@@ -195,7 +195,7 @@ ID getBroadcastFounder(ID group) {
   if (name == null) {
     // Consensus: the founder of group 'everyone@everywhere'
     //            'Albert Moky'
-    return ID.founder;
+    return ID.kFounder;
   } else {
     // DISCUSS: who should be the founder of group 'xxx@everywhere'?
     //          'anyone@anywhere', or 'xxx.founder@anywhere'
@@ -208,7 +208,7 @@ ID getBroadcastOwner(ID group) {
   if (name == null) {
     // Consensus: the owner of group 'everyone@everywhere'
     //            'anyone@anywhere'
-    return ID.anyone;
+    return ID.kAnyone;
   } else {
     // DISCUSS: who should be the owner of group 'xxx@everywhere'?
     //          'anyone@anywhere', or 'xxx.owner@anywhere'
@@ -222,7 +222,7 @@ List<ID> getBroadcastMembers(ID group) {
   if (name == null) {
     // Consensus: the member of group 'everyone@everywhere'
     //            'anyone@anywhere'
-    members.add(ID.anyone);
+    members.add(ID.kAnyone);
   } else {
     // DISCUSS: who should be the member of group 'xxx@everywhere'?
     //          'anyone@anywhere', or 'xxx.member@anywhere'

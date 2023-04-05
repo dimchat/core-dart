@@ -47,8 +47,8 @@ abstract class BaseAddressFactory implements AddressFactory {
   }
 
   @override
-  Address generateAddress(Meta meta, {int? type}) {
-    Address address = meta.generateAddress(type);
+  Address generateAddress(Meta meta, int? network) {
+    Address address = meta.generateAddress(network);
     _addresses[address.string] = address;
     return address;
   }

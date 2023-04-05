@@ -54,7 +54,7 @@ abstract class Entity {
 
   Meta get meta;
 
-  Document? getDocument({String? type});
+  Document? getDocument(String? docType);
 }
 
 abstract class EntityDataSource {
@@ -68,9 +68,9 @@ abstract class EntityDataSource {
   ///  Get document for entity ID
   ///
   /// @param identifier - entity ID
-  /// @param type - document type
+  /// @param docType - document type
   /// @return Document
-  Document? getDocument(ID identifier, {String? type});
+  Document? getDocument(ID identifier, String? docType);
 }
 
 abstract class EntityDelegate {
@@ -141,5 +141,5 @@ class BaseEntity implements Entity {
   Meta get meta => dataSource!.getMeta(_id)!;
 
   @override
-  Document? getDocument({String? type}) => dataSource?.getDocument(_id, type: type);
+  Document? getDocument(String? docType) => dataSource?.getDocument(_id, docType);
 }

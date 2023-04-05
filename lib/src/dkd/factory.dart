@@ -83,8 +83,8 @@ class CommandGeneralFactory {
       // unknown command name, get base command factory
       MessageFactoryManager man = MessageFactoryManager();
       MessageGeneralFactory gf = man.generalFactory;
-      int type = gf.getContentType(info);
-      ContentFactory? fact = gf.getContentFactory(type);
+      int msgType = gf.getContentType(info);
+      ContentFactory? fact = gf.getContentFactory(msgType);
       if (fact is CommandFactory) {
         factory = fact as CommandFactory;
       }

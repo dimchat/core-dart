@@ -39,14 +39,14 @@ import 'document.dart';
 class BaseVisa extends BaseDocument implements Visa {
   BaseVisa(super.dict) : _key = null;
 
-  BaseVisa.fromData(ID identifier, {required String data, required String signature})
+  BaseVisa.fromData(ID identifier,
+      {required String data, required String signature})
       : super.fromData(identifier, data: data, signature: signature) {
     // lazy
     _key = null;
   }
 
-  BaseVisa.fromID(ID identifier)
-      : super.fromType(identifier, type: Document.kVisa) {
+  BaseVisa.fromID(ID identifier) : super.fromType(identifier, Document.kVisa) {
     // lazy
     _key = null;
   }
@@ -90,14 +90,15 @@ class BaseVisa extends BaseDocument implements Visa {
 class BaseBulletin extends BaseDocument implements Bulletin {
   BaseBulletin(super.dict) : _bots = null;
 
-  BaseBulletin.fromData(ID identifier, {required String data, required String signature})
+  BaseBulletin.fromData(ID identifier,
+      {required String data, required String signature})
       : super.fromData(identifier, data: data, signature: signature) {
     // lazy
     _bots = null;
   }
 
   BaseBulletin.fromID(ID identifier)
-      : super.fromType(identifier, type: Document.kBulletin) {
+      : super.fromType(identifier, Document.kBulletin) {
     // lazy
     _bots = null;
   }
@@ -135,27 +136,27 @@ class BaseBulletin extends BaseDocument implements Bulletin {
 /// General Document Factory
 ///
 class GeneralDocumentFactory implements DocumentFactory {
-  GeneralDocumentFactory(String type) : _type = type;
+  GeneralDocumentFactory(String docType) : _type = docType;
 
   final String _type;
 
   @override
   Document createDocument(ID identifier, {String? data, String? signature}) {
-    String type = getType(_type, identifier);
+    String docType = getType(_type, identifier);
     if (data == null || signature == null || data.isEmpty || signature.isEmpty) {
       // create empty document
-      if (type == Document.kVisa) {
+      if (docType == Document.kVisa) {
         return BaseVisa.fromID(identifier);
-      } else if (type == Document.kBulletin) {
+      } else if (docType == Document.kBulletin) {
         return BaseBulletin.fromID(identifier);
       } else {
-        return BaseDocument.fromType(identifier, type: '');
+        return BaseDocument.fromType(identifier, null);
       }
     } else {
       // create document with data & signature from local storage
-      if (type == Document.kVisa) {
+      if (docType == Document.kVisa) {
         return BaseVisa.fromData(identifier, data: data, signature: signature);
-      } else if (type == Document.kBulletin) {
+      } else if (docType == Document.kBulletin) {
         return BaseBulletin.fromData(identifier, data: data, signature: signature);
       } else {
         return BaseDocument.fromData(identifier, data: data, signature: signature);
@@ -171,11 +172,11 @@ class GeneralDocumentFactory implements DocumentFactory {
       return null;
     }
     AccountFactoryManager man = AccountFactoryManager();
-    String? type = man.generalFactory.getDocumentType(doc);
-    type ??= getType('*', identifier);
-    if (type == Document.kVisa) {
+    String? docType = man.generalFactory.getDocumentType(doc);
+    docType ??= getType('*', identifier);
+    if (docType == Document.kVisa) {
       return BaseVisa(doc);
-    } else if (type == Document.kBulletin) {
+    } else if (docType == Document.kBulletin) {
       return BaseBulletin(doc);
     } else {
       return BaseDocument(doc);
@@ -183,8 +184,8 @@ class GeneralDocumentFactory implements DocumentFactory {
   }
 }
 
-String getType(String type, ID identifier) {
-  if (type == '*') {
+String getType(String docType, ID identifier) {
+  if (docType == '*') {
     if (identifier.isGroup) {
       return Document.kBulletin;
     } else if (identifier.isUser) {
@@ -193,6 +194,6 @@ String getType(String type, ID identifier) {
       return Document.kProfile;
     }
   } else {
-    return type;
+    return docType;
   }
 }
