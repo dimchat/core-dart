@@ -51,9 +51,8 @@ abstract class TextContent implements Content {
   //  Factory
   //
 
-  static TextContent create(String message) {
-    return BaseTextContent.fromText(message);
-  }
+  static TextContent create(String message)
+  => BaseTextContent.fromText(message);
 }
 
 
@@ -71,9 +70,8 @@ abstract class ArrayContent implements Content {
   //  Factory
   //
 
-  static ArrayContent create(List<Content> contents) {
-    return ListContent.fromContents(contents);
-  }
+  static ArrayContent create(List<Content> contents)
+  => ListContent.fromContents(contents);
 }
 
 
@@ -101,9 +99,9 @@ abstract class CustomizedContent implements Content {
   //  Factory
   //
 
-  static CustomizedContent create({required String app, required String mod, required String act}) {
-    return AppCustomizedContent.from(app: app, mod: mod, act: act);
-  }
+  static CustomizedContent create(
+      {required String app, required String mod, required String act})
+  => AppCustomizedContent.from(app: app, mod: mod, act: act);
 }
 
 
@@ -126,7 +124,8 @@ abstract class ForwardContent implements Content {
   //  Factory
   //
 
-  static ForwardContent create({ReliableMessage? forward, List<ReliableMessage>? secrets}) {
+  static ForwardContent create(
+      {ReliableMessage? forward, List<ReliableMessage>? secrets}) {
     if (forward != null) {
       return SecretContent.fromMessage(forward);
     } else {
@@ -164,9 +163,9 @@ abstract class PageContent implements Content {
   //  Factory
   //
 
-  static PageContent create({required String url, required String title, String? desc, Uint8List? icon}) {
-    return WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
-  }
+  static PageContent create(
+      {required String url, required String title, String? desc, Uint8List? icon})
+  => WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
 }
 
 
@@ -221,7 +220,6 @@ abstract class TransferContent implements MoneyContent {
   //  Factory
   //
 
-  static TransferContent create({required String currency, required int amount}) {
-    return TransferMoneyContent.from(currency: currency, amount: amount);
-  }
+  static TransferContent create({required String currency, required int amount})
+  => TransferMoneyContent.from(currency: currency, amount: amount);
 }

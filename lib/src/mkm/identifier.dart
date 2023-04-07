@@ -57,7 +57,7 @@ class IdentifierFactory implements IDFactory {
 
   @override
   ID createID({String? name, required Address address, String? terminal}) {
-    String identifier = concat(name: name, address: address, terminal: terminal);
+    String identifier = _concat(name: name, address: address, terminal: terminal);
     ID? res = _identifiers[identifier];
     if (res == null) {
       res = newID(identifier, name: name, address: address, terminal: terminal);
@@ -125,7 +125,7 @@ class IdentifierFactory implements IDFactory {
   }
 }
 
-String concat({String? name, required Address address, String? terminal}) {
+String _concat({String? name, required Address address, String? terminal}) {
   String string = address.string;
   if (name != null && name.isNotEmpty) {
     string = '$name@$string';

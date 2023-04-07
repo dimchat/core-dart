@@ -142,7 +142,7 @@ class GeneralDocumentFactory implements DocumentFactory {
 
   @override
   Document createDocument(ID identifier, {String? data, String? signature}) {
-    String docType = getType(_type, identifier);
+    String docType = _getType(_type, identifier);
     if (data == null || signature == null || data.isEmpty || signature.isEmpty) {
       // create empty document
       if (docType == Document.kVisa) {
@@ -173,7 +173,7 @@ class GeneralDocumentFactory implements DocumentFactory {
     }
     AccountFactoryManager man = AccountFactoryManager();
     String? docType = man.generalFactory.getDocumentType(doc);
-    docType ??= getType('*', identifier);
+    docType ??= _getType('*', identifier);
     if (docType == Document.kVisa) {
       return BaseVisa(doc);
     } else if (docType == Document.kBulletin) {
@@ -184,7 +184,7 @@ class GeneralDocumentFactory implements DocumentFactory {
   }
 }
 
-String getType(String docType, ID identifier) {
+String _getType(String docType, ID identifier) {
   if (docType == '*') {
     if (identifier.isGroup) {
       return Document.kBulletin;

@@ -67,19 +67,6 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
     }
   }
 
-  ///  Response Meta
-  ///
-  /// @param identifier - entity ID
-  /// @param meta - entity Meta
-  BaseMetaCommand.response(ID identifier, Meta meta)
-      : this.from(Command.kMeta, identifier, meta);
-
-  ///  Query Meta
-  ///
-  /// @param identifier - entity ID
-  BaseMetaCommand.query(ID identifier)
-      : this.from(Command.kMeta, identifier, null);
-
   @override
   ID get identifier => ID.parse(this['ID'])!;
 
@@ -93,30 +80,13 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   BaseDocumentCommand(super.dict);
 
-  BaseDocumentCommand.from(String cmd, ID identifier, Meta? meta, Document? doc)
+  BaseDocumentCommand.from(String cmd, ID identifier,
+      {Meta? meta, Document? document, String? signature})
       : super.from(cmd, identifier, meta) {
     // document
-    if (doc != null) {
-      setMap('document', doc);
+    if (document != null) {
+      setMap('document', document);
     }
-  }
-
-  /// 1. Send Meta and Document to new friend
-  /// 2. Response Entity Document
-  ///
-  /// @param identifier - entity ID
-  /// @param meta - entity Meta
-  /// @param doc - entity Document
-  BaseDocumentCommand.response(ID identifier, Meta? meta, Document doc)
-      : this.from(Command.kDocument, identifier, meta, doc);
-
-  /// 1. Query Entity Document
-  /// 2. Query Entity Document for updating with current signature
-  ///
-  /// @param identifier - entity ID
-  /// @param signature - document signature
-  BaseDocumentCommand.query(ID identifier, String? signature)
-      : super.from(Command.kDocument, identifier, null) {
     // signature
     if (signature != null) {
       this['signature'] = signature;

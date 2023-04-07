@@ -31,6 +31,7 @@
 import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
+import '../dkd/commands.dart';
 import '../dkd/factory.dart';
 
 ///  Command message: {
@@ -103,6 +104,19 @@ abstract class MetaCommand implements Command {
   //  Factories
   //
 
+  ///  Response Meta
+  ///
+  /// @param identifier - entity ID
+  /// @param meta - entity Meta
+  static response(ID identifier, Meta meta)
+  => BaseMetaCommand.from(Command.kMeta, identifier, meta);
+
+  ///  Query Meta
+  ///
+  /// @param identifier - entity ID
+  static query(ID identifier)
+  => BaseMetaCommand.from(Command.kMeta, identifier, null);
+
 }
 
 ///  Command message: {
@@ -126,6 +140,23 @@ abstract class DocumentCommand implements MetaCommand {
   //
   //  Factories
   //
+
+  /// 1. Send Meta and Document to new friend
+  /// 2. Response Entity Document
+  ///
+  /// @param identifier - entity ID
+  /// @param meta - entity Meta
+  /// @param doc - entity Document
+  static response(ID identifier, Meta? meta, Document doc)
+  => BaseDocumentCommand.from(Command.kDocument, identifier, meta: meta, document: doc);
+
+  /// 1. Query Entity Document
+  /// 2. Query Entity Document for updating with current signature
+  ///
+  /// @param identifier - entity ID
+  /// @param signature - document signature
+  static query(ID identifier, String? signature)
+  => BaseDocumentCommand.from(Command.kDocument, identifier, signature: signature);
 
 }
 
