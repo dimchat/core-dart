@@ -101,18 +101,18 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   /// @param password - symmetric key
   /// @return SecureMessage object
   @override
-  SecureMessage? encrypt(SymmetricKey password, {List<ID>? members}) {
+  Future<SecureMessage?> encrypt(SymmetricKey password, {List<ID>? members}) async {
     // 0. check attachment for File/Image/Audio/Video message content
     //    (do it in 'core' module)
 
     // 1. encrypt 'message.content' to 'message.data'
     InstantMessageDelegate transceiver = delegate!;
     // 1.1. serialize message content
-    Uint8List body = transceiver.serializeContent(content, password, this);
+    Uint8List body = await transceiver.serializeContent(content, password, this);
     // 1.2. encrypt content data with password
-    Uint8List ciphertext = transceiver.encryptContent(body, password, this);
+    Uint8List ciphertext = await transceiver.encryptContent(body, password, this);
     // 1.3. encode encrypted data
-    Object b64 = transceiver.encodeData(ciphertext, this);
+    Object b64 = await transceiver.encodeData(ciphertext, this);
     // 1.4. replace 'content' with encrypted 'data'
     Map info = copyMap(false);
     info.remove('content');
@@ -120,7 +120,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
 
     // 2. encrypt symmetric key(password) to 'message.key'
     // 2.1. serialize symmetric key
-    Uint8List? pwd = transceiver.serializeKey(password, this);
+    Uint8List? pwd = await transceiver.serializeKey(password, this);
     if (pwd == null) {
       // A) broadcast message has no key
       // B) reused key
@@ -131,14 +131,14 @@ class PlainMessage extends BaseMessage implements InstantMessage {
     Uint8List? key;
     if (members == null) {
       // personal message
-      key = transceiver.encryptKey(pwd, receiver, this);
+      key = await transceiver.encryptKey(pwd, receiver, this);
       if (key == null) {
         // public key for encryption not found
         // TODO: suspend this message for waiting receiver's visa
         return null;
       }
       // 2.3. encode encrypted key data
-      b64 = transceiver.encodeKey(key, this);
+      b64 = await transceiver.encodeKey(key, this);
       // 2.4. insert as 'key'
       info['key'] = b64;
     } else {
@@ -147,14 +147,14 @@ class PlainMessage extends BaseMessage implements InstantMessage {
       int count = 0;
       for (ID item in members) {
         // 2.2. encrypt symmetric key data
-        key = transceiver.encryptKey(pwd, item, this);
+        key = await transceiver.encryptKey(pwd, item, this);
         if (key == null) {
           // public key for member not found
           // TODO: suspend this message for waiting member's visa
           continue;
         }
         // 2.3. encode encrypted key data
-        b64 = transceiver.encodeKey(key, this);
+        b64 = await transceiver.encodeKey(key, this);
         // 2.4. insert to 'message.keys' with member ID
         keys[item.toString()] = b64;
         ++count;

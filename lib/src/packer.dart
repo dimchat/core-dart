@@ -41,7 +41,7 @@ abstract class Packer {
   ///
   /// @param content - message content
   /// @return exposed group ID
-  ID? getOvertGroup(Content content);
+  Future<ID?> getOvertGroup(Content content);
 
   //
   //  InstantMessage -> SecureMessage -> ReliableMessage -> Data
@@ -51,19 +51,19 @@ abstract class Packer {
   ///
   /// @param iMsg - plain message
   /// @return encrypted message
-  SecureMessage encryptMessage(InstantMessage iMsg);
+  Future<SecureMessage> encryptMessage(InstantMessage iMsg);
 
   ///  Sign content data
   ///
   /// @param sMsg - encrypted message
   /// @return network message
-  ReliableMessage signMessage(SecureMessage sMsg);
+  Future<ReliableMessage> signMessage(SecureMessage sMsg);
 
   ///  Serialize network message
   ///
   /// @param rMsg - network message
   /// @return data package
-  Uint8List serializeMessage(ReliableMessage rMsg);
+  Future<Uint8List> serializeMessage(ReliableMessage rMsg);
 
   //
   //  Data -> ReliableMessage -> SecureMessage -> InstantMessage
@@ -73,17 +73,17 @@ abstract class Packer {
   ///
   /// @param data - data package
   /// @return network message
-  ReliableMessage? deserializeMessage(Uint8List data);
+  Future<ReliableMessage?> deserializeMessage(Uint8List data);
 
   ///  Verify encrypted content data
   ///
   /// @param rMsg - network message
   /// @return encrypted message
-  SecureMessage? verifyMessage(ReliableMessage rMsg);
+  Future<SecureMessage?> verifyMessage(ReliableMessage rMsg);
 
   ///  Decrypt message content
   ///
   /// @param sMsg - encrypted message
   /// @return plain message
-  InstantMessage? decryptMessage(SecureMessage sMsg);
+  Future<InstantMessage?> decryptMessage(SecureMessage sMsg);
 }

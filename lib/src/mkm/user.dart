@@ -48,25 +48,25 @@ import 'entity.dart';
 abstract class User implements Entity {
 
   /// user document
-  Visa? get visa;
+  Future<Visa?> get visa;
 
   ///  Get all contacts of the user
   ///
   /// @return contact list
-  List<ID> get contacts;
+  Future<List<ID>> get contacts;
 
   ///  Verify data and signature with user's public keys
   ///
   /// @param data - message data
   /// @param signature - message signature
   /// @return true on correct
-  bool verify(Uint8List data, Uint8List signature);
+  Future<bool> verify(Uint8List data, Uint8List signature);
 
   ///  Encrypt data, try visa.key first, if not found, use meta.key
   ///
   /// @param plaintext - message data
   /// @return encrypted data
-  Uint8List encrypt(Uint8List plaintext);
+  Future<Uint8List> encrypt(Uint8List plaintext);
 
   //
   //  Interfaces for Local User
@@ -76,19 +76,19 @@ abstract class User implements Entity {
   ///
   /// @param data - message data
   /// @return signature
-  Uint8List sign(Uint8List data);
+  Future<Uint8List> sign(Uint8List data);
 
   ///  Decrypt data with user's private key(s)
   ///
   /// @param ciphertext - encrypted data
   /// @return plain text
-  Uint8List? decrypt(Uint8List ciphertext);
+  Future<Uint8List?> decrypt(Uint8List ciphertext);
 
   //
   //  Interfaces for Visa
   //
-  Visa? signVisa(Visa doc);
-  bool verifyVisa(Visa doc);
+  Future<Visa?> signVisa(Visa doc);
+  Future<bool> verifyVisa(Visa doc);
 }
 
 ///  User Data Source
@@ -117,41 +117,41 @@ abstract class UserDataSource implements EntityDataSource {
   ///
   /// @param user - user ID
   /// @return contacts list (ID)
-  List<ID> getContacts(ID user);
+  Future<List<ID>> getContacts(ID user);
 
   ///  Get user's public key for encryption
   ///  (visa.key or meta.key)
   ///
   /// @param user - user ID
   /// @return visa.key or meta.key
-  EncryptKey? getPublicKeyForEncryption(ID user);
+  Future<EncryptKey?> getPublicKeyForEncryption(ID user);
 
   ///  Get user's public keys for verification
   ///  [visa.key, meta.key]
   ///
   /// @param user - user ID
   /// @return public keys
-  List<VerifyKey> getPublicKeysForVerification(ID user);
+  Future<List<VerifyKey>> getPublicKeysForVerification(ID user);
 
   ///  Get user's private keys for decryption
   ///  (which paired with [visa.key, meta.key])
   ///
   /// @param user - user ID
   /// @return private keys
-  List<DecryptKey> getPrivateKeysForDecryption(ID user);
+  Future<List<DecryptKey>> getPrivateKeysForDecryption(ID user);
 
   ///  Get user's private key for signature
   ///  (which paired with visa.key or meta.key)
   ///
   /// @param user - user ID
   /// @return private key
-  SignKey? getPrivateKeyForSignature(ID user);
+  Future<SignKey?> getPrivateKeyForSignature(ID user);
 
   ///  Get user's private key for signing visa
   ///
   /// @param user - user ID
   /// @return private key
-  SignKey? getPrivateKeyForVisaSignature(ID user);
+  Future<SignKey?> getPrivateKeyForVisaSignature(ID user);
 }
 
 //
@@ -172,21 +172,22 @@ class BaseUser extends BaseEntity implements User {
   }
 
   @override
-  Visa? get visa {
-    var doc = getDocument(Document.kBulletin);
+  Future<Visa?> get visa async {
+    Document? doc = await getDocument(Document.kBulletin);
     return doc is Visa ? doc : null;
   }
 
   @override
-  List<ID> get contacts => dataSource!.getContacts(identifier);
+  Future<List<ID>> get contacts async
+  => await dataSource!.getContacts(identifier);
 
   @override
-  bool verify(Uint8List data, Uint8List signature) {
+  Future<bool> verify(Uint8List data, Uint8List signature) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: I suggest using the private key paired with meta.key to sign message
     //         so here should return the meta.key
-    List<VerifyKey> keys = barrack!.getPublicKeysForVerification(identifier);
+    List<VerifyKey> keys = await barrack!.getPublicKeysForVerification(identifier);
     for (VerifyKey pKey in keys) {
       if (pKey.verify(data, signature)) {
         // matched!
@@ -197,12 +198,12 @@ class BaseUser extends BaseEntity implements User {
   }
 
   @override
-  Uint8List encrypt(Uint8List plaintext) {
+  Future<Uint8List> encrypt(Uint8List plaintext) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: meta.key will never changed, so use visa.key to encrypt message
     //         is a better way
-    EncryptKey? pKey = barrack!.getPublicKeyForEncryption(identifier);
+    EncryptKey? pKey = await barrack!.getPublicKeyForEncryption(identifier);
     assert(pKey != null, 'failed to get encrypt key for user: $identifier');
     return pKey!.encrypt(plaintext);
   }
@@ -212,23 +213,23 @@ class BaseUser extends BaseEntity implements User {
   //
 
   @override
-  Uint8List sign(Uint8List data) {
+  Future<Uint8List> sign(Uint8List data) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: I suggest use the private key which paired to visa.key
     //         to sign message
-    SignKey? sKey = barrack!.getPrivateKeyForSignature(identifier);
+    SignKey? sKey = await barrack!.getPrivateKeyForSignature(identifier);
     assert(sKey != null, 'failed to get sign key for user: $identifier');
     return sKey!.sign(data);
   }
 
   @override
-  Uint8List? decrypt(Uint8List ciphertext) {
+  Future<Uint8List?> decrypt(Uint8List ciphertext) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: if you provide a public key in visa for encryption,
     //         here you should return the private key paired with visa.key
-    List<DecryptKey> keys = barrack!.getPrivateKeysForDecryption(identifier);
+    List<DecryptKey> keys = await barrack!.getPrivateKeysForDecryption(identifier);
     assert(keys.isNotEmpty, 'failed to get decrypt keys for use: $identifier');
     Uint8List? plaintext;
     for (DecryptKey sKey in keys) {
@@ -248,25 +249,25 @@ class BaseUser extends BaseEntity implements User {
   }
 
   @override
-  Visa? signVisa(Visa doc) {
+  Future<Visa?> signVisa(Visa doc) async {
     assert(doc.identifier == identifier, 'visa ID not match: $identifier, ${doc.identifier}');
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: only sign visa with the private key paired with your meta.key
-    SignKey? sKey = barrack!.getPrivateKeyForVisaSignature(identifier);
+    SignKey? sKey = await barrack!.getPrivateKeyForVisaSignature(identifier);
     assert(sKey != null, 'failed to get sign key for visa: $identifier');
     return sKey == null || doc.sign(sKey) == null ? null : doc;
   }
 
   @override
-  bool verifyVisa(Visa doc) {
+  Future<bool> verifyVisa(Visa doc) async {
     // NOTICE: only verify visa with meta.key
     if (identifier != doc.identifier) {
       // visa ID not match
       return false;
     }
     // if meta not exists, user won't be created
-    VerifyKey pKey = meta.key;
+    VerifyKey pKey = (await meta).key;
     return doc.verify(pKey);
   }
 }

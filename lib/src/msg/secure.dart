@@ -56,7 +56,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
 
   Uint8List? _data;
   Uint8List? _key;
-  Map? _keys;
+  Map<String, dynamic>? _keys;
 
   @override
   SecureMessageDelegate? get delegate {
@@ -69,13 +69,13 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Uint8List get data {
-    _data ??= delegate!.decodeData(this['data'], this);
+  Future<Uint8List> get data async {
+    _data ??= await delegate!.decodeData(this['data'], this);
     return _data!;
   }
 
   @override
-  Uint8List? get encryptedKey {
+  Future<Uint8List?> get encryptedKey async {
     if (_key == null) {
       Object? b64 = this['key'];
       if (b64 == null) {
@@ -86,14 +86,14 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
         }
       }
       if (b64 != null) {
-        _key = delegate!.decodeKey(b64, this);
+        _key = await delegate?.decodeKey(b64, this);
       }
     }
     return _key;
   }
 
   @override
-  Map? get encryptedKeys {
+  Map<String, dynamic>? get encryptedKeys {
     _keys ??= this['keys'];
     return _keys;
   }
@@ -115,7 +115,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///
   /// @return InstantMessage object
   @override
-  InstantMessage? decrypt() {
+  Future<InstantMessage?> decrypt() async {
     ID from = sender;
     ID to;
     ID? gid = group;
@@ -131,31 +131,31 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     // 1. decrypt 'message.key' to symmetric key
     SecureMessageDelegate transceiver = delegate!;
     // 1.1. decode encrypted key data
-    Uint8List? key = encryptedKey;
+    Uint8List? key = await encryptedKey;
     // 1.2. decrypt key data
     if (key != null) {
-      key = transceiver.decryptKey(key, from, to, this);
+      key = await transceiver.decryptKey(key, from, to, this);
       if (key == null) {
         throw Exception('failed to decrypt key in msg: $dictionary');
       }
     }
     // 1.3. deserialize key
     //      if key is empty, means it should be reused, get it from key cache
-    SymmetricKey? pwd = transceiver.deserializeKey(key, from, to, this);
+    SymmetricKey? pwd = await transceiver.deserializeKey(key, from, to, this);
     if (pwd == null) {
       throw Exception('failed to get msg key: $from -> $to, $key');
     }
 
     // 2. decrypt 'message.data' to 'message.content'
     // 2.1. decode encrypted content data
-    Uint8List ciphertext = data;
+    Uint8List ciphertext = await data;
     // 2.2. decrypt content data
-    Uint8List? plaintext = transceiver.decryptContent(ciphertext, pwd, this);
+    Uint8List? plaintext = await transceiver.decryptContent(ciphertext, pwd, this);
     if (plaintext == null) {
       throw Exception('failed to decrypt data with key: $pwd');
     }
     // 2.3. deserialize content
-    Content? content = transceiver.deserializeContent(plaintext, pwd, this);
+    Content? content = await transceiver.deserializeContent(plaintext, pwd, this);
     if (content == null) {
       throw Exception('failed to deserialize content: $plaintext');
     }
@@ -193,12 +193,12 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///
   /// @return ReliableMessage object
   @override
-  ReliableMessage sign() {
+  Future<ReliableMessage> sign() async {
     SecureMessageDelegate transceiver = delegate!;
     // 1. sign with sender's private key
-    Uint8List signature = transceiver.signData(data, sender, this);
+    Uint8List signature = await transceiver.signData(await data, sender, this);
     // 2. encode signature
-    Object b64 = transceiver.encodeSignature(signature, this);
+    Object b64 = await transceiver.encodeSignature(signature, this);
     // 3. pack message
     Map info = copyMap(false);
     info['signature'] = b64;
@@ -219,7 +219,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   List<SecureMessage> split(List<ID> members) {
     Map info = copyMap(false);
     // check 'keys'
-    Map? keys = encryptedKeys;
+    Map<String, dynamic>? keys = encryptedKeys;
     if (keys == null) {
       keys = {};
     } else {
@@ -264,7 +264,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   SecureMessage trim(ID member) {
     Map info = copyMap(false);
     // check 'keys'
-    Map? keys = encryptedKeys;
+    Map<String, dynamic>? keys = encryptedKeys;
     if (keys != null) {
       // move key data from 'keys' to 'key'
       Object? b64 = keys[member.string];

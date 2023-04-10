@@ -111,11 +111,11 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   }
 
   @override
-  Uint8List get signature {
+  Future<Uint8List> get signature async {
     if (_signature == null) {
       ReliableMessageDelegate transceiver = delegate!;
       Object b64 = this['signature'];
-      _signature = transceiver.decodeSignature(b64, this);
+      _signature = await transceiver.decodeSignature(b64, this);
     }
     return _signature!;
   }
@@ -138,10 +138,12 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   ///
   /// @return SecureMessage object
   @override
-  SecureMessage? verify() {
+  Future<SecureMessage?> verify() async {
     ReliableMessageDelegate transceiver = delegate!;
     // 1. verify data signature with sender's public key
-    if (transceiver.verifyDataSignature(data, signature, sender, this)) {
+    Uint8List ct = await data;
+    Uint8List sig = await signature;
+    if (await transceiver.verifyDataSignature(ct, sig, sender, this)) {
       // 2. pack message
       Map info = copyMap(false);
       info.remove('signature');

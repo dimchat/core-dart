@@ -40,8 +40,8 @@ import 'mkm/user.dart';
 ///  Manage meta/document for all entities
 abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSource {
 
-  EncryptKey? _visaKey(ID user) {
-    Document? doc = getDocument(user, Document.kVisa);
+  Future<EncryptKey?> _visaKey(ID user) async {
+    Document? doc = await getDocument(user, Document.kVisa);
     if (doc is Visa) {
       if (doc.isValid) {
         return doc.key;
@@ -50,8 +50,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     return null;
   }
 
-  VerifyKey? _metaKey(ID user) {
-    Meta? meta = getMeta(user);
+  Future<VerifyKey?> _metaKey(ID user) async {
+    Meta? meta = await getMeta(user);
     // assert(meta != null, 'failed to get meta for: $entity');
     return meta?.key;
   }
@@ -61,15 +61,15 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   //
 
   @override
-  EncryptKey? getPublicKeyForEncryption(ID user) {
+  Future<EncryptKey?> getPublicKeyForEncryption(ID user) async {
     // 1. get key from visa
-    EncryptKey? visaKey = _visaKey(user);
+    EncryptKey? visaKey = await _visaKey(user);
     if (visaKey != null) {
       // if visa.key exists, use it for encryption
       return visaKey;
     }
     // 2. get key from meta
-    VerifyKey? metaKey = _metaKey(user);
+    VerifyKey? metaKey = await _metaKey(user);
     if (metaKey is EncryptKey) {
       // if visa.key not exists and meta.key is encrypt key,
       // use it for encryption
@@ -80,17 +80,17 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   }
 
   @override
-  List<VerifyKey> getPublicKeysForVerification(ID user) {
+  Future<List<VerifyKey>> getPublicKeysForVerification(ID user) async {
     List<VerifyKey> keys = [];
     // 1. get key from visa
-    EncryptKey? visaKey = _visaKey(user);
+    EncryptKey? visaKey = await _visaKey(user);
     if (visaKey is VerifyKey) {
       // the sender may use communication key to sign message.data,
       // so try to verify it with visa.key here
       keys.add(visaKey as VerifyKey);
     }
     // 2. get key from meta
-    VerifyKey? metaKey = _metaKey(user);
+    VerifyKey? metaKey = await _metaKey(user);
     if (metaKey != null) {
       // the sender may use identity key to sign message.data,
       // try to verify it with meta.key
@@ -105,25 +105,25 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   //
 
   @override
-  ID? getFounder(ID group) {
+  Future<ID?> getFounder(ID group) async {
     // check broadcast group
     if (group.isBroadcast) {
       // founder of broadcast group
       return getBroadcastFounder(group);
     }
     // check group meta
-    Meta? gMeta = getMeta(group);
+    Meta? gMeta = await getMeta(group);
     if (gMeta == null) {
       // FIXME: when group profile was arrived but the meta still on the way,
       //        here will cause founder not found
       return null;
     }
     // check each member's public key with group meta
-    List<ID> members = getMembers(group);
+    List<ID> members = await getMembers(group);
     if (members.isNotEmpty) {
       Meta? mMeta;
       for (ID item in members) {
-        mMeta = getMeta(item);
+        mMeta = await getMeta(item);
         if (mMeta == null) {
           // failed to get member's meta
           continue;
@@ -140,7 +140,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   }
 
   @override
-  ID? getOwner(ID group) {
+  Future<ID?> getOwner(ID group) async {
     // check broadcast group
     if (group.isBroadcast) {
       // owner of broadcast group
@@ -149,14 +149,14 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // check group type
     if (group.type == EntityType.kGroup) {
       // Polylogue's owner is its founder
-      return getFounder(group);
+      return await getFounder(group);
     }
     // TODO: load owner from database
     return null;
   }
 
   @override
-  List<ID> getMembers(ID group) {
+  Future<List<ID>> getMembers(ID group) async {
     // check broadcast group
     if (group.isBroadcast) {
       // members of broadcast group
@@ -167,8 +167,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   }
 
   @override
-  List<ID> getAssistants(ID group) {
-    Document? doc = getDocument(group, Document.kBulletin);
+  Future<List<ID>> getAssistants(ID group) async {
+    Document? doc = await getDocument(group, Document.kBulletin);
     if (doc is Bulletin) {
       if (doc.isValid) {
         return doc.assistants;

@@ -40,32 +40,32 @@ abstract class Processor {
   ///
   /// @param data - data to be processed
   /// @return responses
-  List<Uint8List> processPackage(Uint8List data);
+  Future<List<Uint8List>> processPackage(Uint8List data);
 
   ///  Process network message
   ///
   /// @param rMsg - message to be processed
   /// @return response messages
-  List<ReliableMessage> processReliableMessage(ReliableMessage rMsg);
+  Future<List<ReliableMessage>> processReliableMessage(ReliableMessage rMsg);
 
   ///  Process encrypted message
   ///
   /// @param sMsg - message to be processed
   /// @param rMsg - message received
   /// @return response messages
-  List<SecureMessage> processSecureMessage(SecureMessage sMsg, ReliableMessage rMsg);
+  Future<List<SecureMessage>> processSecureMessage(SecureMessage sMsg, ReliableMessage rMsg);
 
   ///  Process plain message
   ///
   /// @param iMsg - message to be processed
   /// @param rMsg - message received
   /// @return response messages
-  List<InstantMessage> processInstantMessage(InstantMessage iMsg, ReliableMessage rMsg);
+  Future<List<InstantMessage>> processInstantMessage(InstantMessage iMsg, ReliableMessage rMsg);
 
   ///  Process message content
   ///
   /// @param content - content to be processed
   /// @param rMsg - message received
   /// @return response contents
-  List<Content> processContent(Content content, ReliableMessage rMsg);
+  Future<List<Content>> processContent(Content content, ReliableMessage rMsg);
 }

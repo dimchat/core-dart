@@ -35,15 +35,15 @@ import 'entity.dart';
 abstract class Group extends Entity {
 
   /// group document
-  Bulletin? get bulletin;
+  Future<Bulletin?> get bulletin;
 
-  ID get founder;
-  ID get owner;
+  Future<ID> get founder;
+  Future<ID> get owner;
 
   // NOTICE: the owner must be a member
   //         (usually the first one)
-  List<ID> get members;
-  List<ID> get assistants;
+  Future<List<ID>> get members;
+  Future<List<ID>> get assistants;
 }
 
 abstract class GroupDataSource implements EntityDataSource {
@@ -52,25 +52,25 @@ abstract class GroupDataSource implements EntityDataSource {
   ///
   /// @param group - group ID
   /// @return fonder ID
-  ID? getFounder(ID group);
+  Future<ID?> getFounder(ID group);
 
   ///  Get group owner
   ///
   /// @param group - group ID
   /// @return owner ID
-  ID? getOwner(ID group);
+  Future<ID?> getOwner(ID group);
 
   ///  Get group members list
   ///
   /// @param group - group ID
   /// @return members list (ID)
-  List<ID> getMembers(ID group);
+  Future<List<ID>> getMembers(ID group);
 
   ///  Get assistants for this group
   ///
   /// @param group - group ID
   /// @return bot ID list
-  List<ID> getAssistants(ID group);
+  Future<List<ID>> getAssistants(ID group);
 }
 
 //
@@ -94,23 +94,23 @@ class BaseGroup extends BaseEntity implements Group {
   }
 
   @override
-  Bulletin? get bulletin {
-    var doc = getDocument(Document.kBulletin);
+  Future<Bulletin?> get bulletin async {
+    Document? doc = await getDocument(Document.kBulletin);
     return doc is Bulletin ? doc : null;
   }
 
   @override
-  ID get founder {
-    _founder ??= dataSource!.getFounder(identifier);
+  Future<ID> get founder async {
+    _founder ??= await dataSource!.getFounder(identifier);
     return _founder!;
   }
 
   @override
-  ID get owner => dataSource!.getOwner(identifier)!;
+  Future<ID> get owner async => (await dataSource!.getOwner(identifier))!;
 
   @override
-  List<ID> get members => dataSource!.getMembers(identifier);
+  Future<List<ID>> get members async => await dataSource!.getMembers(identifier);
 
   @override
-  List<ID> get assistants => dataSource!.getAssistants(identifier);
+  Future<List<ID>> get assistants async => await dataSource!.getAssistants(identifier);
 }

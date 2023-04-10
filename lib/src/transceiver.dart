@@ -48,19 +48,21 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   //-------- InstantMessageDelegate
 
   @override
-  Uint8List serializeContent(Content content, SymmetricKey password, InstantMessage iMsg) {
+  Future<Uint8List> serializeContent(Content content,
+      SymmetricKey password, InstantMessage iMsg) async {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
     return UTF8.encode(JSON.encode(content));
   }
 
   @override
-  Uint8List encryptContent(Uint8List data, SymmetricKey password, InstantMessage iMsg) {
+  Future<Uint8List> encryptContent(Uint8List data, SymmetricKey password,
+      InstantMessage iMsg) async {
     return password.encrypt(data);
   }
 
   @override
-  Object encodeData(Uint8List data, InstantMessage iMsg) {
+  Future<Object> encodeData(Uint8List data, InstantMessage iMsg) async {
     if (isBroadcastMessage(iMsg)) {
       // broadcast message content will not be encrypted (just encoded to JsON),
       // so no need to encode to Base64 here
@@ -70,7 +72,7 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   }
 
   @override
-  Uint8List? serializeKey(SymmetricKey password, InstantMessage iMsg) {
+  Future<Uint8List?> serializeKey(SymmetricKey password, InstantMessage iMsg) async {
     if (isBroadcastMessage(iMsg)) {
       // broadcast message has no key
       return null;
@@ -79,7 +81,7 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   }
 
   @override
-  Uint8List? encryptKey(Uint8List key, ID receiver, InstantMessage iMsg) {
+  Future<Uint8List?> encryptKey(Uint8List key, ID receiver, InstantMessage iMsg) async {
     assert(!isBroadcastMessage(iMsg), 'broadcast message has no key: $iMsg');
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, "entity delegate not set yet");
@@ -87,11 +89,11 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
     User? contact = barrack?.getUser(receiver);
     assert(contact != null, 'failed to encrypt for receiver: $receiver');
     // encrypt with receiver's public key
-    return contact?.encrypt(key);
+    return await contact?.encrypt(key);
   }
 
   @override
-  Object encodeKey(Uint8List key, InstantMessage iMsg) {
+  Future<Object> encodeKey(Uint8List key, InstantMessage iMsg) async {
     assert(!isBroadcastMessage(iMsg), 'broadcast message has no key: $iMsg');
     return Base64.encode(key);
   }
@@ -99,13 +101,14 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   //-------- SecureMessageDelegate
 
   @override
-  Uint8List? decodeKey(Object key, SecureMessage sMsg) {
+  Future<Uint8List?> decodeKey(Object key, SecureMessage sMsg) async {
     assert(!isBroadcastMessage(sMsg), 'broadcast message has no key: $sMsg');
     return Base64.decode(key as String);
   }
 
   @override
-  Uint8List? decryptKey(Uint8List key, ID sender, ID receiver, SecureMessage sMsg) {
+  Future<Uint8List?> decryptKey(Uint8List key, ID sender, ID receiver,
+      SecureMessage sMsg) async {
     // NOTICE: the receiver will be group ID in a group message here
     assert(!isBroadcastMessage(sMsg), 'broadcast message has no key: $sMsg');
     EntityDelegate? barrack = entityDelegate;
@@ -114,14 +117,15 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
     ID identifier = sMsg.receiver;
     User? user = barrack?.getUser(identifier);
     assert(user != null, 'failed to create local user: $identifier');
-    return user?.decrypt(key);
+    return await user?.decrypt(key);
   }
 
   @override
-  SymmetricKey? deserializeKey(Uint8List? key, ID sender, ID receiver, SecureMessage sMsg) {
+  Future<SymmetricKey?> deserializeKey(Uint8List? key, ID sender, ID receiver,
+      SecureMessage sMsg) async {
     // NOTICE: the receiver will be group ID in a group message here
     assert(!isBroadcastMessage(sMsg), 'broadcast message has no key: $sMsg');
-    assert(key != null, 'reused key? get it from local cache: $sender -> $receiver');
+    assert(key != null, 'reused key? get it from cache: $sender -> $receiver');
     String? json = UTF8.decode(key!);
     assert(json != null, 'key data error: $key');
     Object? dict = JSON.decode(json!);
@@ -135,7 +139,7 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   }
 
   @override
-  Uint8List? decodeData(Object data, SecureMessage sMsg) {
+  Future<Uint8List?> decodeData(Object data, SecureMessage sMsg) async {
     if (isBroadcastMessage(sMsg)) {
       // broadcast message content will not be encrypted (just encoded to JsON),
       // so return the string data directly
@@ -145,12 +149,14 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   }
 
   @override
-  Uint8List? decryptContent(Uint8List data, SymmetricKey password, SecureMessage sMsg) {
+  Future<Uint8List?> decryptContent(Uint8List data, SymmetricKey password,
+      SecureMessage sMsg) async {
     return password.decrypt(data);
   }
 
   @override
-  Content? deserializeContent(Uint8List data, SymmetricKey password, SecureMessage sMsg) {
+  Future<Content?> deserializeContent(Uint8List data, SymmetricKey password,
+      SecureMessage sMsg) async {
     // assert(sMsg.data.isNotEmpty, "message data empty");
     String? json = UTF8.decode(data);
     assert(json != null, 'content data error: $data');
@@ -164,33 +170,34 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
   }
 
   @override
-  Uint8List signData(Uint8List data, ID sender, SecureMessage sMsg) {
+  Future<Uint8List> signData(Uint8List data, ID sender, SecureMessage sMsg) async {
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, 'entity delegate not set yet');
     User? user = barrack?.getUser(sender);
     assert(user != null, 'failed to sign with sender: $sender');
-    return user!.sign(data);
+    return await user!.sign(data);
   }
 
   @override
-  Object encodeSignature(Uint8List signature, SecureMessage sMsg) {
+  Future<Object> encodeSignature(Uint8List signature, SecureMessage sMsg) async {
     return Base64.encode(signature);
   }
 
   //-------- ReliableMessageDelegate
 
   @override
-  Uint8List? decodeSignature(Object signature, ReliableMessage rMsg) {
+  Future<Uint8List?> decodeSignature(Object signature, ReliableMessage rMsg) async {
     return Base64.decode(signature as String);
   }
 
   @override
-  bool verifyDataSignature(Uint8List data, Uint8List signature, ID sender, ReliableMessage rMsg) {
+  Future<bool> verifyDataSignature(Uint8List data, Uint8List signature, ID sender,
+      ReliableMessage rMsg) async {
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, 'entity delegate not set yet');
     User? contact = barrack?.getUser(sender);
     assert(contact != null, 'failed to verify signature for sender: $sender');
-    return contact!.verify(data, signature);
+    return await contact!.verify(data, signature);
   }
 }
 
