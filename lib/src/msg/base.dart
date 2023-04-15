@@ -80,8 +80,8 @@ abstract class BaseMessage extends Dictionary implements Message {
   MessageDelegate? get delegate => _delegate?.target;
 
   @override
-  set delegate(MessageDelegate? transceiver)
-  => _delegate = transceiver == null ? null : WeakReference(transceiver);
+  set delegate(MessageDelegate? transceiver) =>
+      _delegate = transceiver == null ? null : WeakReference(transceiver);
 
   @override
   Envelope get envelope {

@@ -51,19 +51,19 @@ abstract class Packer {
   ///
   /// @param iMsg - plain message
   /// @return encrypted message
-  Future<SecureMessage> encryptMessage(InstantMessage iMsg);
+  Future<SecureMessage?> encryptMessage(InstantMessage iMsg);
 
   ///  Sign content data
   ///
   /// @param sMsg - encrypted message
   /// @return network message
-  Future<ReliableMessage> signMessage(SecureMessage sMsg);
+  Future<ReliableMessage?> signMessage(SecureMessage sMsg);
 
   ///  Serialize network message
   ///
   /// @param rMsg - network message
   /// @return data package
-  Future<Uint8List> serializeMessage(ReliableMessage rMsg);
+  Future<Uint8List?> serializeMessage(ReliableMessage rMsg);
 
   //
   //  Data -> ReliableMessage -> SecureMessage -> InstantMessage

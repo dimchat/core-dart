@@ -52,7 +52,7 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
       SymmetricKey password, InstantMessage iMsg) async {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
-    return UTF8.encode(JSON.encode(content));
+    return UTF8.encode(JSON.encode(content.dictionary));
   }
 
   @override
@@ -77,7 +77,7 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
       // broadcast message has no key
       return null;
     }
-    return UTF8.encode(JSON.encode(password));
+    return UTF8.encode(JSON.encode(password.dictionary));
   }
 
   @override

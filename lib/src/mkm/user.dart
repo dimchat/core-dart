@@ -178,8 +178,8 @@ class BaseUser extends BaseEntity implements User {
   }
 
   @override
-  Future<List<ID>> get contacts async
-  => await dataSource!.getContacts(identifier);
+  Future<List<ID>> get contacts async =>
+      await dataSource!.getContacts(identifier);
 
   @override
   Future<bool> verify(Uint8List data, Uint8List signature) async {

@@ -113,9 +113,14 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   @override
   Future<Uint8List> get signature async {
     if (_signature == null) {
-      ReliableMessageDelegate transceiver = delegate!;
-      Object b64 = this['signature'];
-      _signature = await transceiver.decodeSignature(b64, this);
+      ReliableMessageDelegate? transceiver = delegate;
+      Object? b64 = this['signature'];
+      if (b64 == null) {
+        assert(false, 'message signature not found: $dictionary');
+      } else {
+        _signature = await transceiver?.decodeSignature(b64, this);
+        assert(_signature != null, 'message signature error: $b64');
+      }
     }
     return _signature!;
   }
@@ -139,11 +144,11 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   /// @return SecureMessage object
   @override
   Future<SecureMessage?> verify() async {
-    ReliableMessageDelegate transceiver = delegate!;
+    ReliableMessageDelegate? transceiver = delegate;
     // 1. verify data signature with sender's public key
     Uint8List ct = await data;
     Uint8List sig = await signature;
-    if (await transceiver.verifyDataSignature(ct, sig, sender, this)) {
+    if (await transceiver!.verifyDataSignature(ct, sig, sender, this)) {
       // 2. pack message
       Map info = copyMap(false);
       info.remove('signature');

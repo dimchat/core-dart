@@ -227,8 +227,8 @@ class WebPageContent extends BaseContent implements PageContent {
   String? get desc => getString('desc');
 
   @override
-  set desc(String? string)
-  => string == null ? remove('desc') : this['desc'] = string;
+  set desc(String? string) =>
+      string == null ? remove('desc') : this['desc'] = string;
 
   @override
   Uint8List? get icon {

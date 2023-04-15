@@ -87,6 +87,7 @@ class BaseFileContent extends BaseContent implements FileContent {
       String? b64 = getString('data');
       if (b64 != null/* && b64.isNotEmpty*/) {
         _data = Base64.decode(b64);
+        assert(_data != null, 'file data error: $b64');
       }
     }
     return _data;
@@ -149,6 +150,7 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
       String? b64 = getString('thumbnail');
       if (b64 != null/* && b64.isNotEmpty*/) {
         _thumbnail = Base64.decode(b64);
+        assert(_thumbnail != null, 'image thumbnail error: $b64');
       }
     }
     return _thumbnail;
@@ -207,6 +209,7 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
       String? b64 = getString('snapshot');
       if (b64 != null/* && b64.isNotEmpty*/) {
         _snapshot = Base64.decode(b64);
+        assert(_snapshot != null, 'video snapshot error: $b64');
       }
     }
     return _snapshot;

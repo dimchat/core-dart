@@ -51,8 +51,8 @@ abstract class TextContent implements Content {
   //  Factory
   //
 
-  static TextContent create(String message)
-  => BaseTextContent.fromText(message);
+  static TextContent create(String message) =>
+      BaseTextContent.fromText(message);
 }
 
 
@@ -70,8 +70,8 @@ abstract class ArrayContent implements Content {
   //  Factory
   //
 
-  static ArrayContent create(List<Content> contents)
-  => ListContent.fromContents(contents);
+  static ArrayContent create(List<Content> contents) =>
+      ListContent.fromContents(contents);
 }
 
 
@@ -100,8 +100,8 @@ abstract class CustomizedContent implements Content {
   //
 
   static CustomizedContent create(
-      {required String app, required String mod, required String act})
-  => AppCustomizedContent.from(app: app, mod: mod, act: act);
+      {required String app, required String mod, required String act}) =>
+      AppCustomizedContent.from(app: app, mod: mod, act: act);
 }
 
 
@@ -164,8 +164,9 @@ abstract class PageContent implements Content {
   //
 
   static PageContent create(
-      {required String url, required String title, String? desc, Uint8List? icon})
-  => WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
+      {required String url, required String title,
+        String? desc, Uint8List? icon}) =>
+      WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
 }
 
 
@@ -220,6 +221,7 @@ abstract class TransferContent implements MoneyContent {
   //  Factory
   //
 
-  static TransferContent create({required String currency, required int amount})
-  => TransferMoneyContent.from(currency: currency, amount: amount);
+  static TransferContent create(
+      {required String currency, required int amount}) =>
+      TransferMoneyContent.from(currency: currency, amount: amount);
 }

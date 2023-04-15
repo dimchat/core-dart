@@ -134,13 +134,13 @@ class BaseEntity implements Entity {
   EntityDataSource? get dataSource => _barrack?.target;
 
   @override
-  set dataSource(EntityDataSource? facebook)
-  => _barrack = facebook == null ? null : WeakReference(facebook);
+  set dataSource(EntityDataSource? facebook) =>
+      _barrack = facebook == null ? null : WeakReference(facebook);
 
   @override
   Future<Meta> get meta async => (await dataSource!.getMeta(_id))!;
 
   @override
-  Future<Document?> getDocument(String? docType) async
-  => await dataSource?.getDocument(_id, docType);
+  Future<Document?> getDocument(String? docType) async =>
+      await dataSource?.getDocument(_id, docType);
 }

@@ -70,7 +70,15 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
 
   @override
   Future<Uint8List> get data async {
-    _data ??= await delegate!.decodeData(this['data'], this);
+    if (_data == null) {
+      Object? b64 = this['data'];
+      if (b64 == null) {
+        assert(false, 'message data not found: $dictionary');
+      } else {
+        _data = await delegate?.decodeData(b64, this);
+        assert(_data != null, 'message data error: $b64');
+      }
+    }
     return _data!;
   }
 
@@ -87,6 +95,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
       }
       if (b64 != null) {
         _key = await delegate?.decodeKey(b64, this);
+        assert(_key != null, 'message key error: $b64');
       }
     }
     return _key;

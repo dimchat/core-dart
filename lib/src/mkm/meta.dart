@@ -128,9 +128,12 @@ abstract class BaseMeta extends Dictionary implements Meta {
   Uint8List? get fingerprint {
     if (_fingerprint == null && MetaType.hasSeed(type)) {
       String? b64 = getString('fingerprint');
-      assert(b64 != null, 'meta.fingerprint empty: $dictionary');
-      _fingerprint = b64 == null ? null : Base64.decode(b64);
-      assert(_fingerprint != null, 'meta.fingerprint error: $dictionary');
+      if (b64 == null) {
+        assert(false, 'meta.fingerprint empty: $dictionary');
+      } else {
+        _fingerprint = Base64.decode(b64);
+        assert(_fingerprint != null, 'meta.fingerprint error: $b64');
+      }
     }
     return _fingerprint;
   }

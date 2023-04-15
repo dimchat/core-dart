@@ -121,6 +121,7 @@ class BaseDocument extends Dictionary implements Document {
       String? b64 = getString('signature');
       if (b64 != null) {
         _sig = Base64.decode(b64);
+        assert(_sig != null, 'document signature error: $b64');
       }
     }
     return _sig;

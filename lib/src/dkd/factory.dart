@@ -61,7 +61,7 @@ class CommandGeneralFactory {
     return _commandFactories[cmd];
   }
 
-  String getCmd(Map content) {
+  String? getCmd(Map content) {
     return content['command'];
   }
 
@@ -77,8 +77,9 @@ class CommandGeneralFactory {
       return null;
     }
     // get factory by command name
-    String cmd = getCmd(info);
-    CommandFactory? factory = getCommandFactory(cmd);
+    String? cmd = getCmd(info);
+    // assert(cmd != null, 'command name not found: $info');
+    CommandFactory? factory = cmd == null ? null : getCommandFactory(cmd);
     if (factory == null) {
       // unknown command name, get base command factory
       MessageFactoryManager man = MessageFactoryManager();
