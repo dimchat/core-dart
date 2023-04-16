@@ -102,5 +102,5 @@ abstract class BaseMessage extends Dictionary implements Message {
   ID? get group => envelope.group;
 
   @override
-  int get type => envelope.type;
+  int? get type => envelope.type;
 }

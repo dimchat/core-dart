@@ -46,7 +46,7 @@ import 'package:mkm/mkm.dart';
 ///      algorithm:
 ///          fingerprint = sign(seed, SK);
 abstract class BaseMeta extends Dictionary implements Meta {
-  BaseMeta(super.dict) : _type = 0, _key = null, _seed = null, _fingerprint = null;
+  BaseMeta(super.dict);
 
   BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
       : super(null) {
@@ -81,7 +81,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   ///      0x01 - username@address
   ///      0x02 - btc_address
   ///      0x03 - username@btc_address
-  int _type = 0;
+  int? _type;
 
   ///  Public key (used for signature)
   ///
@@ -101,10 +101,9 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   int get type {
-    if (_type == 0) {
-      _type = getInt('type');
-    }
-    return _type;
+    _type ??= getInt('type');
+    assert(_type != null, 'meta type not found: $dictionary');
+    return _type ?? 0;
   }
 
   @override

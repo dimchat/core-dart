@@ -100,6 +100,8 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       Document? doc = Document.parse(this['visa']);
       if (doc is Visa) {
         _visa = doc;
+      } else {
+        assert(doc == null, 'visa document error: $doc');
       }
     }
     return _visa;

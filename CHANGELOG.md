@@ -1,3 +1,7 @@
+## 0.1.0-dev.5
+
+- Rebuild message content
+
 ## 0.1.0-dev.4
 
 - Encrypt message.

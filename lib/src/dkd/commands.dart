@@ -47,7 +47,7 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);
 
   @override
-  String get cmd => getString('command')!;
+  String get cmd => getString('command') ?? '';
 }
 
 

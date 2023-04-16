@@ -84,10 +84,16 @@ class CommandGeneralFactory {
       // unknown command name, get base command factory
       MessageFactoryManager man = MessageFactoryManager();
       MessageGeneralFactory gf = man.generalFactory;
-      int msgType = gf.getContentType(info);
-      ContentFactory? fact = gf.getContentFactory(msgType);
-      if (fact is CommandFactory) {
-        factory = fact as CommandFactory;
+      int? type = gf.getContentType(info);
+      if (type == null) {
+        assert(false, 'message type not found: $info');
+      } else {
+        ContentFactory? fact = gf.getContentFactory(type);
+        if (fact is CommandFactory) {
+          factory = fact as CommandFactory;
+        } else {
+          assert(false, 'cannot parse command: $info');
+        }
       }
     }
     return factory?.parseCommand(info);

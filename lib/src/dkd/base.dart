@@ -32,7 +32,7 @@ import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
 class BaseContent extends Dictionary implements Content {
-  BaseContent(super.dict) : _type = 0, _sn = 0, _time = null;
+  BaseContent(super.dict);
 
   BaseContent.fromType(int msgType) : super(null) {
     DateTime now = DateTime.now();
@@ -45,29 +45,25 @@ class BaseContent extends Dictionary implements Content {
   }
 
   /// message type: text, image, ...
-  late int _type;
+  int? _type;
 
   /// serial number: random number to identify message content
-  late int _sn;
+  int? _sn;
 
   /// message time
-  late DateTime? _time;
+  DateTime? _time;
 
   @override
   int get type {
-    if (_type == 0) {
-      _type = getInt('type');
-    }
-    return _type;
+    _type ??= getInt('type');
+    return _type ?? 0;
   }
 
   @override
   int get sn {
-    if (_sn == 0) {
-      _sn = getInt('sn');
-      assert(_sn > 0, 'serial number not found: $dictionary');
-    }
-    return _sn;
+    _sn ??= getInt('sn');
+    assert(_sn! > 0, 'serial number error: $dictionary');
+    return _sn ?? 0;
   }
 
   @override

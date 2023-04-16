@@ -63,6 +63,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
   @override
   ID get sender {
     _sender ??= ID.parse(this['sender']);
+    assert(_sender != null, 'message sender not found: $dictionary');
     return _sender!;
   }
 
@@ -103,8 +104,8 @@ class MessageEnvelope extends Dictionary implements Envelope {
    *  to let the station do its job.
    */
   @override
-  int get type => getInt('type');
+  int? get type => getInt('type');
 
   @override
-  set type(int msgType) => this['type'] = msgType;
+  set type(int? msgType) => this['type'] = msgType;
 }
