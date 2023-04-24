@@ -32,7 +32,7 @@ import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
 class BaseContent extends Dictionary implements Content {
-  BaseContent(super.dict);
+  BaseContent(super.dict) : _type = null, _sn = null, _time = null;
 
   BaseContent.fromType(int msgType) : super(null) {
     DateTime now = DateTime.now();

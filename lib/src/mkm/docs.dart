@@ -57,22 +57,23 @@ class BaseVisa extends BaseDocument implements Visa {
   EncryptKey? _key;
 
   @override
-  EncryptKey get key {
+  EncryptKey? get key {
     if (_key == null) {
       Object? info = getProperty('key');
-      assert(info != null, 'visa key nt found: $dictionary');
-      PublicKey? pKey = PublicKey.parse(info);
-      if (pKey is EncryptKey) {
-        _key = pKey as EncryptKey;
+      if (info != null) {
+        PublicKey? pKey = PublicKey.parse(info);
+        if (pKey is EncryptKey) {
+          _key = pKey as EncryptKey;
+        }
+        assert(_key != null, 'visa key error: $info');
       }
-      assert(_key != null, 'visa key error: $info');
     }
-    return _key!;
+    return _key;
   }
 
   @override
-  set key(EncryptKey publicKey) {
-    setProperty('key', publicKey.dictionary);
+  set key(EncryptKey? publicKey) {
+    setProperty('key', publicKey?.dictionary);
     _key = publicKey;
   }
 

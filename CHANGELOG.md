@@ -1,3 +1,7 @@
+## 0.1.0-dev.6
+
+- Empty visa key
+
 ## 0.1.0-dev.5
 
 - Rebuild message content

@@ -236,10 +236,7 @@ class BaseDocument extends Dictionary implements Document {
   DateTime? get time {
     // timestamp
     var seconds = getProperty('time');
-    if (seconds == null) {
-      return null;
-    }
-    return DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+    return Converter.getTime(seconds);
   }
 
   @override

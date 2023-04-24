@@ -46,7 +46,7 @@ import 'package:mkm/mkm.dart';
 ///      algorithm:
 ///          fingerprint = sign(seed, SK);
 abstract class BaseMeta extends Dictionary implements Meta {
-  BaseMeta(super.dict);
+  BaseMeta(super.dict) : _type = null, _key = null, _seed = null, _fingerprint = null;
 
   BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
       : super(null) {

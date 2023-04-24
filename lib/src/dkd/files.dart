@@ -133,7 +133,7 @@ class BaseFileContent extends BaseContent implements FileContent {
 /// ImageContent
 ///
 class ImageFileContent extends BaseFileContent implements ImageContent {
-  ImageFileContent(super.dict);
+  ImageFileContent(super.dict) : _thumbnail = null;
 
   ImageFileContent.fromData(String filename, Uint8List binary)
       : super.from(ContentType.kImage, filename, binary, null);
@@ -192,7 +192,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 /// VideoContent
 ///
 class VideoFileContent extends BaseFileContent implements VideoContent {
-  VideoFileContent(super.dict);
+  VideoFileContent(super.dict) : _snapshot = null;
 
   VideoFileContent.fromData(String filename, Uint8List binary)
       : super.from(ContentType.kVideo, filename, binary, null);

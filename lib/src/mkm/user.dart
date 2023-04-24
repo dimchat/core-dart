@@ -230,7 +230,7 @@ class BaseUser extends BaseEntity implements User {
     // NOTICE: if you provide a public key in visa for encryption,
     //         here you should return the private key paired with visa.key
     List<DecryptKey> keys = await barrack!.getPrivateKeysForDecryption(identifier);
-    assert(keys.isNotEmpty, 'failed to get decrypt keys for use: $identifier');
+    assert(keys.isNotEmpty, 'failed to get decrypt keys for user: $identifier');
     Uint8List? plaintext;
     for (DecryptKey sKey in keys) {
       // try decrypting it with each private key
