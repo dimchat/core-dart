@@ -73,7 +73,7 @@ class BaseVisa extends BaseDocument implements Visa {
 
   @override
   set key(EncryptKey? publicKey) {
-    setProperty('key', publicKey?.dictionary);
+    setProperty('key', publicKey?.toMap());
     _key = publicKey;
   }
 

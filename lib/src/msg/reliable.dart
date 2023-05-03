@@ -118,7 +118,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       ReliableMessageDelegate? transceiver = delegate;
       Object? b64 = this['signature'];
       if (b64 == null) {
-        assert(false, 'message signature not found: $dictionary');
+        assert(false, 'message signature not found: $this');
       } else {
         _signature = await transceiver?.decodeSignature(b64, this);
         assert(_signature != null, 'message signature error: $b64');
@@ -156,7 +156,8 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       info.remove('signature');
       return SecureMessage.parse(info);
     } else {
-      // throw Exception('message signature not match: $dictionary');
+      // assert(false, 'message signature not match: $this');
+      // TODO: check whether visa is expired, query new document for this contact
       return null;
     }
   }

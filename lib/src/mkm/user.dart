@@ -194,6 +194,8 @@ class BaseUser extends BaseEntity implements User {
         return true;
       }
     }
+    // signature not match
+    // TODO: check whether visa is expired, query new document for this contact
     return false;
   }
 
@@ -234,17 +236,14 @@ class BaseUser extends BaseEntity implements User {
     Uint8List? plaintext;
     for (DecryptKey sKey in keys) {
       // try decrypting it with each private key
-      try {
-        plaintext = sKey.decrypt(ciphertext);
-        if (plaintext != null) {
-          // OK!
-          return plaintext;
-        }
-      } on Exception {
-        // this key not match, try next one
+      plaintext = sKey.decrypt(ciphertext);
+      if (plaintext != null) {
+        // OK!
+        return plaintext;
       }
     }
     // decryption failed
+    // TODO: check whether my visa key is changed, push new visa to this contact
     return null;
   }
 

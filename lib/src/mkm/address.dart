@@ -49,7 +49,7 @@ abstract class BaseAddressFactory implements AddressFactory {
   @override
   Address generateAddress(Meta meta, int? network) {
     Address address = meta.generateAddress(network);
-    _addresses[address.string] = address;
+    _addresses[address.toString()] = address;
     return address;
   }
 

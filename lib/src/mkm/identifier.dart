@@ -126,7 +126,7 @@ class IdentifierFactory implements IDFactory {
 }
 
 String _concat({String? name, required Address address, String? terminal}) {
-  String string = address.string;
+  String string = address.toString();
   if (name != null && name.isNotEmpty) {
     string = '$name@$string';
   }

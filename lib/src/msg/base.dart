@@ -68,7 +68,7 @@ import 'package:mkm/mkm.dart';
 abstract class BaseMessage extends Dictionary implements Message {
   BaseMessage(super.dict) : _envelope = null, _delegate = null;
 
-  BaseMessage.fromEnvelope(Envelope env) : super(env.dictionary) {
+  BaseMessage.fromEnvelope(Envelope env) : super(env.toMap()) {
     _envelope = env;
     _delegate = null;
   }
@@ -85,7 +85,7 @@ abstract class BaseMessage extends Dictionary implements Message {
 
   @override
   Envelope get envelope {
-    _envelope ??= Envelope.parse(dictionary);
+    _envelope ??= Envelope.parse(toMap());
     return _envelope!;
   }
 

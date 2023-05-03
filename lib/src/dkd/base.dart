@@ -62,7 +62,7 @@ class BaseContent extends Dictionary implements Content {
   @override
   int get sn {
     _sn ??= getInt('sn');
-    assert(_sn! > 0, 'serial number error: $dictionary');
+    assert(_sn! > 0, 'serial number error: $this');
     return _sn ?? 0;
   }
 

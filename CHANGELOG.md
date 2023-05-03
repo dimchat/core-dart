@@ -1,3 +1,7 @@
+## 0.1.0-dev.7
+
+- Async trim/split message.
+
 ## 0.1.0-dev.6
 
 - Empty visa key

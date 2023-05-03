@@ -73,7 +73,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     if (_data == null) {
       Object? b64 = this['data'];
       if (b64 == null) {
-        assert(false, 'message data not found: $dictionary');
+        assert(false, 'message data not found: $this');
       } else {
         _data = await delegate?.decodeData(b64, this);
         assert(_data != null, 'message data error: $b64');
@@ -88,9 +88,9 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
       Object? b64 = this['key'];
       if (b64 == null) {
         // check 'keys'
-        Map? keys = encryptedKeys;
+        Map? keys = await encryptedKeys;
         if (keys != null) {
-          b64 = keys[receiver.string];
+          b64 = keys[receiver.toString()];
         }
       }
       if (b64 != null) {
@@ -102,7 +102,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Map<String, dynamic>? get encryptedKeys {
+  Future<Map?> get encryptedKeys async {
     _keys ??= this['keys'];
     return _keys;
   }
@@ -145,14 +145,17 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     if (key != null) {
       key = await transceiver.decryptKey(key, from, to, this);
       if (key == null) {
-        throw Exception('failed to decrypt key in msg: $dictionary');
+        // assert(false, 'failed to decrypt key in msg: $this');
+        // TODO: check whether my visa key is changed, push new visa to this contact
+        return null;
       }
     }
     // 1.3. deserialize key
     //      if key is empty, means it should be reused, get it from key cache
     SymmetricKey? pwd = await transceiver.deserializeKey(key, from, to, this);
     if (pwd == null) {
-      throw Exception('failed to get msg key: $from -> $to, $key');
+      assert(false, 'failed to get msg key: $from -> $to, $key');
+      return null;
     }
 
     // 2. decrypt 'message.data' to 'message.content'
@@ -161,12 +164,14 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     // 2.2. decrypt content data
     Uint8List? plaintext = await transceiver.decryptContent(ciphertext, pwd, this);
     if (plaintext == null) {
-      throw Exception('failed to decrypt data with key: $pwd');
+      assert(false, 'failed to decrypt data with key: $pwd');
+      return null;
     }
     // 2.3. deserialize content
     Content? content = await transceiver.deserializeContent(plaintext, pwd, this);
     if (content == null) {
-      throw Exception('failed to deserialize content: $plaintext');
+      assert(false, 'failed to deserialize content: $plaintext');
+      return null;
     }
     // 2.4. check attachment for File/Image/Audio/Video message content
     //      if file data not download yet,
@@ -180,7 +185,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     info.remove('key');
     info.remove('keys');
     info.remove('data');
-    info['content'] = content.dictionary;
+    info['content'] = content.toMap();
     return InstantMessage.parse(info);
   }
 
@@ -225,10 +230,10 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///  @param members - group members
   ///  @return secure/reliable message(s)
   @override
-  List<SecureMessage> split(List<ID> members) {
+  Future<List<SecureMessage>> split(List<ID> members) async {
     Map info = copyMap(false);
     // check 'keys'
-    Map<String, dynamic>? keys = encryptedKeys;
+    Map? keys = await encryptedKeys;
     if (keys == null) {
       keys = {};
     } else {
@@ -240,16 +245,16 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     //    when the group message separated to multi-messages;
     //    if don't want the others know your membership,
     //    DON'T do this.
-    info['group'] = receiver.string;
+    info['group'] = receiver.toString();
 
     List<SecureMessage> messages = [];
     Object? b64;
     SecureMessage? item;
     for (ID mem in members) {
       // 2. change 'receiver' to each group member
-      info['receiver'] = mem.string;
+      info['receiver'] = mem.toString();
       // 3. get encrypted key
-      b64 = keys[mem.string];
+      b64 = keys[mem.toString()];
       if (b64 == null) {
         info.remove('key');
       } else {
@@ -270,13 +275,13 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   /// @param member - group member ID/string
   /// @return SecureMessage
   @override
-  SecureMessage trim(ID member) {
+  Future<SecureMessage> trim(ID member) async {
     Map info = copyMap(false);
     // check 'keys'
-    Map<String, dynamic>? keys = encryptedKeys;
+    Map? keys = await encryptedKeys;
     if (keys != null) {
       // move key data from 'keys' to 'key'
-      Object? b64 = keys[member.string];
+      Object? b64 = keys[member.toString()];
       if (b64 != null) {
         info['key'] = b64;
       }
@@ -287,9 +292,9 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
       // if 'group' not exists, the 'receiver' must be a group ID here, and
       // it will not be equal to the member of course,
       // so move 'receiver' to 'group'
-      info['group'] = receiver.string;
+      info['group'] = receiver.toString();
     }
-    info['receiver'] = member.string;
+    info['receiver'] = member.toString();
     // repack
     return SecureMessage.parse(info)!;
   }

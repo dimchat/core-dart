@@ -80,13 +80,13 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   @override
   Content get content {
     _content ??= Content.parse(this['content']);
-    assert(_content != null, 'message content not found: $dictionary');
+    assert(_content != null, 'message content not found: $this');
     return _content!;
   }
 
   @override
   set content(Content body) {
-    this['content'] = body.dictionary;
+    this['content'] = body.toMap();
     _content = body;
   }
 

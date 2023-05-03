@@ -102,14 +102,14 @@ abstract class BaseMeta extends Dictionary implements Meta {
   @override
   int get type {
     _type ??= getInt('type');
-    assert(_type != null, 'meta type not found: $dictionary');
+    assert(_type != null, 'meta type not found: $this');
     return _type ?? 0;
   }
 
   @override
   VerifyKey get key {
     _key ??= PublicKey.parse(this['key']);
-    assert(_key != null, 'meta key error: $dictionary');
+    assert(_key != null, 'meta key error: $this');
     return _key!;
   }
 
@@ -117,7 +117,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   String? get seed {
     if (_seed == null && MetaType.hasSeed(type)) {
       String? name = getString('seed');
-      assert(name != null && name.isNotEmpty, 'meta.seed empty: $dictionary');
+      assert(name != null && name.isNotEmpty, 'meta.seed empty: $this');
       _seed = name;
     }
     return _seed;
@@ -128,7 +128,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     if (_fingerprint == null && MetaType.hasSeed(type)) {
       String? b64 = getString('fingerprint');
       if (b64 == null) {
-        assert(false, 'meta.fingerprint empty: $dictionary');
+        assert(false, 'meta.fingerprint empty: $this');
       } else {
         _fingerprint = Base64.decode(b64);
         assert(_fingerprint != null, 'meta.fingerprint error: $b64');

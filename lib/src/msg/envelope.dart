@@ -63,7 +63,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
   @override
   ID get sender {
     _sender ??= ID.parse(this['sender']);
-    assert(_sender != null, 'message sender not found: $dictionary');
+    assert(_sender != null, 'message sender not found: $this');
     return _sender!;
   }
 

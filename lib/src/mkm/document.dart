@@ -152,11 +152,11 @@ class BaseDocument extends Dictionary implements Document {
   @override
   void setProperty(String name, Object? value) {
     // 1. reset status
-    assert(_status >= 0, 'status error: $dictionary');
+    assert(_status >= 0, 'status error: $this');
     _status = 0;
     // 2. update property value with name
     Map? dict = properties;
-    assert(dict != null, 'failed to get properties: $dictionary');
+    assert(dict != null, 'failed to get properties: $this');
     if (value == null) {
       dict?.remove(name);
     } else {

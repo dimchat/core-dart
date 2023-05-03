@@ -95,7 +95,7 @@ class ListContent extends BaseContent implements ArrayContent {
   static List<Map> revert(List<Content> contents) {
     List<Map> array = [];
     for (Content item in contents) {
-      array.add(item.dictionary);
+      array.add(item.toMap());
     }
     return array;
   }
@@ -136,7 +136,7 @@ class SecretContent extends BaseContent implements ForwardContent {
       : super.fromType(ContentType.kForward) {
     _forward = msg;
     _secrets = null;
-    this['forward'] = msg.dictionary;
+    this['forward'] = msg.toMap();
   }
   SecretContent.fromMessages(List<ReliableMessage> messages)
       : super.fromType(ContentType.kForward) {
@@ -189,7 +189,7 @@ class SecretContent extends BaseContent implements ForwardContent {
   static List<Map> revert(List<ReliableMessage> messages) {
     List<Map> array = [];
     for (ReliableMessage msg in messages) {
-      array.add(msg.dictionary);
+      array.add(msg.toMap());
     }
     return array;
   }
