@@ -101,9 +101,15 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   int get type {
-    _type ??= getInt('type');
-    assert(_type != null, 'meta type not found: $this');
-    return _type ?? 0;
+    int? version = _type;
+    if (version == null) {
+      AccountFactoryManager man = AccountFactoryManager();
+      version = man.generalFactory.getMetaType(toMap());
+      // version ??= 0;
+      _type = version;
+    }
+    assert(version != null, 'meta type error: $this');
+    return version ?? 0;
   }
 
   @override

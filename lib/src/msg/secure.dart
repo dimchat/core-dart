@@ -178,7 +178,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     //          decrypt file data with password;
     //      else,
     //          save password to 'message.content.password'.
-    //      (do it in 'core' module)
+    //      (do it in application level)
 
     // 3. pack message
     Map info = copyMap(false);
@@ -245,6 +245,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     //    when the group message separated to multi-messages;
     //    if don't want the others know your membership,
     //    DON'T do this.
+    assert(receiver.isGroup, 'receiver error: $receiver');
     info['group'] = receiver.toString();
 
     List<SecureMessage> messages = [];
@@ -292,8 +293,10 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
       // if 'group' not exists, the 'receiver' must be a group ID here, and
       // it will not be equal to the member of course,
       // so move 'receiver' to 'group'
+      assert(receiver.isGroup, 'receiver error: $receiver');
       info['group'] = receiver.toString();
     }
+    // replace receiver
     info['receiver'] = member.toString();
     // repack
     return SecureMessage.parse(info)!;

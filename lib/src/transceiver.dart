@@ -200,10 +200,10 @@ abstract class Transceiver implements InstantMessageDelegate, ReliableMessageDel
     assert(contact != null, 'failed to verify signature for sender: $sender');
     return await contact!.verify(data, signature);
   }
-}
 
-bool isBroadcastMessage(Message msg) {
-  ID? receiver = msg.group;
-  receiver ??= msg.receiver;
-  return receiver.isBroadcast;
+  static bool isBroadcastMessage(Message msg) {
+    ID? receiver = msg.group;
+    receiver ??= msg.receiver;
+    return receiver.isBroadcast;
+  }
 }

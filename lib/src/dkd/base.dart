@@ -55,8 +55,14 @@ class BaseContent extends Dictionary implements Content {
 
   @override
   int get type {
-    _type ??= getInt('type');
-    return _type ?? 0;
+    int? msgType = _type;
+    if (msgType == null) {
+      MessageFactoryManager man = MessageFactoryManager();
+      msgType = man.generalFactory.getContentType(toMap());
+      msgType ??= 0;
+      _type = msgType;
+    }
+    return msgType;
   }
 
   @override

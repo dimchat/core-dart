@@ -110,7 +110,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   @override
   Future<SecureMessage?> encrypt(SymmetricKey password, {List<ID>? members}) async {
     // 0. check attachment for File/Image/Audio/Video message content
-    //    (do it in 'core' module)
+    //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
     InstantMessageDelegate transceiver = delegate!;
@@ -151,7 +151,6 @@ class PlainMessage extends BaseMessage implements InstantMessage {
     } else {
       // group message
       Map keys = {};
-      int count = 0;
       for (ID item in members) {
         // 2.2. encrypt symmetric key data
         key = await transceiver.encryptKey(pwd, item, this);
@@ -164,9 +163,8 @@ class PlainMessage extends BaseMessage implements InstantMessage {
         b64 = await transceiver.encodeKey(key, this);
         // 2.4. insert to 'message.keys' with member ID
         keys[item.toString()] = b64;
-        ++count;
       }
-      if (count == 0) {
+      if (keys.isEmpty) {
         // public key for member(s) not found
         // TODO: suspend this message for waiting member's visa
         return null;

@@ -61,7 +61,7 @@ class ListContent extends BaseContent implements ArrayContent {
   ListContent.fromContents(List<Content> contents)
       : super.fromType(ContentType.kArray) {
     // set contents
-    this['contents'] = revert(contents);
+    this['contents'] = ArrayContent.revert(contents);
     _list = contents;
   }
 
@@ -72,7 +72,7 @@ class ListContent extends BaseContent implements ArrayContent {
     if (_list == null) {
       var info = this['contents'];
       if (info != null/* && info is List*/) {
-        _list = convert(info);
+        _list = ArrayContent.convert(info);
       } else {
         _list = [];
       }
@@ -80,25 +80,6 @@ class ListContent extends BaseContent implements ArrayContent {
     return _list!;
   }
 
-  static List<Content> convert(List contents) {
-    List<Content> array = [];
-    Content? res;
-    for (var item in contents) {
-      res = Content.parse(item);
-      if (res != null) {
-        array.add(res);
-      }
-    }
-    return array;
-  }
-
-  static List<Map> revert(List<Content> contents) {
-    List<Map> array = [];
-    for (Content item in contents) {
-      array.add(item.toMap());
-    }
-    return array;
-  }
 }
 
 
@@ -118,13 +99,14 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
       : this.fromType(ContentType.kCustomized, app: app, mod: mod, act: act);
 
   @override
-  String get action => getString('app')!;
-
-  @override
   String get application => getString('mod')!;
 
   @override
   String get module => getString('act')!;
+
+  @override
+  String get action => getString('app')!;
+
 }
 
 
@@ -142,7 +124,7 @@ class SecretContent extends BaseContent implements ForwardContent {
       : super.fromType(ContentType.kForward) {
     _forward = null;
     _secrets = messages;
-    this['secrets'] = revert(messages);
+    this['secrets'] = ForwardContent.revert(messages);
   }
 
   ReliableMessage? _forward;
@@ -160,7 +142,7 @@ class SecretContent extends BaseContent implements ForwardContent {
       var info = this['secrets'];
       if (info != null) {
         // get from secrets
-        _secrets = convert(info);
+        _secrets = ForwardContent.convert(info);
       } else {
         // get from 'forward'
         List<ReliableMessage> messages = [];
@@ -174,25 +156,6 @@ class SecretContent extends BaseContent implements ForwardContent {
     return _secrets!;
   }
 
-  static List<ReliableMessage> convert(List messages) {
-    List<ReliableMessage> array = [];
-    ReliableMessage? msg;
-    for (var item in messages) {
-      msg = ReliableMessage.parse(item);
-      if (msg != null) {
-        array.add(msg);
-      }
-    }
-    return array;
-  }
-
-  static List<Map> revert(List<ReliableMessage> messages) {
-    List<Map> array = [];
-    for (ReliableMessage msg in messages) {
-      array.add(msg.toMap());
-    }
-    return array;
-  }
 }
 
 

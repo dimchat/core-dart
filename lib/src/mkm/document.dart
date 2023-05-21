@@ -96,7 +96,11 @@ class BaseDocument extends Dictionary implements Document {
   @override
   String? get type {
     String? docType = getProperty('type');
-    return docType ?? getString('type');
+    if (docType == null) {
+      AccountFactoryManager man = AccountFactoryManager();
+      docType = man.generalFactory.getDocumentType(toMap());
+    }
+    return docType;
   }
 
   @override
@@ -210,14 +214,14 @@ class BaseDocument extends Dictionary implements Document {
     // 2. encode & sign
     Map? dict = properties;
     if (dict == null) {
-      // properties empty
+      assert(false, 'should not happen');
       return null;
     }
     String data = JSONMap.encode(dict);
     assert(data.isNotEmpty, 'properties error: $dict');
     Uint8List signature = privateKey.sign(UTF8.encode(data));
     if (signature.isEmpty) {
-      // signature error
+      assert(false, 'should not happen');
       return null;
     }
     // 3. update 'data' & 'signature' fields

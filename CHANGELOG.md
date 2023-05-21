@@ -1,3 +1,7 @@
+## 0.1.0-dev.8
+
+- Move static functions.
+
 ## 0.1.0-dev.7
 
 - Async trim/split message.

@@ -33,6 +33,7 @@ import 'package:mkm/mkm.dart';
 
 import '../protocol/commands.dart';
 import 'base.dart';
+import 'factory.dart';
 
 
 ///
@@ -47,7 +48,11 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);
 
   @override
-  String get cmd => getString('command') ?? '';
+  String get cmd {
+    CommandFactoryManager man = CommandFactoryManager();
+    String? name = man.generalFactory.getCmd(toMap());
+    return name ?? '';
+  }
 }
 
 

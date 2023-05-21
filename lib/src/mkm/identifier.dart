@@ -91,6 +91,7 @@ class IdentifierFactory implements IDFactory {
     String? terminal;
     // split ID string
     List<String> pair = identifier.split('/');
+    assert(pair.first.isNotEmpty, 'ID error: $identifier');
     // terminal
     if (pair.length == 1) {
       // no terminal
@@ -98,25 +99,22 @@ class IdentifierFactory implements IDFactory {
     } else {
       // got terminal
       assert(pair.length == 2, 'ID error: $identifier');
-      terminal = pair[1];
-      assert(terminal.isNotEmpty, 'ID.terminal error: $identifier');
+      assert(pair.last.isNotEmpty, 'ID.terminal error: $identifier');
+      terminal = pair.last;
     }
     // name @ address
-    assert(pair[0].isNotEmpty, 'ID error: $identifier');
-    pair = pair[0].split('@');
-    assert(pair[0].isNotEmpty, 'ID error: $identifier');
+    pair = pair.first.split('@');
+    assert(pair.last.isNotEmpty, 'ID.address error: $identifier');
     if (pair.length == 1) {
       // got address without name
       name = null;
-      address = Address.parse(pair[0]);
     } else {
       // got name & address
       assert(pair.length == 2, 'ID error: $identifier');
-      assert(pair[0].isNotEmpty, 'ID error: $identifier');
-      assert(pair[1].isNotEmpty, 'ID error: $identifier');
-      name = pair[0];
-      address = Address.parse(pair[1]);
+      assert(pair.first.isNotEmpty, 'ID error: $identifier');
+      name = pair.first;
     }
+    address = Address.parse(pair.last);
     if (address == null) {
       assert(false, 'cannot get address from ID: $identifier');
       return null;

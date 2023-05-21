@@ -36,8 +36,10 @@ import 'mkm/user.dart';
 
 ///  Entity Database
 ///  ~~~~~~~~~~~~~~~
+///  Entity pool to manage User/Contact/Group/Member instances
 ///
-///  Manage meta/document for all entities
+///     1st, get instance here to avoid create same instance,
+///     2nd, if they were updated, we can refresh them immediately here
 abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSource {
 
   Future<EncryptKey?> _visaKey(ID user) async {
@@ -177,59 +179,64 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // TODO: get group bots from SP configuration
     return [];
   }
-}
 
-String? getGroupSeed(ID group) {
-  String? name = group.name;
-  if (name != null) {
-    int len = name.length;
-    if (len == 0 || (len == 8 && name.toLowerCase() == "everyone")) {
-      name = null;
+  //
+  //  Broadcast Group
+  //
+
+  static String? getGroupSeed(ID group) {
+    String? name = group.name;
+    if (name != null) {
+      int len = name.length;
+      if (len == 0 || (len == 8 && name.toLowerCase() == "everyone")) {
+        name = null;
+      }
+    }
+    return name;
+  }
+
+  static ID getBroadcastFounder(ID group) {
+    String? name = getGroupSeed(group);
+    if (name == null) {
+      // Consensus: the founder of group 'everyone@everywhere'
+      //            'Albert Moky'
+      return ID.kFounder;
+    } else {
+      // DISCUSS: who should be the founder of group 'xxx@everywhere'?
+      //          'anyone@anywhere', or 'xxx.founder@anywhere'
+      return ID.parse('$name.founder@anywhere')!;
     }
   }
-  return name;
-}
 
-ID getBroadcastFounder(ID group) {
-  String? name = getGroupSeed(group);
-  if (name == null) {
-    // Consensus: the founder of group 'everyone@everywhere'
-    //            'Albert Moky'
-    return ID.kFounder;
-  } else {
-    // DISCUSS: who should be the founder of group 'xxx@everywhere'?
-    //          'anyone@anywhere', or 'xxx.founder@anywhere'
-    return ID.parse('$name.founder@anywhere')!;
+  static ID getBroadcastOwner(ID group) {
+    String? name = getGroupSeed(group);
+    if (name == null) {
+      // Consensus: the owner of group 'everyone@everywhere'
+      //            'anyone@anywhere'
+      return ID.kAnyone;
+    } else {
+      // DISCUSS: who should be the owner of group 'xxx@everywhere'?
+      //          'anyone@anywhere', or 'xxx.owner@anywhere'
+      return ID.parse('$name.owner@anywhere')!;
+    }
   }
-}
 
-ID getBroadcastOwner(ID group) {
-  String? name = getGroupSeed(group);
-  if (name == null) {
-    // Consensus: the owner of group 'everyone@everywhere'
-    //            'anyone@anywhere'
-    return ID.kAnyone;
-  } else {
-    // DISCUSS: who should be the owner of group 'xxx@everywhere'?
-    //          'anyone@anywhere', or 'xxx.owner@anywhere'
-    return ID.parse('$name.owner@anywhere')!;
+  static List<ID> getBroadcastMembers(ID group) {
+    List<ID> members = [];
+    String? name = getGroupSeed(group);
+    if (name == null) {
+      // Consensus: the member of group 'everyone@everywhere'
+      //            'anyone@anywhere'
+      members.add(ID.kAnyone);
+    } else {
+      // DISCUSS: who should be the member of group 'xxx@everywhere'?
+      //          'anyone@anywhere', or 'xxx.member@anywhere'
+      ID owner = ID.parse('$name.owner@anywhere')!;
+      ID member = ID.parse('$name.member@anywhere')!;
+      members.add(owner);
+      members.add(member);
+    }
+    return members;
   }
-}
 
-List<ID> getBroadcastMembers(ID group) {
-  List<ID> members = [];
-  String? name = getGroupSeed(group);
-  if (name == null) {
-    // Consensus: the member of group 'everyone@everywhere'
-    //            'anyone@anywhere'
-    members.add(ID.kAnyone);
-  } else {
-    // DISCUSS: who should be the member of group 'xxx@everywhere'?
-    //          'anyone@anywhere', or 'xxx.member@anywhere'
-    ID owner = ID.parse('$name.owner@anywhere')!;
-    ID member = ID.parse('$name.member@anywhere')!;
-    members.add(owner);
-    members.add(member);
-  }
-  return members;
 }

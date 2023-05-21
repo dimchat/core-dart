@@ -151,7 +151,7 @@ class GeneralDocumentFactory implements DocumentFactory {
       } else if (docType == Document.kBulletin) {
         return BaseBulletin.fromID(identifier);
       } else {
-        return BaseDocument.fromType(identifier, null);
+        return BaseDocument.fromType(identifier, docType);
       }
     } else {
       // create document with data & signature from local storage
@@ -169,7 +169,7 @@ class GeneralDocumentFactory implements DocumentFactory {
   Document? parseDocument(Map doc) {
     ID? identifier = ID.parse(doc['ID']);
     if (identifier == null) {
-      // doc ID not found
+      assert(false, 'document ID not found: $doc');
       return null;
     }
     AccountFactoryManager man = AccountFactoryManager();

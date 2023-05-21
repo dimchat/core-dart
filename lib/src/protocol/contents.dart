@@ -72,6 +72,28 @@ abstract class ArrayContent implements Content {
 
   static ArrayContent create(List<Content> contents) =>
       ListContent.fromContents(contents);
+
+
+  static List<Content> convert(List contents) {
+    List<Content> array = [];
+    Content? res;
+    for (var item in contents) {
+      res = Content.parse(item);
+      if (res != null) {
+        array.add(res);
+      }
+    }
+    return array;
+  }
+
+  static List<Map> revert(List<Content> contents) {
+    List<Map> array = [];
+    for (Content item in contents) {
+      array.add(item.toMap());
+    }
+    return array;
+  }
+
 }
 
 
@@ -133,6 +155,28 @@ abstract class ForwardContent implements Content {
       return SecretContent.fromMessages(secrets!);
     }
   }
+
+
+  static List<ReliableMessage> convert(List messages) {
+    List<ReliableMessage> array = [];
+    ReliableMessage? msg;
+    for (var item in messages) {
+      msg = ReliableMessage.parse(item);
+      if (msg != null) {
+        array.add(msg);
+      }
+    }
+    return array;
+  }
+
+  static List<Map> revert(List<ReliableMessage> messages) {
+    List<Map> array = [];
+    for (ReliableMessage msg in messages) {
+      array.add(msg.toMap());
+    }
+    return array;
+  }
+
 }
 
 

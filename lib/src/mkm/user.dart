@@ -173,7 +173,7 @@ class BaseUser extends BaseEntity implements User {
 
   @override
   Future<Visa?> get visa async {
-    Document? doc = await getDocument(Document.kBulletin);
+    Document? doc = await getDocument(Document.kVisa);
     return doc is Visa ? doc : null;
   }
 
