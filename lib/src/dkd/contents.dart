@@ -233,10 +233,10 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
   String get currency => getString('currency')!;
 
   @override
-  int get amount => getInt('amount') ?? 0;
+  double get amount => getDouble('amount') ?? 0;
 
   @override
-  set amount(int value) => this['amount'] = value;
+  set amount(double value) => this['amount'] = value;
 }
 
 /// TransferContent

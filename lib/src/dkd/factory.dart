@@ -50,12 +50,8 @@ class CommandGeneralFactory {
   //  Command
   //
 
-  void setCommandFactory(String cmd, CommandFactory? factory) {
-    if (factory == null) {
-      _commandFactories.remove(cmd);
-    } else {
-      _commandFactories[cmd] = factory;
-    }
+  void setCommandFactory(String cmd, CommandFactory factory) {
+    _commandFactories[cmd] = factory;
   }
   CommandFactory? getCommandFactory(String cmd) {
     return _commandFactories[cmd];

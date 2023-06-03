@@ -225,8 +225,8 @@ abstract class MoneyContent implements Content {
 
   String get currency;
 
-  int get amount;
-  set amount(int value);
+  double get amount;
+  set amount(double value);
 
   //
   //  Factory

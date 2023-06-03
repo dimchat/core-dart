@@ -66,7 +66,7 @@ abstract class Command implements Content {
     CommandFactoryManager man = CommandFactoryManager();
     return man.generalFactory.getCommandFactory(cmd);
   }
-  static void setFactory(String cmd, CommandFactory? factory) {
+  static void setFactory(String cmd, CommandFactory factory) {
     CommandFactoryManager man = CommandFactoryManager();
     man.generalFactory.setCommandFactory(cmd, factory);
   }

@@ -1,3 +1,7 @@
+## 0.1.0-dev.9
+
+- CommandFactory cannot be null.
+
 ## 0.1.0-dev.8
 
 - Move static functions.
