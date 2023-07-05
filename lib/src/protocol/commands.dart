@@ -46,6 +46,7 @@ abstract class Command implements Content {
   //-------- command names begin --------
   static const String kMeta = 'meta';
   static const String kDocument = 'document';
+  static const String kReceipt = 'receipt';
   //-------- command names end --------
 
   ///  Get command name

@@ -1,6 +1,6 @@
 ## 0.1.0-dev.9
 
-- CommandFactory cannot be null.
+- Receipt command.
 
 ## 0.1.0-dev.8
 

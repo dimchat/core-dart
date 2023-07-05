@@ -45,7 +45,6 @@ import '../dkd/contents.dart';
 abstract class TextContent implements Content {
 
   String get text;
-  set text(String string);
 
   //
   //  Factory

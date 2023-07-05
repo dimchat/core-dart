@@ -48,9 +48,6 @@ class BaseTextContent extends BaseContent implements TextContent {
 
   @override
   String get text => getString('text')!;
-
-  @override
-  set text(String message) => this['text'] = message;
 }
 
 
