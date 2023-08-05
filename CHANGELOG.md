@@ -1,3 +1,7 @@
+## 0.1.0
+
+- Version 0.1.0 released.
+
 ## 0.1.0-dev.9
 
 - Receipt command.

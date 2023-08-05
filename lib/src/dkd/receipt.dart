@@ -31,7 +31,6 @@
 import 'package:dkd/dkd.dart';
 
 import '../protocol/commands.dart';
-import '../protocol/contents.dart';
 import '../protocol/receipt.dart';
 import 'commands.dart';
 
@@ -105,13 +104,5 @@ class BaseReceiptCommand extends BaseReceipt with ReceiptCommandMixIn {
 
   BaseReceiptCommand.from(String text, {Envelope? envelope, int? sn, String? signature})
       : super.from(ContentType.kCommand, text, envelope: envelope, sn: sn, signature: signature);
-
-}
-
-
-class TextReceiptCommand extends BaseReceipt implements TextContent {
-  TextReceiptCommand(super.dict);
-
-  TextReceiptCommand.from(String text) : super.from(ContentType.kText, text);
 
 }
