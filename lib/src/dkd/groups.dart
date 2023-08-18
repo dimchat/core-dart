@@ -28,10 +28,22 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
 import '../protocol/groups.dart';
 import 'commands.dart';
+
+
+///
+/// HistoryCommand
+///
+class BaseHistoryCommand extends BaseCommand implements HistoryCommand {
+  BaseHistoryCommand(super.dict);
+
+  BaseHistoryCommand.fromName(String cmd)
+      : super.fromType(ContentType.kHistory, cmd);
+}
 
 
 ///
@@ -66,6 +78,7 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
       // TODO: get from 'member'?
       return null;
     } else {
+      // convert all items to ID objects
       return ID.convert(array);
     }
   }

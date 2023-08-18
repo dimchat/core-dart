@@ -34,6 +34,24 @@ import '../dkd/groups.dart';
 import 'commands.dart';
 
 
+///  History command: {
+///      type : 0x89,
+///      sn   : 123,
+///
+///      command : "...", // command name
+///      time    : 0,     // command timestamp
+///      extra   : info   // command parameters
+///  }
+abstract class HistoryCommand implements Command {
+
+  //-------- history command names begin --------
+  // account
+  static const String kRegister = "register";
+  static const String kSuicide  = "suicide";
+//-------- history command names end --------
+}
+
+
 abstract class GroupCommand implements HistoryCommand {
 
   //-------- group command names begin --------

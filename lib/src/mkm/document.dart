@@ -76,7 +76,10 @@ class BaseDocument extends Dictionary implements Document {
     if (docType == null || docType.isEmpty) {
       _properties = null;
     } else {
-      _properties = {'type': docType};
+      _properties = {
+        'type': docType,
+        'created_time': DateTime.now().millisecondsSinceEpoch / 1000.0,
+      };
     }
 
     _status = 0;
@@ -204,10 +207,13 @@ class BaseDocument extends Dictionary implements Document {
 
   @override
   Uint8List? sign(SignKey privateKey) {
+    Uint8List? signature;
     if (_status > 0) {
       // already signed/verified
       assert(_json != null, 'document data error: $this');
-      return _signature()!;
+      signature = _signature();
+      assert(signature != null, 'document signature error: $this');
+      return signature;
     }
     // 1. update sign time
     setProperty('time', DateTime.now().millisecondsSinceEpoch / 1000.0);
@@ -218,14 +224,17 @@ class BaseDocument extends Dictionary implements Document {
       return null;
     }
     String data = JSONMap.encode(dict);
-    assert(data.isNotEmpty, 'properties error: $dict');
-    Uint8List signature = privateKey.sign(UTF8.encode(data));
+    if (data.isEmpty) {
+      assert(false, 'properties error: $dict');
+      return null;
+    }
+    signature = privateKey.sign(UTF8.encode(data));
     if (signature.isEmpty) {
       assert(false, 'should not happen');
       return null;
     }
     // 3. update 'data' & 'signature' fields
-    this['data'] = data;
+    this['data'] = data;  // JsON string
     this['signature'] = Base64.encode(signature);
     _json = data;
     _sig = signature;

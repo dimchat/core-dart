@@ -104,14 +104,3 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   @override
   String? get signature => getString('signature');
 }
-
-
-///
-/// HistoryCommand
-///
-class BaseHistoryCommand extends BaseCommand implements HistoryCommand {
-  BaseHistoryCommand(super.dict);
-
-  BaseHistoryCommand.fromName(String cmd)
-      : super.fromType(ContentType.kHistory, cmd);
-}

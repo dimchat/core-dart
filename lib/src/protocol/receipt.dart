@@ -29,6 +29,7 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
+import 'package:mkm/mkm.dart';
 
 import '../dkd/receipt.dart';
 import 'commands.dart';
@@ -79,6 +80,7 @@ abstract class ReceiptCommand implements Command {
       info.remove('visa');
       env = Envelope.parse(info);
     }
+    // create base receipt command with text & original envelope
     return BaseReceiptCommand.from(text, envelope: env);
   }
 
@@ -87,30 +89,51 @@ abstract class ReceiptCommand implements Command {
 mixin ReceiptCommandMixIn on ReceiptCommand {
 
   bool matchMessage(InstantMessage iMsg) {
+    if (origin == null) {
+      // receipt without original message info
+      return false;
+    }
     // check signature
     String? sig1 = originalSignature;
     if (sig1 != null) {
       // if contains signature, check it
       String? sig2 = iMsg.getString('signature');
       if (sig2 != null) {
-        if (sig1.length > 8) {
-          sig1 = sig1.substring(sig1.length - 8);
-        }
-        if (sig2.length > 8) {
-          sig2 = sig2.substring(sig2.length - 8);
-        }
-        return sig1 == sig2;
+        return matchSignatures(sig1, sig2);
       }
     }
     // check envelope
     Envelope? env1 = originalEnvelope;
     if (env1 != null) {
       // if contains envelope, check it
-      return env1 == iMsg.envelope;
+      if (!matchEnvelopes(env1, iMsg.envelope)) {
+        return false;
+      }
     }
     // check serial number
     // (only the original message's receiver can know this number)
     return originalSerialNumber == iMsg.content.sn;
+  }
+
+  static bool matchSignatures(String sig1, String sig2) {
+    if (sig1.length > 8) {
+      sig1 = sig1.substring(sig1.length - 8);
+    }
+    if (sig2.length > 8) {
+      sig2 = sig2.substring(sig2.length - 8);
+    }
+    return sig1 == sig2;
+  }
+
+  static bool matchEnvelopes(Envelope env1, Envelope env2) {
+    if (env1.sender != env2.sender) {
+      return false;
+    }
+    ID? to1 = env1.group;
+    to1 ??= env1.receiver;
+    ID? to2 = env2.group;
+    to2 ??= env2.receiver;
+    return to1 == to2;
   }
 
 }

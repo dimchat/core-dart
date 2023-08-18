@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Group founder in document.
+
 ## 0.1.0
 
 - Version 0.1.0 released.

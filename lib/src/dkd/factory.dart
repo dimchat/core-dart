@@ -69,7 +69,7 @@ class CommandGeneralFactory {
     }
     Map? info = Wrapper.getMap(content);
     if (info == null) {
-      assert(false, 'content error: $content');
+      assert(false, 'command content error: $content');
       return null;
     }
     // get factory by command name
@@ -82,7 +82,7 @@ class CommandGeneralFactory {
       MessageGeneralFactory gf = man.generalFactory;
       int? type = gf.getContentType(info);
       if (type == null) {
-        assert(false, 'message type not found: $info');
+        assert(false, 'content type not found: $info');
       } else {
         ContentFactory? fact = gf.getContentFactory(type);
         if (fact is CommandFactory) {

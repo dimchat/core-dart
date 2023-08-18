@@ -232,7 +232,7 @@ abstract class MoneyContent implements Content {
   //
 
   static MoneyContent create(int? msgType,
-      {required String currency, required int amount}) {
+      {required String currency, required double amount}) {
     if (msgType == null) {
       return BaseMoneyContent.from(currency: currency, amount: amount);
     } else {
@@ -265,6 +265,6 @@ abstract class TransferContent implements MoneyContent {
   //
 
   static TransferContent create(
-      {required String currency, required int amount}) =>
+      {required String currency, required double amount}) =>
       TransferMoneyContent.from(currency: currency, amount: amount);
 }

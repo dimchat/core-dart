@@ -178,7 +178,7 @@ class WebPageContent extends BaseContent implements PageContent {
   set url(String location) => this['URL'] = location;
 
   @override
-  String get title => getString('title')!;
+  String get title => getString('title') ?? '';
 
   @override
   set title(String string) => this['title'] = string;
@@ -218,16 +218,16 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
   BaseMoneyContent(super.dict);
 
   BaseMoneyContent.fromType(int msgType,
-      {required String currency, required int amount})
+      {required String currency, required double amount})
       : super.fromType(msgType) {
     this['currency'] = currency;
     this['amount'] = amount;
   }
-  BaseMoneyContent.from({required String currency, required int amount})
+  BaseMoneyContent.from({required String currency, required double amount})
       : this.fromType(ContentType.kMoney, currency: currency, amount: amount);
 
   @override
-  String get currency => getString('currency')!;
+  String get currency => getString('currency') ?? '';
 
   @override
   double get amount => getDouble('amount') ?? 0;
@@ -240,7 +240,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
 class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
   TransferMoneyContent(super.dict);
 
-  TransferMoneyContent.from({required String currency, required int amount})
+  TransferMoneyContent.from({required String currency, required double amount})
       : super.fromType(ContentType.kTransfer, currency: currency, amount: amount);
 
   @override

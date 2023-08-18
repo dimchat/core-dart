@@ -105,11 +105,10 @@ abstract class BaseMeta extends Dictionary implements Meta {
     if (version == null) {
       AccountFactoryManager man = AccountFactoryManager();
       version = man.generalFactory.getMetaType(toMap());
-      // version ??= 0;
+      version ??= 0;
       _type = version;
     }
-    assert(version != null, 'meta type error: $this');
-    return version ?? 0;
+    return version;
   }
 
   @override
@@ -123,7 +122,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   String? get seed {
     if (_seed == null && MetaType.hasSeed(type)) {
       String? name = getString('seed');
-      assert(name != null && name.isNotEmpty, 'meta.seed empty: $this');
+      // assert(name != null && name.isNotEmpty, 'meta.seed empty: $this');
       _seed = name;
     }
     return _seed;
@@ -134,7 +133,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     if (_fingerprint == null && MetaType.hasSeed(type)) {
       String? b64 = getString('fingerprint');
       if (b64 == null) {
-        assert(false, 'meta.fingerprint empty: $this');
+        // assert(false, 'meta.fingerprint empty: $this');
       } else {
         _fingerprint = Base64.decode(b64);
         assert(_fingerprint != null, 'meta.fingerprint error: $b64');

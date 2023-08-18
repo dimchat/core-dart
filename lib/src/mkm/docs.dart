@@ -51,9 +51,10 @@ class BaseVisa extends BaseDocument implements Visa {
     _key = null;
   }
 
-  ///  Public key (used for encryption, can be same with meta.key)
-  ///
-  ///      RSA
+  /// Public Key for encryption
+  /// ~~~~~~~~~~~~~~~~~~~~~~~~~
+  /// For safety considerations, the visa.key which used to encrypt message data
+  /// should be different with meta.key
   EncryptKey? _key;
 
   @override
@@ -108,28 +109,41 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   List<ID>? _bots;
 
   @override
-  List<ID> get assistants {
+  ID? get founder => ID.parse(this['founder']);
+
+  @override
+  List<ID>? get assistants {
     if (_bots == null) {
-      Object? array = getProperty('assistants');
-      if (array is List) {
-        _bots = ID.convert(array);
-      } else {
-        // placeholder
-        _bots = [];
+      Object? bots = getProperty('assistants');
+      if (bots is List) {
+        _bots = ID.convert(bots);
       }
     }
-    return _bots!;
+    return _bots;
   }
 
   @override
-  set assistants(List<ID> bots) {
-    if (bots.isEmpty) {
+  set assistants(List<ID>? bots) {
+    if (bots == null) {
       setProperty('assistants', null);
     } else {
       setProperty('assistants', ID.revert(bots));
     }
     _bots = bots;
   }
+
+  @override
+  DateTime? get createdTime => Converter.getTime(getProperty('created_time'));
+
+  @override
+  DateTime? get modifiedTime {
+    var timestamp = getProperty('modified_time');
+    if (timestamp == null) {
+      return time;
+    }
+    return Converter.getTime(timestamp);
+  }
+
 }
 
 

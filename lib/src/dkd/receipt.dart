@@ -77,7 +77,7 @@ class BaseReceipt extends BaseCommand implements ReceiptCommand {
     if (_env == null) {
       // origin: { sender: "...", receiver: "...", time: 0 }
       Map? info = origin;
-      if (info != null && info.containsKey('sender')) {
+      if (info != null/* && info.containsKey('sender')*/) {
         _env = Envelope.parse(info);
       }
     }

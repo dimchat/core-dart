@@ -91,8 +91,8 @@ abstract class User implements Entity {
   Future<bool> verifyVisa(Visa doc);
 }
 
-///  User Data Source
-///  ~~~~~~~~~~~~~~~~
+///  This interface is for getting information for user
+///  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ///
 ///  (Encryption/decryption)
 ///  1. public key for encryption
@@ -254,13 +254,21 @@ class BaseUser extends BaseEntity implements User {
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: only sign visa with the private key paired with your meta.key
     SignKey? sKey = await barrack!.getPrivateKeyForVisaSignature(identifier);
-    assert(sKey != null, 'failed to get sign key for visa: $identifier');
-    return sKey == null || doc.sign(sKey) == null ? null : doc;
+    if (sKey == null) {
+      assert(false, 'failed to get sign key for visa: $identifier');
+      return null;
+    } else if (doc.sign(sKey) == null) {
+      assert(false, 'failed to sign visa: $identifier, $doc');
+      return null;
+    } else {
+      return doc;
+    }
   }
 
   @override
   Future<bool> verifyVisa(Visa doc) async {
     // NOTICE: only verify visa with meta.key
+    //         (if meta not exists, user won't be created)
     if (identifier != doc.identifier) {
       // visa ID not match
       return false;

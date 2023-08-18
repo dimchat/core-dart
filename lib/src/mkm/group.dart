@@ -32,6 +32,14 @@ import 'package:mkm/mkm.dart';
 
 import 'entity.dart';
 
+/// This class is for creating group
+///
+///     roles:
+///         founder
+///         owner
+///         members
+///         administrators - Optional
+///         assistants     - Optional
 abstract class Group extends Entity {
 
   /// group document
@@ -46,6 +54,10 @@ abstract class Group extends Entity {
   Future<List<ID>> get assistants;
 }
 
+/// This interface is for getting information for group
+///
+/// 1. founder has the same public key with the group's meta.key
+/// 2. owner and members should be set complying with the consensus algorithm
 abstract class GroupDataSource implements EntityDataSource {
 
   ///  Get group founder
