@@ -109,7 +109,7 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   List<ID>? _bots;
 
   @override
-  ID? get founder => ID.parse(this['founder']);
+  ID? get founder => ID.parse(getProperty('founder'));
 
   @override
   List<ID>? get assistants {

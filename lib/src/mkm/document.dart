@@ -73,8 +73,10 @@ class BaseDocument extends Dictionary implements Document {
     _json = null;
     _sig = null;
 
-    if (docType == null || docType.isEmpty) {
-      _properties = null;
+    if (docType == null || docType.isEmpty || docType == '*') {
+      _properties = {
+        'created_time': DateTime.now().millisecondsSinceEpoch / 1000.0,
+      };
     } else {
       _properties = {
         'type': docType,
