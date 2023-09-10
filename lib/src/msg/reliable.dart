@@ -111,7 +111,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       _signature = ted = TransportableData.parse(base64);
       assert(ted != null, 'failed to decode signature: $base64');
     }
-    return ted!.data;
+    return ted!.data!;
   }
 
 }

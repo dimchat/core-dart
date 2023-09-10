@@ -39,9 +39,10 @@ abstract class Packer {
 
   ///  Get group ID which should be exposed to public network
   ///
-  /// @param content - message content
+  /// @param head - message envelope
+  /// @param body - message content
   /// @return exposed group ID
-  Future<ID?> getOvertGroup(Content content);
+  Future<ID?> getOvertGroup(Envelope head, Content body);
 
   //
   //  InstantMessage -> SecureMessage -> ReliableMessage -> Data

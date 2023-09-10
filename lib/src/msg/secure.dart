@@ -75,7 +75,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
         _data = ted = TransportableData.parse(text);
       }
     }
-    return ted!.data;
+    return ted!.data!;
   }
 
   @override

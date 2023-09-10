@@ -85,13 +85,13 @@ abstract class EntityDelegate {
   ///
   /// @param identifier - user ID
   /// @return user
-  User? getUser(ID identifier);
+  Future<User?> getUser(ID identifier);
 
   ///  Create group with ID
   ///
   /// @param identifier - group ID
   /// @return group
-  Group? getGroup(ID identifier);
+  Future<Group?> getGroup(ID identifier);
 }
 
 //

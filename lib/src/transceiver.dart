@@ -78,10 +78,13 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     assert(barrack != null, "entity delegate not set yet");
     // TODO: make sure the receiver's public key exists
     assert(receiver.isUser, 'receiver error: $receiver');
-    User? contact = barrack?.getUser(receiver);
-    assert(contact != null, 'failed to encrypt for receiver: $receiver');
+    User? contact = await barrack?.getUser(receiver);
+    if (contact == null) {
+      assert(false, 'failed to encrypt key for contact: $receiver');
+      return null;
+    }
     // encrypt with receiver's public key
-    return await contact?.encrypt(key);
+    return await contact.encrypt(key);
   }
 
   //-------- SecureMessageDelegate
@@ -96,9 +99,12 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     if (receiver.isGroup) {
       receiver = sMsg.receiver;
     }
-    User? user = barrack?.getUser(receiver);
-    assert(user != null, 'failed to create local user: $receiver');
-    return await user?.decrypt(key);
+    User? user = await barrack?.getUser(receiver);
+    if (user == null) {
+      assert(false, 'failed to decrypt key for user: $receiver');
+      return null;
+    }
+    return await user.decrypt(key);
   }
 
   @override
@@ -146,8 +152,8 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, 'entity delegate not set yet');
     ID sender = sMsg.sender;
-    User? user = barrack?.getUser(sender);
-    assert(user != null, 'failed to sign with sender: $sender');
+    User? user = await barrack?.getUser(sender);
+    assert(user != null, 'failed to sign with user: $sender');
     return await user!.sign(data);
   }
 
@@ -158,9 +164,12 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, 'entity delegate not set yet');
     ID sender = rMsg.sender;
-    User? contact = barrack?.getUser(sender);
-    assert(contact != null, 'failed to verify signature for sender: $sender');
-    return await contact!.verify(data, signature);
+    User? contact = await barrack?.getUser(sender);
+    if (contact == null) {
+      assert(false, 'failed to verify signature for contact: $sender');
+      return false;
+    }
+    return await contact.verify(data, signature);
   }
 
 }
