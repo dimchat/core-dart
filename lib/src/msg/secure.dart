@@ -110,7 +110,7 @@ class EncryptedMessagePacker {
 
   final WeakReference<SecureMessageDelegate> _transceiver;
 
-  SecureMessageDelegate get delegate => _transceiver.target!;
+  SecureMessageDelegate? get delegate => _transceiver.target;
 
   /*
    *  Decrypt the Secure Message to Instant Message
@@ -141,12 +141,12 @@ class EncryptedMessagePacker {
     }
 
     // 1. decrypt 'message.key' to symmetric key
-    SecureMessageDelegate transceiver = delegate;
+    SecureMessageDelegate? transceiver = delegate;
     // 1.1. decode encrypted key data
     Uint8List? key = await sMsg.encryptedKey;
     // 1.2. decrypt key data
     if (key != null) {
-      key = await transceiver.decryptKey(key, to, sMsg);
+      key = await transceiver?.decryptKey(key, to, sMsg);
       if (key == null) {
         // assert(false, 'failed to decrypt key in msg: $this');
         // TODO: check whether my visa key is changed, push new visa to this contact
@@ -155,7 +155,7 @@ class EncryptedMessagePacker {
     }
     // 1.3. deserialize key
     //      if key is empty, means it should be reused, get it from key cache
-    SymmetricKey? pwd = await transceiver.deserializeKey(key, to, sMsg);
+    SymmetricKey? pwd = await transceiver?.deserializeKey(key, to, sMsg);
     if (pwd == null) {
       assert(false, 'failed to get msg key: ${sMsg.sender} -> $to, $key');
       return null;
@@ -165,13 +165,13 @@ class EncryptedMessagePacker {
     // 2.1. decode encrypted content data
     Uint8List ciphertext = await sMsg.data;
     // 2.2. decrypt content data
-    Uint8List? plaintext = await transceiver.decryptContent(ciphertext, pwd, sMsg);
+    Uint8List? plaintext = await transceiver?.decryptContent(ciphertext, pwd, sMsg);
     if (plaintext == null) {
       assert(false, 'failed to decrypt data with key: $pwd');
       return null;
     }
     // 2.3. deserialize content
-    Content? content = await transceiver.deserializeContent(plaintext, pwd, sMsg);
+    Content? content = await transceiver?.deserializeContent(plaintext, pwd, sMsg);
     if (content == null) {
       assert(false, 'failed to deserialize content: $plaintext');
       return null;
@@ -210,9 +210,9 @@ class EncryptedMessagePacker {
   ///
   /// @return ReliableMessage object
   Future<ReliableMessage> sign(SecureMessage sMsg) async {
-    SecureMessageDelegate transceiver = delegate;
+    SecureMessageDelegate? transceiver = delegate;
     // 1. sign with sender's private key
-    Uint8List signature = await transceiver.signData(await sMsg.data, sMsg);
+    Uint8List signature = await transceiver!.signData(await sMsg.data, sMsg);
     // 2. encode signature
     Object base64 = TransportableData.encode(signature);
     // 3. pack message

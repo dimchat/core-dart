@@ -108,7 +108,7 @@ class BaseGroup extends BaseEntity implements Group {
   @override
   Future<Bulletin?> get bulletin async {
     Document? doc = await getDocument(Document.kBulletin);
-    return doc is Bulletin ? doc : null;
+    return doc is Bulletin/* && doc.isValid*/ ? doc : null;
   }
 
   @override

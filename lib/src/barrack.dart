@@ -45,7 +45,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   Future<EncryptKey?> _visaKey(ID user) async {
     Document? doc = await getDocument(user, Document.kVisa);
-    if (doc is Visa && doc.isValid) {
+    if (doc is Visa/* && doc.isValid*/) {
       return doc.publicKey;
     }
     return null;
@@ -114,7 +114,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     }
     // get from document
     Document? doc = await getDocument(group, '*');
-    if (doc is Bulletin && doc.isValid) {
+    if (doc is Bulletin/* && doc.isValid*/) {
       return doc.founder;
     }
     // TODO: load founder from database
@@ -151,7 +151,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   @override
   Future<List<ID>> getAssistants(ID group) async {
     Document? doc = await getDocument(group, Document.kBulletin);
-    if (doc is Bulletin && doc.isValid) {
+    if (doc is Bulletin/* && doc.isValid*/) {
       List<ID>? bots = doc.assistants;
       if (bots != null) {
         return bots;

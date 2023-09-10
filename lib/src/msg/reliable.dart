@@ -123,7 +123,7 @@ class NetworkMessagePacker {
 
   final WeakReference<ReliableMessageDelegate> _transceiver;
 
-  ReliableMessageDelegate get delegate => _transceiver.target!;
+  ReliableMessageDelegate? get delegate => _transceiver.target;
 
   /*
    *  Verify the Reliable Message to Secure Message
@@ -143,7 +143,7 @@ class NetworkMessagePacker {
   ///
   /// @return SecureMessage object
   Future<SecureMessage?> verify(ReliableMessage rMsg) async {
-    ReliableMessageDelegate? transceiver = delegate;
+    ReliableMessageDelegate transceiver = delegate!;
     // 1. verify data signature with sender's public key
     Uint8List ct = await rMsg.data;
     Uint8List sig = await rMsg.signature;

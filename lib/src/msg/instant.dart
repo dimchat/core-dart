@@ -89,7 +89,7 @@ class PlainMessagePacker {
 
   final WeakReference<InstantMessageDelegate> _transceiver;
 
-  InstantMessageDelegate get delegate => _transceiver.target!;
+  InstantMessageDelegate? get delegate => _transceiver.target;
 
   /*
    *  Encrypt the Instant Message to Secure Message
@@ -115,7 +115,7 @@ class PlainMessagePacker {
     //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
-    InstantMessageDelegate transceiver = delegate;
+    InstantMessageDelegate transceiver = delegate!;
     // 1.1. serialize message content
     Uint8List body = await transceiver.serializeContent(iMsg.content, password, iMsg);
     // 1.2. encrypt content data with password
