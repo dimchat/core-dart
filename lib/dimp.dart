@@ -6,6 +6,8 @@ library dimp;
 export 'package:mkm/mkm.dart';
 export 'package:dkd/dkd.dart';
 
+export 'src/crypto/keys.dart';
+
 export 'src/protocol/contents.dart';
 export 'src/protocol/files.dart';
 export 'src/protocol/commands.dart';
@@ -17,6 +19,7 @@ export 'src/dkd/contents.dart';
 export 'src/dkd/files.dart';
 export 'src/dkd/commands.dart';
 export 'src/dkd/groups.dart';
+export 'src/dkd/group_admins.dart';
 export 'src/dkd/receipt.dart';
 export 'src/dkd/factory.dart';
 

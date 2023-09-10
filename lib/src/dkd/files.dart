@@ -38,80 +38,99 @@ import 'base.dart';
 
 
 ///
-/// FileContent
+/// File Content
 ///
 class BaseFileContent extends BaseContent implements FileContent {
-  BaseFileContent(super.dict) : _data = null, _key = null;
+  BaseFileContent(super.dict) : _url = null, _key = null, _data = null;
 
-  BaseFileContent.from(int msgType, String filename, Uint8List? binary, String? encoded)
-      : super.fromType(msgType) {
-    if (filename.isNotEmpty) {
+  /// download from CDN
+  Uri? _url;
+
+  /// key to decrypt data downloaded from CDN
+  DecryptKey? _key;
+
+  /// file data (not encrypted)
+  TransportableData? _data;
+
+  BaseFileContent.from(int? msgType,
+      {Uri? url, DecryptKey? key, Uint8List? data, String? filename})
+      : super.fromType(msgType ?? ContentType.kFile) {
+    // remote URL
+    if (url != null) {
+      this['URL'] = url.toString();
+    }
+    _url = url;
+    // decrypt key
+    if (key != null) {
+      this['key'] = key.toMap();
+    }
+    _key = key;
+    // file data
+    TransportableData? ted;
+    if (data != null) {
+      ted = TransportableData.create(data);
+      this['data'] = ted.toObject();
+    }
+    _data = ted;
+    // filename
+    if (filename != null) {
       this['filename'] = filename;
     }
-    if (encoded != null) {
-      this['data'] = encoded;
-    } else if (binary != null) {
-      this['data'] = Base64.encode(binary);
-    }
-    _data = binary;
-    _key = null;
   }
 
-  BaseFileContent.fromData(String filename, Uint8List binary)
-      : this.from(ContentType.kFile, filename, binary, null);
-
-  BaseFileContent.fromEncodedData(String filename, String encoded)
-      : this.from(ContentType.kFile, filename, null, encoded);
-
-  /// file data (plaintext)
-  late Uint8List? _data;
-
-  /// key to decrypt data
-  late DecryptKey? _key;
-
   @override
-  String? get url => getString('URL');
-
-  @override
-  set url(String? location) {
-    if (location != null/* && location.isNotEmpty*/) {
-      this['URL'] = location;
-    } else {
-      remove('URL');
+  Uri? get url {
+    Uri? location = _url;
+    if (location == null) {
+      String? remote = getString('URL', null);
+      if (remote != null) {
+        _url = location = Uri.parse(remote);
+      }
     }
+    return location;
+  }
+
+  @override
+  set url(Uri? location) {
+    if (location == null) {
+      remove('URL');
+    } else {
+      this['URL'] = location.toString();
+    }
+    _url = location;
   }
 
   @override
   Uint8List? get data {
-    if (_data == null) {
-      String? b64 = getString('data');
-      if (b64 != null/* && b64.isNotEmpty*/) {
-        _data = Base64.decode(b64);
-        assert(_data != null, 'file data error: $b64');
-      }
+    TransportableData? ted = _data;
+    if (ted == null) {
+      String? base64 = getString('data', null);
+      _data = ted = TransportableData.parse(base64);
     }
-    return _data;
+    return ted?.data;
   }
 
   @override
   set data(Uint8List? fileData) {
-    if (fileData != null/* && fileData.isNotEmpty*/) {
-      this['data'] = Base64.encode(fileData);
-    } else {
+    TransportableData? ted;
+    if (fileData == null/* || fileData.isEmpty*/) {
       remove('data');
+    } else {
+      ted = TransportableData.create(fileData);
+      this['data'] = ted.toObject();
     }
-    _data = fileData;
+    _data = ted;
   }
 
   @override
-  String? get filename => getString('filename');
+  String? get filename => getString('filename', null);
 
   @override
   set filename(String? name) {
-    if (name != null/* && name.isNotEmpty*/) {
-      this['filename'] = name;
-    } else {
+    if (name == null/* || name.isEmpty*/) {
       remove('filename');
+    } else {
+      this['filename'] = name;
     }
   }
 
@@ -135,35 +154,32 @@ class BaseFileContent extends BaseContent implements FileContent {
 class ImageFileContent extends BaseFileContent implements ImageContent {
   ImageFileContent(super.dict) : _thumbnail = null;
 
-  ImageFileContent.fromData(String filename, Uint8List binary)
-      : super.from(ContentType.kImage, filename, binary, null);
-
-  ImageFileContent.fromEncodedData(String filename, String encode)
-      : super.from(ContentType.kImage, filename, null, encode);
-
   /// small image
-  late Uint8List? _thumbnail;
+  TransportableData? _thumbnail;
+
+  ImageFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
+      : super.from(ContentType.kImage, url: url, key: key, data: data, filename: filename);
 
   @override
   Uint8List? get thumbnail {
-    if (_thumbnail == null) {
-      String? b64 = getString('thumbnail');
-      if (b64 != null/* && b64.isNotEmpty*/) {
-        _thumbnail = Base64.decode(b64);
-        assert(_thumbnail != null, 'image thumbnail error: $b64');
-      }
+    TransportableData? ted = _thumbnail;
+    if (ted == null) {
+      String? base64 = getString('thumbnail', null);
+      _thumbnail = ted = TransportableData.parse(base64);
     }
-    return _thumbnail;
+    return ted?.data;
   }
 
   @override
   set thumbnail(Uint8List? image) {
-    if (image != null/* && image.isNotEmpty*/) {
-      this['thumbnail'] = Base64.encode(image);
-    } else {
+    TransportableData? ted;
+    if (image == null/* || image.isEmpty*/) {
       remove('thumbnail');
+    } else {
+      ted = TransportableData.create(image);
+      this['thumbnail'] = ted.toObject();
     }
-    _thumbnail = image;
+    _thumbnail = ted;
   }
 }
 
@@ -174,14 +190,11 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
 class AudioFileContent extends BaseFileContent implements AudioContent {
   AudioFileContent(super.dict);
 
-  AudioFileContent.fromData(String filename, Uint8List binary)
-      : super.from(ContentType.kAudio, filename, binary, null);
-
-  AudioFileContent.fromEncodedData(String filename, String encode)
-      : super.from(ContentType.kAudio, filename, null, encode);
+  AudioFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
+      : super.from(ContentType.kAudio, url: url, key: key, data: data, filename: filename);
 
   @override
-  String? get text => getString('text');
+  String? get text => getString('text', null);
 
   @override
   set text(String? asr) => this['text'] = asr;
@@ -194,34 +207,31 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 class VideoFileContent extends BaseFileContent implements VideoContent {
   VideoFileContent(super.dict) : _snapshot = null;
 
-  VideoFileContent.fromData(String filename, Uint8List binary)
-      : super.from(ContentType.kVideo, filename, binary, null);
-
-  VideoFileContent.fromEncodedData(String filename, String encode)
-      : super.from(ContentType.kVideo, filename, null, encode);
-
   /// small image
-  late Uint8List? _snapshot;
+  TransportableData? _snapshot;
+
+  VideoFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
+      : super.from(ContentType.kVideo, url: url, key: key, data: data, filename: filename);
 
   @override
   Uint8List? get snapshot {
-    if (_snapshot == null) {
-      String? b64 = getString('snapshot');
-      if (b64 != null/* && b64.isNotEmpty*/) {
-        _snapshot = Base64.decode(b64);
-        assert(_snapshot != null, 'video snapshot error: $b64');
-      }
+    TransportableData? ted = _snapshot;
+    if (ted == null) {
+      String? base64 = getString('snapshot', null);
+      _snapshot = ted = TransportableData.parse(base64);
     }
-    return _snapshot;
+    return ted?.data;
   }
 
   @override
   set snapshot(Uint8List? image) {
-    if (image != null/* && image.isNotEmpty*/) {
-      this['snapshot'] = Base64.encode(image);
-    } else {
+    TransportableData? ted;
+    if (image == null/* || image.isEmpty*/) {
       remove('snapshot');
+    } else {
+      ted = TransportableData.create(image);
+      this['snapshot'] = ted.toObject();
     }
-    _snapshot = image;
+    _snapshot = ted;
   }
 }

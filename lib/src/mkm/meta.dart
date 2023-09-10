@@ -45,36 +45,11 @@ import 'package:mkm/mkm.dart';
 ///
 ///      algorithm:
 ///          fingerprint = sign(seed, SK);
+///
+///  abstract method:
+///      - Address generateAddress(int? network);
 abstract class BaseMeta extends Dictionary implements Meta {
   BaseMeta(super.dict) : _type = null, _key = null, _seed = null, _fingerprint = null;
-
-  BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
-      : super(null) {
-    //
-    //  meta type
-    //
-    this['type'] = version;
-    _type = version;
-    //
-    //  public key
-    //
-    setMap('key', key);
-    _key = key;
-    //
-    //  ID name
-    //
-    if (seed != null) {
-      this['seed'] = seed;
-    }
-    _seed = seed;
-    //
-    //  fingerprint
-    //
-    if (fingerprint != null) {
-      this['fingerprint'] = Base64.encode(fingerprint);
-    }
-    _fingerprint = fingerprint;
-  }
 
   ///  Meta algorithm version
   ///
@@ -97,22 +72,47 @@ abstract class BaseMeta extends Dictionary implements Meta {
   ///
   ///      Build: fingerprint = sign(seed, privateKey)
   ///      Check: verify(seed, fingerprint, publicKey)
-  Uint8List? _fingerprint;
+  TransportableData? _fingerprint;
 
-  @override
-  int get type {
-    int? version = _type;
-    if (version == null) {
-      AccountFactoryManager man = AccountFactoryManager();
-      version = man.generalFactory.getMetaType(toMap());
-      version ??= 0;
-      _type = version;
+  BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
+      : super(null) {
+    //
+    //  meta type
+    //
+    this['type'] = version;
+    _type = version;
+    //
+    //  public key
+    //
+    this['key'] = key.toMap();
+    _key = key;
+    //
+    //  ID name
+    //
+    if (seed != null) {
+      this['seed'] = seed;
     }
-    return version;
+    _seed = seed;
+    //
+    //  fingerprint
+    //
+    TransportableData? ted;
+    if (fingerprint != null) {
+      ted = TransportableData.create(fingerprint);
+      this['fingerprint'] = ted.toObject();
+    }
+    _fingerprint = ted;
   }
 
   @override
-  VerifyKey get key {
+  int get type {
+    _type ??= AccountFactoryManager().generalFactory.getMetaType(toMap(), 0);
+    // _type ??= getInt('type', 0);
+    return _type!;
+  }
+
+  @override
+  VerifyKey get publicKey {
     _key ??= PublicKey.parse(this['key']);
     assert(_key != null, 'meta key error: $this');
     return _key!;
@@ -121,24 +121,21 @@ abstract class BaseMeta extends Dictionary implements Meta {
   @override
   String? get seed {
     if (_seed == null && MetaType.hasSeed(type)) {
-      String? name = getString('seed');
-      // assert(name != null && name.isNotEmpty, 'meta.seed empty: $this');
-      _seed = name;
+      _seed = getString('seed', null);
+      assert(_seed!.isNotEmpty, 'meta.seed empty: $this');
     }
     return _seed;
   }
 
   @override
   Uint8List? get fingerprint {
-    if (_fingerprint == null && MetaType.hasSeed(type)) {
-      String? b64 = getString('fingerprint');
-      if (b64 == null) {
-        // assert(false, 'meta.fingerprint empty: $this');
-      } else {
-        _fingerprint = Base64.decode(b64);
-        assert(_fingerprint != null, 'meta.fingerprint error: $b64');
-      }
+    TransportableData? ted = _fingerprint;
+    if (ted == null && MetaType.hasSeed(type)) {
+      Object? base64 = this['fingerprint'];
+      assert(base64 != null, 'meta.fingerprint should not be empty: $this');
+      _fingerprint = ted = TransportableData.parse(base64);
+      assert(ted != null, 'meta.fingerprint error: $base64');
     }
-    return _fingerprint;
+    return ted?.data;
   }
 }

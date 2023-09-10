@@ -39,7 +39,7 @@ import 'entity.dart';
 ///         owner
 ///         members
 ///         administrators - Optional
-///         assistants     - Optional
+///         assistants     - group bots
 abstract class Group extends Entity {
 
   /// group document

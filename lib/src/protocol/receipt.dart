@@ -60,16 +60,18 @@ abstract class ReceiptCommand implements Command {
   int? get originalSerialNumber;
   String? get originalSignature;
 
+  bool matchMessage(InstantMessage iMsg);
+
   //
   //  Factory method
   //
 
-  ///  Create receipt with text message and origin message envelope
-  ///
-  /// @param text - message text
-  /// @param rMsg - origin message
-  /// @return ReceiptCommand
-  static ReceiptCommand create(String text, ReliableMessage? rMsg) {
+  static ReceiptCommand create(String text, Envelope envelope, {int? sn, String? signature}) {
+    // create base receipt command
+    return BaseReceiptCommand.from(text, envelope: envelope, sn: sn, signature: signature);
+  }
+
+  static ReceiptCommand from(String text, ReliableMessage? rMsg) {
     Envelope? env;
     if (rMsg != null) {
       Map info = rMsg.copyMap(false);
@@ -88,6 +90,7 @@ abstract class ReceiptCommand implements Command {
 
 mixin ReceiptCommandMixIn on ReceiptCommand {
 
+  @override
   bool matchMessage(InstantMessage iMsg) {
     if (origin == null) {
       // receipt without original message info
@@ -97,16 +100,16 @@ mixin ReceiptCommandMixIn on ReceiptCommand {
     String? sig1 = originalSignature;
     if (sig1 != null) {
       // if contains signature, check it
-      String? sig2 = iMsg.getString('signature');
+      String? sig2 = iMsg.getString('signature', null);
       if (sig2 != null) {
-        return matchSignatures(sig1, sig2);
+        return checkSignatures(sig1, sig2);
       }
     }
     // check envelope
     Envelope? env1 = originalEnvelope;
     if (env1 != null) {
       // if contains envelope, check it
-      if (!matchEnvelopes(env1, iMsg.envelope)) {
+      if (!checkEnvelopes(env1, iMsg.envelope)) {
         return false;
       }
     }
@@ -115,7 +118,7 @@ mixin ReceiptCommandMixIn on ReceiptCommand {
     return originalSerialNumber == iMsg.content.sn;
   }
 
-  static bool matchSignatures(String sig1, String sig2) {
+  static bool checkSignatures(String sig1, String sig2) {
     if (sig1.length > 8) {
       sig1 = sig1.substring(sig1.length - 8);
     }
@@ -125,14 +128,12 @@ mixin ReceiptCommandMixIn on ReceiptCommand {
     return sig1 == sig2;
   }
 
-  static bool matchEnvelopes(Envelope env1, Envelope env2) {
+  static bool checkEnvelopes(Envelope env1, Envelope env2) {
     if (env1.sender != env2.sender) {
       return false;
     }
-    ID? to1 = env1.group;
-    to1 ??= env1.receiver;
-    ID? to2 = env2.group;
-    to2 ??= env2.receiver;
+    ID? to1 = env1.group ?? env1.receiver;
+    ID? to2 = env2.group ?? env2.receiver;
     return to1 == to2;
   }
 

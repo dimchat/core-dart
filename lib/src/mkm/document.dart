@@ -36,15 +36,23 @@ class BaseDocument extends Dictionary implements Document {
   BaseDocument(super.dict)
       : _identifier = null, _json = null, _sig = null, _properties = null, _status = 0;
 
+  ID? _identifier;
+
+  String? _json;            // JsON.encode(properties)
+  TransportableData? _sig;  // LocalUser(identifier).sign(data)
+
+  Map? _properties;
+  int _status = 0;  // 1 for valid, -1 for invalid
+
   ///  Create entity document with data and signature loaded from local storage
   ///
   /// @param identifier - entity ID
   /// @param data - document data in JsON format
   /// @param signature - signature of document data in Base64 format
-  BaseDocument.fromData(ID identifier, {required String data, required String signature})
+  BaseDocument.from(ID identifier, {required String data, required String signature})
       : super(null) {
     // ID
-    setString('ID', identifier);
+    this['ID'] = identifier.toString();
     _identifier = identifier;
 
     // json data
@@ -65,9 +73,10 @@ class BaseDocument extends Dictionary implements Document {
   ///
   /// @param identifier - entity ID
   /// @param docType    - document type
-  BaseDocument.fromType(ID identifier, String? docType) : super(null) {
+  BaseDocument.fromType(ID identifier, String? docType)
+      : super(null) {
     // ID
-    setString('ID', identifier);
+    this['ID'] = identifier.toString();
     _identifier = identifier;
 
     _json = null;
@@ -87,14 +96,6 @@ class BaseDocument extends Dictionary implements Document {
     _status = 0;
   }
 
-  ID? _identifier;
-
-  String? _json;    // JsON.encode(properties)
-  Uint8List? _sig;  // LocalUser(identifier).sign(data)
-
-  Map? _properties;
-  int _status = 0;  // 1 for valid, -1 for invalid
-
   @override
   bool get isValid => _status > 0;
 
@@ -103,7 +104,7 @@ class BaseDocument extends Dictionary implements Document {
     String? docType = getProperty('type');
     if (docType == null) {
       AccountFactoryManager man = AccountFactoryManager();
-      docType = man.generalFactory.getDocumentType(toMap());
+      docType = man.generalFactory.getDocumentType(toMap(), null);
     }
     return docType;
   }
@@ -118,7 +119,7 @@ class BaseDocument extends Dictionary implements Document {
   ///
   /// @return JsON string
   String? _data() {
-    _json ??= getString('data');
+    _json ??= getString('data', null);
     return _json;
   }
 
@@ -126,14 +127,12 @@ class BaseDocument extends Dictionary implements Document {
   ///
   /// @return signature data
   Uint8List? _signature() {
-    if (_sig == null) {
-      String? b64 = getString('signature');
-      if (b64 != null) {
-        _sig = Base64.decode(b64);
-        assert(_sig != null, 'document signature error: $b64');
-      }
+    TransportableData? ted = _sig;
+    if (ted == null) {
+      Object base64 = this['signature'];
+      _sig = ted = TransportableData.parse(base64);
     }
-    return _sig;
+    return ted?.data;
   }
 
   @override
@@ -222,12 +221,12 @@ class BaseDocument extends Dictionary implements Document {
     // 2. encode & sign
     Map? dict = properties;
     if (dict == null) {
-      assert(false, 'should not happen');
+      assert(false, 'document invalid: ${toMap()}');
       return null;
     }
     String data = JSONMap.encode(dict);
     if (data.isEmpty) {
-      assert(false, 'properties error: $dict');
+      assert(false, 'should not happen: $dict');
       return null;
     }
     signature = privateKey.sign(UTF8.encode(data));
@@ -235,27 +234,24 @@ class BaseDocument extends Dictionary implements Document {
       assert(false, 'should not happen');
       return null;
     }
+    TransportableData ted = TransportableData.create(signature);
     // 3. update 'data' & 'signature' fields
-    this['data'] = data;  // JsON string
-    this['signature'] = Base64.encode(signature);
+    this['data'] = data;                 // JSON string
+    this['signature'] = ted.toObject();  // BASE-64
     _json = data;
-    _sig = signature;
+    _sig = ted;
     // 4. update status
     _status = 1;
-    return _sig;
+    return signature;
   }
 
   //---- properties getter/setter
 
   @override
-  DateTime? get time {
-    // timestamp
-    var seconds = getProperty('time');
-    return Converter.getTime(seconds);
-  }
+  DateTime? get time => Converter.getDateTime(getProperty('time'), null);
 
   @override
-  String? get name => getProperty('name');
+  String? get name => Converter.getString(getProperty('name'), null);
 
   @override
   set name(String? value) => setProperty('name', value);

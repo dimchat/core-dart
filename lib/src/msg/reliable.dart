@@ -57,21 +57,11 @@ import 'secure.dart';
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   NetworkMessage(super.dict) : _signature = null, _meta = null, _visa = null;
 
-  Uint8List? _signature;
+  TransportableData? _signature;
 
   /// user info for 'handshake' command
   Meta? _meta;
   Visa? _visa;
-
-  @override
-  ReliableMessageDelegate? get delegate {
-    MessageDelegate? transceiver = super.delegate;
-    if (transceiver == null) {
-      return null;
-    }
-    assert(transceiver is ReliableMessageDelegate, 'delegate error: $transceiver');
-    return transceiver as ReliableMessageDelegate;
-  }
 
   ///  Sender's Meta
   ///  ~~~~~~~~~~~~~
@@ -114,18 +104,26 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
 
   @override
   Future<Uint8List> get signature async {
-    if (_signature == null) {
-      ReliableMessageDelegate? transceiver = delegate;
-      Object? b64 = this['signature'];
-      if (b64 == null) {
-        assert(false, 'message signature not found: $this');
-      } else {
-        _signature = await transceiver?.decodeSignature(b64, this);
-        assert(_signature != null, 'message signature error: $b64');
-      }
+    TransportableData? ted = _signature;
+    if (ted == null) {
+      Object? base64 = this['signature'];
+      assert(base64 != null, 'signature cannot be empty');
+      _signature = ted = TransportableData.parse(base64);
+      assert(ted != null, 'failed to decode signature: $base64');
     }
-    return _signature!;
+    return ted!.data;
   }
+
+}
+
+
+class NetworkMessagePacker {
+  NetworkMessagePacker(ReliableMessageDelegate delegate)
+      : _transceiver = WeakReference(delegate);
+
+  final WeakReference<ReliableMessageDelegate> _transceiver;
+
+  ReliableMessageDelegate get delegate => _transceiver.target!;
 
   /*
    *  Verify the Reliable Message to Secure Message
@@ -144,15 +142,14 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   ///  Verify 'data' and 'signature' field with sender's public key
   ///
   /// @return SecureMessage object
-  @override
-  Future<SecureMessage?> verify() async {
+  Future<SecureMessage?> verify(ReliableMessage rMsg) async {
     ReliableMessageDelegate? transceiver = delegate;
     // 1. verify data signature with sender's public key
-    Uint8List ct = await data;
-    Uint8List sig = await signature;
-    if (await transceiver!.verifyDataSignature(ct, sig, sender, this)) {
+    Uint8List ct = await rMsg.data;
+    Uint8List sig = await rMsg.signature;
+    if (await transceiver.verifyDataSignature(ct, sig, rMsg)) {
       // 2. pack message
-      Map info = copyMap(false);
+      Map info = rMsg.copyMap(false);
       info.remove('signature');
       return SecureMessage.parse(info);
     } else {

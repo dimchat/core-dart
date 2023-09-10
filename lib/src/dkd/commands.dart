@@ -48,10 +48,9 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);
 
   @override
-  String get cmd {
+  String? get cmd {
     CommandFactoryManager man = CommandFactoryManager();
-    String? name = man.generalFactory.getCmd(toMap());
-    return name ?? '';
+    return man.generalFactory.getCmd(toMap(), null);
   }
 }
 
@@ -60,38 +59,51 @@ class BaseCommand extends BaseContent implements Command  {
 /// MetaCommand
 ///
 class BaseMetaCommand extends BaseCommand implements MetaCommand {
-  BaseMetaCommand(super.dict);
+  BaseMetaCommand(super.dict) : _id = null, _meta = null;
 
-  BaseMetaCommand.from(String cmd, ID identifier, Meta? meta)
-      : super.fromName(cmd) {
+  ID? _id;
+  Meta? _meta;
+
+  BaseMetaCommand.from(ID identifier, {String? cmd, Meta? meta})
+      : super.fromName(cmd ?? Command.kMeta) {
     // ID
-    setString('ID', identifier);
+    this['ID'] = identifier.toString();
+    _id = identifier;
     // meta
     if (meta != null) {
-      setMap('meta', meta);
+      this['meta'] = meta.toMap();
     }
+    _meta = meta;
   }
 
   @override
-  ID get identifier => ID.parse(this['ID'])!;
+  ID get identifier {
+    _id ??= ID.parse(this['ID']);
+    return _id!;
+  }
 
   @override
-  Meta? get meta => Meta.parse(this['meta']);
+  Meta? get meta {
+    _meta ??= Meta.parse(this['meta']);
+    return _meta;
+  }
 }
 
 ///
 /// DocumentCommand
 ///
 class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
-  BaseDocumentCommand(super.dict);
+  BaseDocumentCommand(super.dict) : _doc = null;
 
-  BaseDocumentCommand.from(String cmd, ID identifier,
-      {Meta? meta, Document? document, String? signature})
-      : super.from(cmd, identifier, meta) {
+  Document? _doc;
+
+  BaseDocumentCommand.from(ID identifier, {Meta? meta, Document? document, String? signature})
+      : super.from(identifier, cmd: Command.kDocument, meta: meta) {
     // document
     if (document != null) {
-      setMap('document', document);
+      this['document'] = document.toMap();
     }
+    _doc = document;
     // signature
     if (signature != null) {
       this['signature'] = signature;
@@ -99,8 +111,11 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   }
 
   @override
-  Document? get document => Document.parse(this['document']);
+  Document? get document {
+    _doc ??= Document.parse(this['document']);
+    return _doc;
+  }
 
   @override
-  String? get signature => getString('signature');
+  String? get signature => getString('signature', null);
 }

@@ -29,30 +29,26 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
+import 'package:mkm/mkm.dart';
 
 import '../protocol/commands.dart';
 import '../protocol/receipt.dart';
 import 'commands.dart';
 
-class BaseReceipt extends BaseCommand implements ReceiptCommand {
+abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
   BaseReceipt(super.dict) : _env = null;
 
   /// original message envelope
   Envelope? _env;
 
-  BaseReceipt.from(int msgType, String text, {Envelope? envelope, int? sn, String? signature})
-      : super.fromType(msgType, Command.kReceipt) {
+  BaseReceipt.from(String text, {Envelope? envelope, int? sn, String? signature})
+      : super.fromName(Command.kReceipt) {
     // text message
     this['text'] = text;
     // original envelope
     _env = envelope;
     // envelope of the message responding to
-    Map origin;
-    if (envelope == null) {
-      origin = {};
-    } else {
-      origin = envelope.toMap();
-    }
+    Map origin = envelope == null ? {} : envelope.toMap();
     // sn of the message responding to
     if (sn != null) {
       origin['sn'] = sn;
@@ -67,34 +63,25 @@ class BaseReceipt extends BaseCommand implements ReceiptCommand {
   }
 
   @override
-  String get text => getString('text') ?? '';
+  String get text => getString('text', '')!;
 
   @override
   Map? get origin => this['origin'];
 
   @override
   Envelope? get originalEnvelope {
-    if (_env == null) {
-      // origin: { sender: "...", receiver: "...", time: 0 }
-      Map? info = origin;
-      if (info != null/* && info.containsKey('sender')*/) {
-        _env = Envelope.parse(info);
-      }
-    }
+    // origin: { sender: "...", receiver: "...", time: 0 }
+    _env ??= Envelope.parse(origin);
     return _env;
   }
 
   @override
-  int? get originalSerialNumber {
-    Map? info = origin;
-    return info?['sn'];
-  }
+  int? get originalSerialNumber =>
+      Converter.getInt(origin?['sn'], null);
 
   @override
-  String? get originalSignature {
-    Map? info = origin;
-    return info?['signature'];
-  }
+  String? get originalSignature =>
+      Converter.getString(origin?['signature'], null);
 
 }
 
@@ -103,6 +90,6 @@ class BaseReceiptCommand extends BaseReceipt with ReceiptCommandMixIn {
   BaseReceiptCommand(super.dict);
 
   BaseReceiptCommand.from(String text, {Envelope? envelope, int? sn, String? signature})
-      : super.from(ContentType.kCommand, text, envelope: envelope, sn: sn, signature: signature);
+      : super.from(text, envelope: envelope, sn: sn, signature: signature);
 
 }

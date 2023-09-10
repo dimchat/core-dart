@@ -37,19 +37,7 @@ import 'document.dart';
 /// Base User Document
 ///
 class BaseVisa extends BaseDocument implements Visa {
-  BaseVisa(super.dict) : _key = null;
-
-  BaseVisa.fromData(ID identifier,
-      {required String data, required String signature})
-      : super.fromData(identifier, data: data, signature: signature) {
-    // lazy
-    _key = null;
-  }
-
-  BaseVisa.fromID(ID identifier) : super.fromType(identifier, Document.kVisa) {
-    // lazy
-    _key = null;
-  }
+  BaseVisa(super.dict) : _key = null, _avatar = null;
 
   /// Public Key for encryption
   /// ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,32 +45,50 @@ class BaseVisa extends BaseDocument implements Visa {
   /// should be different with meta.key
   EncryptKey? _key;
 
+  /// Avatar URL
+  PortableNetworkFile? _avatar;
+
+  BaseVisa.from(ID identifier, {required String data, required String signature})
+      : super.from(identifier, data: data, signature: signature) {
+    // lazy
+    _key = null;
+    _avatar = null;
+  }
+
+  BaseVisa.fromID(ID identifier) : super.fromType(identifier, Document.kVisa);
+
   @override
-  EncryptKey? get key {
+  EncryptKey? get publicKey {
     if (_key == null) {
       Object? info = getProperty('key');
-      if (info != null) {
-        PublicKey? pKey = PublicKey.parse(info);
-        if (pKey is EncryptKey) {
-          _key = pKey as EncryptKey;
-        }
-        assert(_key != null, 'visa key error: $info');
+      // assert(info != null, 'visa key not found: ${toMap()}');
+      PublicKey? pKey = PublicKey.parse(info);
+      if (pKey is EncryptKey) {
+        _key = pKey as EncryptKey;
+      } else {
+        assert(info == null, 'visa key error: $info');
       }
     }
     return _key;
   }
 
   @override
-  set key(EncryptKey? publicKey) {
+  set publicKey(EncryptKey? publicKey) {
     setProperty('key', publicKey?.toMap());
     _key = publicKey;
   }
 
   @override
-  String? get avatar => getProperty('avatar');
+  PortableNetworkFile? get avatar {
+    _avatar ??= PortableNetworkFile.parse(getProperty('avatar'));
+    return _avatar;
+  }
 
   @override
-  set avatar(String? url) => setProperty('avatar', url);
+  set avatar(PortableNetworkFile? url) {
+    setProperty('avatar', url?.toObject());
+    _avatar = url;
+  }
 }
 
 
@@ -92,21 +98,16 @@ class BaseVisa extends BaseDocument implements Visa {
 class BaseBulletin extends BaseDocument implements Bulletin {
   BaseBulletin(super.dict) : _bots = null;
 
-  BaseBulletin.fromData(ID identifier,
-      {required String data, required String signature})
-      : super.fromData(identifier, data: data, signature: signature) {
-    // lazy
-    _bots = null;
-  }
-
-  BaseBulletin.fromID(ID identifier)
-      : super.fromType(identifier, Document.kBulletin) {
-    // lazy
-    _bots = null;
-  }
-
   /// Group bots for split and distribute group messages
   List<ID>? _bots;
+
+  BaseBulletin.from(ID identifier, {required String data, required String signature})
+      : super.from(identifier, data: data, signature: signature) {
+    // lazy
+    _bots = null;
+  }
+
+  BaseBulletin.fromID(ID identifier) : super.fromType(identifier, Document.kBulletin);
 
   @override
   ID? get founder => ID.parse(getProperty('founder'));
@@ -117,6 +118,10 @@ class BaseBulletin extends BaseDocument implements Bulletin {
       Object? bots = getProperty('assistants');
       if (bots is List) {
         _bots = ID.convert(bots);
+      } else {
+        // get from 'assistant'
+        ID? single = ID.parse(getProperty('assistant'));
+        _bots = single == null ? [] : [single];
       }
     }
     return _bots;
@@ -124,24 +129,9 @@ class BaseBulletin extends BaseDocument implements Bulletin {
 
   @override
   set assistants(List<ID>? bots) {
-    if (bots == null) {
-      setProperty('assistants', null);
-    } else {
-      setProperty('assistants', ID.revert(bots));
-    }
+    setProperty('assistants', bots == null ? null : ID.revert(bots));
+    setProperty('assistant', null);
     _bots = bots;
-  }
-
-  @override
-  DateTime? get createdTime => Converter.getTime(getProperty('created_time'));
-
-  @override
-  DateTime? get modifiedTime {
-    var timestamp = getProperty('modified_time');
-    if (timestamp == null) {
-      return time;
-    }
-    return Converter.getTime(timestamp);
   }
 
 }
@@ -170,11 +160,11 @@ class GeneralDocumentFactory implements DocumentFactory {
     } else {
       // create document with data & signature from local storage
       if (docType == Document.kVisa) {
-        return BaseVisa.fromData(identifier, data: data, signature: signature);
+        return BaseVisa.from(identifier, data: data, signature: signature);
       } else if (docType == Document.kBulletin) {
-        return BaseBulletin.fromData(identifier, data: data, signature: signature);
+        return BaseBulletin.from(identifier, data: data, signature: signature);
       } else {
-        return BaseDocument.fromData(identifier, data: data, signature: signature);
+        return BaseDocument.from(identifier, data: data, signature: signature);
       }
     }
   }
@@ -183,11 +173,11 @@ class GeneralDocumentFactory implements DocumentFactory {
   Document? parseDocument(Map doc) {
     ID? identifier = ID.parse(doc['ID']);
     if (identifier == null) {
-      assert(false, 'document ID not found: $doc');
+      // assert(false, 'document ID not found: $doc');
       return null;
     }
     AccountFactoryManager man = AccountFactoryManager();
-    String? docType = man.generalFactory.getDocumentType(doc);
+    String? docType = man.generalFactory.getDocumentType(doc, null);
     docType ??= _getType('*', identifier);
     if (docType == Document.kVisa) {
       return BaseVisa(doc);

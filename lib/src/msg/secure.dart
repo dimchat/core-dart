@@ -52,60 +52,65 @@ import 'base.dart';
 ///      }
 ///  }
 class EncryptedMessage extends BaseMessage implements SecureMessage {
-  EncryptedMessage(super.dict) : _data = null, _key = null, _keys = null;
+  EncryptedMessage(super.dict) : _data = null, _encKey = null, _encKeys = null;
 
-  Uint8List? _data;
-  Uint8List? _key;
-  Map<String, dynamic>? _keys;
-
-  @override
-  SecureMessageDelegate? get delegate {
-    MessageDelegate? transceiver = super.delegate;
-    if (transceiver == null) {
-      return null;
-    }
-    assert(transceiver is SecureMessageDelegate, 'delegate error: $transceiver');
-    return transceiver as SecureMessageDelegate;
-  }
+  TransportableData? _data;
+  TransportableData? _encKey;
+  Map<String, dynamic>? _encKeys;
 
   @override
   Future<Uint8List> get data async {
-    if (_data == null) {
-      Object? b64 = this['data'];
-      if (b64 == null) {
-        assert(false, 'message data not found: $this');
+    TransportableData? ted = _data;
+    if (ted == null) {
+      String text = getString('data', '')!;
+      assert(text.isNotEmpty, 'content data cannot be empty: $this');
+      if (BaseMessage.isBroadcast(this)) {
+        // broadcast message content will not be encrypted (just encoded to JsON),
+        // so return the string data directly
+        Uint8List plaintext = UTF8.encode(text);
+        _data = ted = TransportableData.create(plaintext);
       } else {
-        _data = await delegate?.decodeData(b64, this);
-        assert(_data != null, 'message data error: $b64');
+        // message content had been encrypted by a symmetric key,
+        // so the data should be encoded here (with algorithm 'base64' as default).
+        _data = ted = TransportableData.parse(text);
       }
     }
-    return _data!;
+    return ted!.data;
   }
 
   @override
   Future<Uint8List?> get encryptedKey async {
-    if (_key == null) {
-      Object? b64 = this['key'];
-      if (b64 == null) {
-        // check 'keys'
+    TransportableData? ted = _encKey;
+    if (ted == null) {
+      Object? base64 = this['key'];
+      if (base64 == null) {
+        // check 'keys
         Map? keys = await encryptedKeys;
         if (keys != null) {
-          b64 = keys[receiver.toString()];
+          base64 = keys[receiver.toString()];
         }
       }
-      if (b64 != null) {
-        _key = await delegate?.decodeKey(b64, this);
-        assert(_key != null, 'message key error: $b64');
-      }
+      _encKey = ted = TransportableData.parse(base64);
     }
-    return _key;
+    return ted?.data;
   }
 
   @override
   Future<Map?> get encryptedKeys async {
-    _keys ??= this['keys'];
-    return _keys;
+    _encKeys ??= this['keys'];
+    return _encKeys;
   }
+
+}
+
+
+class EncryptedMessagePacker {
+  EncryptedMessagePacker(SecureMessageDelegate delegate)
+      : _transceiver = WeakReference(delegate);
+
+  final WeakReference<SecureMessageDelegate> _transceiver;
+
+  SecureMessageDelegate get delegate => _transceiver.target!;
 
   /*
    *  Decrypt the Secure Message to Instant Message
@@ -123,27 +128,25 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///  Decrypt message, replace encrypted 'data' with 'content' field
   ///
   /// @return InstantMessage object
-  @override
-  Future<InstantMessage?> decrypt() async {
-    ID from = sender;
+  Future<InstantMessage?> decrypt(SecureMessage sMsg) async {
     ID to;
-    ID? gid = group;
+    ID? gid = sMsg.group;
     if (gid == null) {
       // personal message
       // not split group message
-      to = receiver;
+      to = sMsg.receiver;
     } else {
       // group message
       to = gid;
     }
 
     // 1. decrypt 'message.key' to symmetric key
-    SecureMessageDelegate transceiver = delegate!;
+    SecureMessageDelegate transceiver = delegate;
     // 1.1. decode encrypted key data
-    Uint8List? key = await encryptedKey;
+    Uint8List? key = await sMsg.encryptedKey;
     // 1.2. decrypt key data
     if (key != null) {
-      key = await transceiver.decryptKey(key, from, to, this);
+      key = await transceiver.decryptKey(key, to, sMsg);
       if (key == null) {
         // assert(false, 'failed to decrypt key in msg: $this');
         // TODO: check whether my visa key is changed, push new visa to this contact
@@ -152,23 +155,23 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     }
     // 1.3. deserialize key
     //      if key is empty, means it should be reused, get it from key cache
-    SymmetricKey? pwd = await transceiver.deserializeKey(key, from, to, this);
+    SymmetricKey? pwd = await transceiver.deserializeKey(key, to, sMsg);
     if (pwd == null) {
-      assert(false, 'failed to get msg key: $from -> $to, $key');
+      assert(false, 'failed to get msg key: ${sMsg.sender} -> $to, $key');
       return null;
     }
 
     // 2. decrypt 'message.data' to 'message.content'
     // 2.1. decode encrypted content data
-    Uint8List ciphertext = await data;
+    Uint8List ciphertext = await sMsg.data;
     // 2.2. decrypt content data
-    Uint8List? plaintext = await transceiver.decryptContent(ciphertext, pwd, this);
+    Uint8List? plaintext = await transceiver.decryptContent(ciphertext, pwd, sMsg);
     if (plaintext == null) {
       assert(false, 'failed to decrypt data with key: $pwd');
       return null;
     }
     // 2.3. deserialize content
-    Content? content = await transceiver.deserializeContent(plaintext, pwd, this);
+    Content? content = await transceiver.deserializeContent(plaintext, pwd, sMsg);
     if (content == null) {
       assert(false, 'failed to deserialize content: $plaintext');
       return null;
@@ -181,7 +184,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     //      (do it in application level)
 
     // 3. pack message
-    Map info = copyMap(false);
+    Map info = sMsg.copyMap(false);
     info.remove('key');
     info.remove('keys');
     info.remove('data');
@@ -206,16 +209,15 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///  Sign message.data, add 'signature' field
   ///
   /// @return ReliableMessage object
-  @override
-  Future<ReliableMessage> sign() async {
-    SecureMessageDelegate transceiver = delegate!;
+  Future<ReliableMessage> sign(SecureMessage sMsg) async {
+    SecureMessageDelegate transceiver = delegate;
     // 1. sign with sender's private key
-    Uint8List signature = await transceiver.signData(await data, sender, this);
+    Uint8List signature = await transceiver.signData(await sMsg.data, sMsg);
     // 2. encode signature
-    Object b64 = await transceiver.encodeSignature(signature, this);
+    Object base64 = TransportableData.encode(signature);
     // 3. pack message
-    Map info = copyMap(false);
-    info['signature'] = b64;
+    Map info = sMsg.copyMap(false);
+    info['signature'] = base64;
     return ReliableMessage.parse(info)!;
   }
 
@@ -229,16 +231,16 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///
   ///  @param members - group members
   ///  @return secure/reliable message(s)
-  @override
-  Future<List<SecureMessage>> split(List<ID> members) async {
-    Map info = copyMap(false);
+  Future<List<SecureMessage>> split(SecureMessage sMsg, List<ID> members) async {
+    Map info = sMsg.copyMap(false);
     // check 'keys'
-    Map? keys = await encryptedKeys;
+    Map? keys = await sMsg.encryptedKeys;
     if (keys == null) {
       keys = {};
     } else {
       info.remove('keys');
     }
+    ID receiver = sMsg.receiver;
 
     // 1. move the receiver(group ID) to 'group'
     //    this will help the receiver knows the group ID
@@ -275,11 +277,10 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   ///
   /// @param member - group member ID/string
   /// @return SecureMessage
-  @override
-  Future<SecureMessage> trim(ID member) async {
-    Map info = copyMap(false);
+  Future<SecureMessage> trim(SecureMessage sMsg, ID member) async {
+    Map info = sMsg.copyMap(false);
     // check 'keys'
-    Map? keys = await encryptedKeys;
+    Map? keys = await sMsg.encryptedKeys;
     if (keys != null) {
       // move key data from 'keys' to 'key'
       Object? b64 = keys[member.toString()];
@@ -289,7 +290,8 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
       info.remove('keys');
     }
     // check 'group'
-    if (group == null) {
+    if (sMsg.group == null) {
+      ID receiver = sMsg.receiver;
       // if 'group' not exists, the 'receiver' must be a group ID here, and
       // it will not be equal to the member of course,
       // so move 'receiver' to 'group'

@@ -99,22 +99,24 @@ class IdentifierFactory implements IDFactory {
     } else {
       // got terminal
       assert(pair.length == 2, 'ID error: $identifier');
-      assert(pair.last.isNotEmpty, 'ID.terminal error: $identifier');
       terminal = pair.last;
+      assert(terminal.isNotEmpty, 'ID.terminal error: $identifier');
     }
     // name @ address
     pair = pair.first.split('@');
-    assert(pair.last.isNotEmpty, 'ID.address error: $identifier');
+    assert(pair.first.isNotEmpty, 'ID error: $identifier');
     if (pair.length == 1) {
       // got address without name
       name = null;
-    } else {
+      address = Address.parse(pair.last);
+    } else if (pair.length == 2) {
       // got name & address
-      assert(pair.length == 2, 'ID error: $identifier');
-      assert(pair.first.isNotEmpty, 'ID error: $identifier');
       name = pair.first;
+      address = Address.parse(pair.last);
+    } else {
+      assert(false, 'ID error: $identifier');
+      return null;
     }
-    address = Address.parse(pair.last);
     if (address == null) {
       assert(false, 'cannot get address from ID: $identifier');
       return null;

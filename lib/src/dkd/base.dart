@@ -34,16 +34,6 @@ import 'package:mkm/mkm.dart';
 class BaseContent extends Dictionary implements Content {
   BaseContent(super.dict) : _type = null, _sn = null, _time = null;
 
-  BaseContent.fromType(int msgType) : super(null) {
-    DateTime now = DateTime.now();
-    _type = msgType;
-    _sn = InstantMessage.generateSerialNumber(msgType, now);
-    _time = now;
-    this['type'] = _type;
-    this['sn'] = _sn;
-    setTime('time', _time);
-  }
-
   /// message type: text, image, ...
   int? _type;
 
@@ -53,28 +43,37 @@ class BaseContent extends Dictionary implements Content {
   /// message time
   DateTime? _time;
 
+  BaseContent.fromType(int msgType) : super(null) {
+    DateTime now = DateTime.now();
+    _type = msgType;
+    _sn = InstantMessage.generateSerialNumber(msgType, now);
+    _time = now;
+    this['type'] = _type;
+    this['sn'] = _sn;
+    setDateTime('time', _time);
+  }
+
   @override
   int get type {
     int? msgType = _type;
     if (msgType == null) {
       MessageFactoryManager man = MessageFactoryManager();
-      msgType = man.generalFactory.getContentType(toMap());
-      msgType ??= 0;
-      _type = msgType;
+      msgType = man.generalFactory.getContentType(toMap(), 0);
+      _type = msgType!;
     }
     return msgType;
   }
 
   @override
   int get sn {
-    _sn ??= getInt('sn');
+    _sn ??= getInt('sn', 0);
     assert(_sn! > 0, 'serial number error: $this');
     return _sn ?? 0;
   }
 
   @override
   DateTime? get time {
-    _time ??= getTime('time');
+    _time ??= getDateTime('time', null);
     return _time;
   }
 

@@ -41,7 +41,7 @@ import 'user.dart';
 ///      identifier - entity ID
 ///      type       - entity type
 ///      meta       - meta for generate ID
-///      document   - entity document
+///      document   - visa for user, or bulletin for group
 abstract class Entity {
 
   ID get identifier;

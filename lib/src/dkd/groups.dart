@@ -56,6 +56,7 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
       : super.fromName(cmd) {
     this.group = group;
     if (member != null) {
+      assert(members == null, 'parameters error');
       this.member == member;
     } else if (members != null) {
       this.members = members;
@@ -74,13 +75,13 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
   @override
   List<ID>? get members {
     var array = this['members'];
-    if (array == null) {
-      // TODO: get from 'member'?
-      return null;
-    } else {
+    if (array is List) {
       // convert all items to ID objects
       return ID.convert(array);
     }
+    // get from 'member'
+    ID? single = member;
+    return single == null ? [] : [single];
   }
 
   @override

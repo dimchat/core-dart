@@ -66,22 +66,13 @@ import 'package:mkm/mkm.dart';
 ///      ...
 ///  }
 abstract class BaseMessage extends Dictionary implements Message {
-  BaseMessage(super.dict) : _envelope = null, _delegate = null;
+  BaseMessage(super.dict) : _envelope = null;
+
+  Envelope? _envelope;
 
   BaseMessage.fromEnvelope(Envelope env) : super(env.toMap()) {
     _envelope = env;
-    _delegate = null;
   }
-
-  Envelope? _envelope;
-  WeakReference<MessageDelegate>? _delegate;
-
-  @override
-  MessageDelegate? get delegate => _delegate?.target;
-
-  @override
-  set delegate(MessageDelegate? transceiver) =>
-      _delegate = transceiver == null ? null : WeakReference(transceiver);
 
   @override
   Envelope get envelope {
@@ -103,4 +94,12 @@ abstract class BaseMessage extends Dictionary implements Message {
 
   @override
   int? get type => envelope.type;
+
+  static bool isBroadcast(Message msg) {
+    ID? group = msg.group;
+    if (group != null && group.isBroadcast) {
+      return true;
+    }
+    return msg.receiver.isBroadcast;
+  }
 }

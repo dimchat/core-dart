@@ -30,7 +30,9 @@
  */
 import 'package:mkm/mkm.dart';
 
+import '../dkd/group_admins.dart';
 import '../dkd/groups.dart';
+
 import 'commands.dart';
 
 
@@ -82,26 +84,23 @@ abstract class GroupCommand implements HistoryCommand {
   //  Factories
   //
 
-  static InviteCommand invite(ID group, {ID? member, List<ID>? members}) {
-    return InviteGroupCommand.from(group, member: member, members: members);
-  }
-  static ExpelCommand expel(ID group, {ID? member, List<ID>? members}) {
-    return ExpelGroupCommand.from(group, member: member, members: members);
-  }
+  static InviteCommand invite(ID group, {ID? member, List<ID>? members}) =>
+      InviteGroupCommand.from(group, member: member, members: members);
+  static ExpelCommand expel(ID group, {ID? member, List<ID>? members}) =>
+      ExpelGroupCommand.from(group, member: member, members: members);
 
-  static JoinCommand join(ID group) {
-    return JoinGroupCommand.from(group);
-  }
-  static QuitCommand quit(ID group) {
-    return QuitGroupCommand.from(group);
-  }
+  static JoinCommand join(ID group) => JoinGroupCommand.from(group);
+  static QuitCommand quit(ID group) => QuitGroupCommand.from(group);
 
-  static QueryCommand query(ID group) {
-    return QueryGroupCommand.from(group);
-  }
-  static ResetCommand reset(ID group, {required List<ID> members}) {
-    return ResetGroupCommand.from(group, members: members);
-  }
+  static QueryCommand query(ID group) => QueryGroupCommand.from(group);
+  static ResetCommand reset(ID group, {required List<ID> members}) =>
+      ResetGroupCommand.from(group, members: members);
+
+  static HireCommand hire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
+      HireGroupCommand.from(group, administrators: administrators, assistants: assistants);
+  static FireCommand fire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
+      FireGroupCommand.from(group, administrators: administrators, assistants: assistants);
+  static ResignCommand resign(ID group) => ResignGroupCommand.from(group);
 }
 
 
@@ -129,4 +128,33 @@ abstract class QueryCommand implements GroupCommand {
 
 
 abstract class ResetCommand implements GroupCommand {
+}
+
+
+//  Administrators, Assistants
+
+
+abstract class HireCommand implements GroupCommand {
+
+  List<ID>? get administrators;
+  set administrators(List<ID>? members);
+
+  List<ID>? get assistants;
+  set assistants(List<ID>? bots);
+
+}
+
+
+abstract class FireCommand implements GroupCommand {
+
+  List<ID>? get administrators;
+  set administrators(List<ID>? members);
+
+  List<ID>? get assistants;
+  set assistants(List<ID>? bots);
+
+}
+
+
+abstract class ResignCommand implements GroupCommand {
 }

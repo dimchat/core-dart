@@ -37,6 +37,7 @@ import 'mkm/user.dart';
 ///  Entity Database
 ///  ~~~~~~~~~~~~~~~
 ///  Entity pool to manage User/Contact/Group/Member instances
+///  Manage meta/document for all entities
 ///
 ///     1st, get instance here to avoid create same instance,
 ///     2nd, if they were updated, we can refresh them immediately here
@@ -44,10 +45,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   Future<EncryptKey?> _visaKey(ID user) async {
     Document? doc = await getDocument(user, Document.kVisa);
-    if (doc is Visa) {
-      if (doc.isValid) {
-        return doc.key;
-      }
+    if (doc is Visa && doc.isValid) {
+      return doc.publicKey;
     }
     return null;
   }
@@ -55,7 +54,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   Future<VerifyKey?> _metaKey(ID user) async {
     Meta? meta = await getMeta(user);
     // assert(meta != null, 'failed to get meta for: $entity');
-    return meta?.key;
+    return meta?.publicKey;
   }
 
   //
@@ -115,7 +114,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     }
     // get from document
     Document? doc = await getDocument(group, '*');
-    if (doc is Bulletin) {
+    if (doc is Bulletin && doc.isValid) {
       return doc.founder;
     }
     // TODO: load founder from database
@@ -204,21 +203,18 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   }
 
   static List<ID> getBroadcastMembers(ID group) {
-    List<ID> members = [];
     String? name = getGroupSeed(group);
     if (name == null) {
       // Consensus: the member of group 'everyone@everywhere'
       //            'anyone@anywhere'
-      members.add(ID.kAnyone);
+      return [ID.kAnyone];
     } else {
       // DISCUSS: who should be the member of group 'xxx@everywhere'?
       //          'anyone@anywhere', or 'xxx.member@anywhere'
       ID owner = ID.parse('$name.owner@anywhere')!;
       ID member = ID.parse('$name.member@anywhere')!;
-      members.add(owner);
-      members.add(member);
+      return [owner, member];
     }
-    return members;
   }
 
 }

@@ -57,8 +57,8 @@ class CommandGeneralFactory {
     return _commandFactories[cmd];
   }
 
-  String? getCmd(Map content) {
-    return content['command'];
+  String? getCmd(Map content, String? defaultValue) {
+    return Converter.getString(content['command'], defaultValue);
   }
 
   Command? parseCommand(Object? content) {
@@ -73,25 +73,26 @@ class CommandGeneralFactory {
       return null;
     }
     // get factory by command name
-    String? cmd = getCmd(info);
+    String? cmd = getCmd(info, null);
     // assert(cmd != null, 'command name not found: $info');
-    CommandFactory? factory = cmd == null ? null : getCommandFactory(cmd);
+    CommandFactory? factory = cmd == null || cmd.isEmpty ? null : getCommandFactory(cmd);
     if (factory == null) {
       // unknown command name, get base command factory
-      MessageFactoryManager man = MessageFactoryManager();
-      MessageGeneralFactory gf = man.generalFactory;
-      int? type = gf.getContentType(info);
-      if (type == null) {
-        assert(false, 'content type not found: $info');
-      } else {
-        ContentFactory? fact = gf.getContentFactory(type);
-        if (fact is CommandFactory) {
-          factory = fact as CommandFactory;
-        } else {
-          assert(false, 'cannot parse command: $info');
-        }
-      }
+      factory = _defaultFactory(info);
+      assert(factory != null, 'cannot parse command: $content');
     }
     return factory?.parseCommand(info);
+  }
+
+  static CommandFactory? _defaultFactory(Map info) {
+    MessageFactoryManager man = MessageFactoryManager();
+    MessageGeneralFactory gf = man.generalFactory;
+    int type = gf.getContentType(info, 0)!;
+    ContentFactory? fact = gf.getContentFactory(type);
+    if (fact is CommandFactory) {
+      return fact as CommandFactory;
+    }
+    // assert(false, 'cannot parse command: $info');
+    return null;
   }
 }

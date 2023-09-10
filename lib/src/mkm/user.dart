@@ -188,6 +188,7 @@ class BaseUser extends BaseEntity implements User {
     // NOTICE: I suggest using the private key paired with meta.key to sign message
     //         so here should return the meta.key
     List<VerifyKey> keys = await barrack!.getPublicKeysForVerification(identifier);
+    assert(keys.isNotEmpty, 'failed to get verify keys: $identifier');
     for (VerifyKey pKey in keys) {
       if (pKey.verify(data, signature)) {
         // matched!
@@ -207,7 +208,7 @@ class BaseUser extends BaseEntity implements User {
     //         is a better way
     EncryptKey? pKey = await barrack!.getPublicKeyForEncryption(identifier);
     assert(pKey != null, 'failed to get encrypt key for user: $identifier');
-    return pKey!.encrypt(plaintext);
+    return pKey!.encrypt(plaintext, null);
   }
 
   //
@@ -234,9 +235,9 @@ class BaseUser extends BaseEntity implements User {
     List<DecryptKey> keys = await barrack!.getPrivateKeysForDecryption(identifier);
     assert(keys.isNotEmpty, 'failed to get decrypt keys for user: $identifier');
     Uint8List? plaintext;
-    for (DecryptKey sKey in keys) {
+    for (DecryptKey key in keys) {
       // try decrypting it with each private key
-      plaintext = sKey.decrypt(ciphertext);
+      plaintext = key.decrypt(ciphertext, null);
       if (plaintext != null) {
         // OK!
         return plaintext;
@@ -274,7 +275,7 @@ class BaseUser extends BaseEntity implements User {
       return false;
     }
     // if meta not exists, user won't be created
-    VerifyKey pKey = (await meta).key;
+    VerifyKey pKey = (await meta).publicKey;
     return doc.verify(pKey);
   }
 }

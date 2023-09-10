@@ -44,6 +44,10 @@ import 'package:mkm/mkm.dart';
 class MessageEnvelope extends Dictionary implements Envelope {
   MessageEnvelope(super.dict) : _sender = null, _receiver = null, _time = null;
 
+  ID? _sender;
+  ID? _receiver;
+  DateTime? _time;
+
   MessageEnvelope.from({required ID sender, required ID? receiver, DateTime? time})
       : super(null) {
     receiver ??= ID.kAnyone;
@@ -53,12 +57,8 @@ class MessageEnvelope extends Dictionary implements Envelope {
     _time = time;
     setString('sender', sender);
     setString('receiver', receiver);
-    setTime('time', time);
+    setDateTime('time', time);
   }
-
-  ID? _sender;
-  ID? _receiver;
-  DateTime? _time;
 
   @override
   ID get sender {
@@ -78,7 +78,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
 
   @override
   DateTime? get time {
-    _time ??= getTime('time');
+    _time ??= getDateTime('time', null);
     return _time;
   }
 
@@ -104,7 +104,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
    *  to let the station do its job.
    */
   @override
-  int? get type => getInt('type');
+  int? get type => getInt('type', null);
 
   @override
   set type(int? msgType) => this['type'] = msgType;
