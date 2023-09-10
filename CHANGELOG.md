@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Group founder in document.
+
 ## 0.1.1
 
 - Group founder in document.

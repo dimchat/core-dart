@@ -10,7 +10,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  dkd: ^0.2.0
+  dkd: ^0.2.1
   mkm: ^0.2.0
 
 dev_dependencies:
