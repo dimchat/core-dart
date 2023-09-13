@@ -73,9 +73,8 @@ class CommandGeneralFactory {
       return null;
     }
     // get factory by command name
-    String? cmd = getCmd(info, null);
-    // assert(cmd != null, 'command name not found: $info');
-    CommandFactory? factory = cmd == null || cmd.isEmpty ? null : getCommandFactory(cmd);
+    String cmd = getCmd(info, '')!;
+    CommandFactory? factory = cmd.isEmpty ? null : getCommandFactory(cmd);
     if (factory == null) {
       // unknown command name, get base command factory
       factory = _defaultFactory(info);

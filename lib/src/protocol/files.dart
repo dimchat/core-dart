@@ -40,9 +40,12 @@ import '../dkd/files.dart';
 ///      type : 0x10,
 ///      sn   : 123,
 ///
-///      URL      : "http://...", // download from CDN
 ///      data     : "...",        // base64_encode(fileContent)
 ///      filename : "photo.png",
+///
+///      URL      : "http://...", // download from CDN
+///      // before fileContent uploaded to a public CDN,
+///      // it should be encrypted by a symmetric key
 ///      key      : {             // symmetric key to decrypt file content
 ///          algorithm : "AES",   // "DES", ...
 ///          data      : "{BASE64_ENCODE}",
@@ -51,14 +54,14 @@ import '../dkd/files.dart';
 ///  }
 abstract class FileContent implements Content {
 
-  Uri? get url;
-  set url(Uri? location);
-
   Uint8List? get data;
   set data(Uint8List? fileData);
 
   String? get filename;
   set filename(String? name);
+
+  Uri? get url;
+  set url(Uri? location);
 
   /// symmetric key to decrypt the encrypted data from URL
   DecryptKey? get password;
@@ -68,24 +71,34 @@ abstract class FileContent implements Content {
   //  Factories
   //
 
-  static FileContent create(int msgType, {Uri? url, DecryptKey? key, Uint8List? data, String? filename}) {
-    return BaseFileContent.from(msgType, url: url, key: key, data: data, filename: filename);
+  static FileContent create(int msgType, {Uint8List? data, String? filename,
+                                          Uri? url, DecryptKey? password}) {
+    return BaseFileContent.from(msgType, data: data, filename: filename,
+                                         url: url, password: password);
   }
 
-  static FileContent file({Uri? url, DecryptKey? key, Uint8List? data, String? filename}) {
-    return BaseFileContent.from(ContentType.kFile, url: url, key: key, data: data, filename: filename);
+  static FileContent file({Uint8List? data, String? filename,
+                           Uri? url, DecryptKey? password}) {
+    return BaseFileContent.from(ContentType.kFile, data: data, filename: filename,
+                                                   url: url, password: password);
   }
 
-  static ImageContent image({Uri? url, DecryptKey? key, Uint8List? data, String? filename}) {
-    return ImageFileContent.from(url: url, key: key, data: data, filename: filename);
+  static ImageContent image({Uint8List? data, String? filename,
+                             Uri? url, DecryptKey? password}) {
+    return ImageFileContent.from(data: data, filename: filename,
+                                 url: url, password: password);
   }
 
-  static AudioContent audio({Uri? url, DecryptKey? key, Uint8List? data, String? filename}) {
-    return AudioFileContent.from(url: url, key: key, data: data, filename: filename);
+  static AudioContent audio({Uint8List? data, String? filename,
+                             Uri? url, DecryptKey? password}) {
+    return AudioFileContent.from(data: data, filename: filename,
+                                 url: url, password: password);
   }
 
-  static VideoContent video({Uri? url, DecryptKey? key, Uint8List? data, String? filename}) {
-    return VideoFileContent.from(url: url, key: key, data: data, filename: filename);
+  static VideoContent video({Uint8List? data, String? filename,
+                             Uri? url, DecryptKey? password}) {
+    return VideoFileContent.from(data: data, filename: filename,
+                                 url: url, password: password);
   }
 }
 
@@ -94,9 +107,12 @@ abstract class FileContent implements Content {
 ///      type : 0x12,
 ///      sn   : 123,
 ///
-///      URL      : "http://...", // download from CDN
 ///      data     : "...",        // base64_encode(fileContent)
 ///      filename : "photo.png",
+///
+///      URL      : "http://...", // download from CDN
+///      // before fileContent uploaded to a public CDN,
+///      // it should be encrypted by a symmetric key
 ///      key      : {             // symmetric key to decrypt file content
 ///          algorithm : "AES",   // "DES", ...
 ///          data      : "{BASE64_ENCODE}",
@@ -115,9 +131,12 @@ abstract class ImageContent implements FileContent {
 ///      type : 0x14,
 ///      sn   : 123,
 ///
-///      URL      : "http://...", // download from CDN
 ///      data     : "...",        // base64_encode(fileContent)
 ///      filename : "voice.mp4",
+///
+///      URL      : "http://...", // download from CDN
+///      // before fileContent uploaded to a public CDN,
+///      // it should be encrypted by a symmetric key
 ///      key      : {             // symmetric key to decrypt file content
 ///          algorithm : "AES",   // "DES", ...
 ///          data      : "{BASE64_ENCODE}",
@@ -136,9 +155,12 @@ abstract class AudioContent implements FileContent {
 ///      type : 0x16,
 ///      sn   : 123,
 ///
-///      URL      : "http://...", // download from CDN
 ///      data     : "...",        // base64_encode(fileContent)
 ///      filename : "movie.mp4",
+///
+///      URL      : "http://...", // download from CDN
+///      // before fileContent uploaded to a public CDN,
+///      // it should be encrypted by a symmetric key
 ///      key      : {             // symmetric key to decrypt file content
 ///          algorithm : "AES",   // "DES", ...
 ///          data      : "{BASE64_ENCODE}",

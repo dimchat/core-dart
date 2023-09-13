@@ -41,71 +41,58 @@ import 'base.dart';
 /// File Content
 ///
 class BaseFileContent extends BaseContent implements FileContent {
-  BaseFileContent(super.dict) : _url = null, _key = null, _data = null;
-
-  /// download from CDN
-  Uri? _url;
-
-  /// key to decrypt data downloaded from CDN
-  DecryptKey? _key;
+  BaseFileContent(super.dict) : _attachment = null, _remoteURL = null, _password = null;
 
   /// file data (not encrypted)
-  TransportableData? _data;
+  TransportableData? _attachment;
+
+  /// download from CDN
+  Uri? _remoteURL;
+
+  /// key to decrypt data downloaded from CDN
+  DecryptKey? _password;
 
   BaseFileContent.from(int? msgType,
-      {Uri? url, DecryptKey? key, Uint8List? data, String? filename})
+      {Uri? url, DecryptKey? password, Uint8List? data, String? filename})
       : super.fromType(msgType ?? ContentType.kFile) {
-    // remote URL
-    if (url != null) {
-      this['URL'] = url.toString();
+    //
+    //  file data
+    //
+    if (data == null) {
+      _attachment = null;
+    } else {
+      this.data = data;
     }
-    _url = url;
-    // decrypt key
-    if (key != null) {
-      this['key'] = key.toMap();
-    }
-    _key = key;
-    // file data
-    TransportableData? ted;
-    if (data != null) {
-      ted = TransportableData.create(data);
-      this['data'] = ted.toObject();
-    }
-    _data = ted;
-    // filename
+    //
+    //  filename
+    //
     if (filename != null) {
       this['filename'] = filename;
     }
-  }
-
-  @override
-  Uri? get url {
-    Uri? location = _url;
-    if (location == null) {
-      String? remote = getString('URL', null);
-      if (remote != null) {
-        _url = location = Uri.parse(remote);
-      }
-    }
-    return location;
-  }
-
-  @override
-  set url(Uri? location) {
-    if (location == null) {
-      remove('URL');
+    //
+    //  remote URL
+    //
+    if (url == null) {
+      _remoteURL = null;
     } else {
-      this['URL'] = location.toString();
+      this.url = url;
     }
-    _url = location;
+    //
+    //  decrypt key
+    //
+    if (password == null) {
+      _password = null;
+    } else {
+      this.password = password;
+    }
   }
 
   @override
   Uint8List? get data {
-    TransportableData? ted = _data;
+    TransportableData? ted = _attachment;
     if (ted == null) {
-      String? base64 = getString('data', null);
-      _data = ted = TransportableData.parse(base64);
+      Object? base64 = this['data'];
+      _attachment = ted = TransportableData.parse(base64);
     }
     return ted?.data;
   }
@@ -119,7 +106,7 @@ class BaseFileContent extends BaseContent implements FileContent {
       ted = TransportableData.create(fileData);
       this['data'] = ted.toObject();
     }
-    _data = ted;
+    _attachment = ted;
   }
 
   @override
@@ -135,15 +122,37 @@ class BaseFileContent extends BaseContent implements FileContent {
   }
 
   @override
+  Uri? get url {
+    Uri? location = _remoteURL;
+    if (location == null) {
+      String? remote = getString('URL', null);
+      if (remote != null/* && remote.isNotEmpty*/) {
+        _remoteURL = location = Uri.parse(remote);
+      }
+    }
+    return location;
+  }
+
+  @override
+  set url(Uri? location) {
+    if (location == null) {
+      remove('URL');
+    } else {
+      this['URL'] = location.toString();
+    }
+    _remoteURL = location;
+  }
+
+  @override
   DecryptKey? get password {
-    _key ??= SymmetricKey.parse(this['password']);
-    return _key;
+    _password ??= SymmetricKey.parse(this['password']);
+    return _password;
   }
 
   @override
   set password(DecryptKey? key) {
     setMap('password', key);
-    _key = key;
+    _password = key;
   }
 }
 
@@ -157,14 +166,14 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   /// small image
   TransportableData? _thumbnail;
 
-  ImageFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
-      : super.from(ContentType.kImage, url: url, key: key, data: data, filename: filename);
+  ImageFileContent.from({Uri? url, DecryptKey? password, Uint8List? data, String? filename})
+      : super.from(ContentType.kImage, url: url, password: password, data: data, filename: filename);
 
   @override
   Uint8List? get thumbnail {
     TransportableData? ted = _thumbnail;
     if (ted == null) {
-      String? base64 = getString('thumbnail', null);
+      Object? base64 = this['thumbnail'];
       _thumbnail = ted = TransportableData.parse(base64);
     }
     return ted?.data;
@@ -190,8 +199,8 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
 class AudioFileContent extends BaseFileContent implements AudioContent {
   AudioFileContent(super.dict);
 
-  AudioFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
-      : super.from(ContentType.kAudio, url: url, key: key, data: data, filename: filename);
+  AudioFileContent.from({Uri? url, DecryptKey? password, Uint8List? data, String? filename})
+      : super.from(ContentType.kAudio, url: url, password: password, data: data, filename: filename);
 
   @override
   String? get text => getString('text', null);
@@ -210,14 +219,14 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   /// small image
   TransportableData? _snapshot;
 
-  VideoFileContent.from({Uri? url, DecryptKey? key, Uint8List? data, String? filename})
-      : super.from(ContentType.kVideo, url: url, key: key, data: data, filename: filename);
+  VideoFileContent.from({Uri? url, DecryptKey? password, Uint8List? data, String? filename})
+      : super.from(ContentType.kVideo, url: url, password: password, data: data, filename: filename);
 
   @override
   Uint8List? get snapshot {
     TransportableData? ted = _snapshot;
     if (ted == null) {
-      String? base64 = getString('snapshot', null);
+      Object? base64 = this['snapshot'];
       _snapshot = ted = TransportableData.parse(base64);
     }
     return ted?.data;

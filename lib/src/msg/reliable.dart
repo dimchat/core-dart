@@ -46,13 +46,13 @@ import 'secure.dart';
 ///      receiver : "hulk@yyy",
 ///      time     : 123,
 ///      //-- content data and key/keys
-///      data     : "...",  // base64_encode(symmetric)
-///      key      : "...",  // base64_encode(asymmetric)
+///      data     : "...",  // base64_encode( symmetric_encrypt(content))
+///      key      : "...",  // base64_encode(asymmetric_encrypt(password))
 ///      keys     : {
-///          "ID1": "key1", // base64_encode(asymmetric)
+///          "ID1": "key1", // base64_encode(asymmetric_encrypt(password))
 ///      },
 ///      //-- signature
-///      signature: "..."   // base64_encode()
+///      signature: "..."   // base64_encode(asymmetric_sign(data))
 ///  }
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   NetworkMessage(super.dict) : _signature = null, _meta = null, _visa = null;
@@ -62,6 +62,18 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   /// user info for 'handshake' command
   Meta? _meta;
   Visa? _visa;
+
+  @override
+  Future<Uint8List> get signature async {
+    TransportableData? ted = _signature;
+    if (ted == null) {
+      Object? base64 = this['signature'];
+      assert(base64 != null, 'message signature cannot be empty: $this');
+      _signature = ted = TransportableData.parse(base64);
+      assert(ted != null, 'failed to decode message signature: $base64');
+    }
+    return ted!.data;
+  }
 
   ///  Sender's Meta
   ///  ~~~~~~~~~~~~~
@@ -100,63 +112,6 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   set visa(Visa? doc) {
     setMap('visa', doc);
     _visa = doc;
-  }
-
-  @override
-  Future<Uint8List> get signature async {
-    TransportableData? ted = _signature;
-    if (ted == null) {
-      Object? base64 = this['signature'];
-      assert(base64 != null, 'signature cannot be empty');
-      _signature = ted = TransportableData.parse(base64);
-      assert(ted != null, 'failed to decode signature: $base64');
-    }
-    return ted!.data!;
-  }
-
-}
-
-
-class NetworkMessagePacker {
-  NetworkMessagePacker(ReliableMessageDelegate delegate)
-      : _transceiver = WeakReference(delegate);
-
-  final WeakReference<ReliableMessageDelegate> _transceiver;
-
-  ReliableMessageDelegate? get delegate => _transceiver.target;
-
-  /*
-   *  Verify the Reliable Message to Secure Message
-   *
-   *    +----------+      +----------+
-   *    | sender   |      | sender   |
-   *    | receiver |      | receiver |
-   *    | time     |  ->  | time     |
-   *    |          |      |          |
-   *    | data     |      | data     |  1. verify(data, signature, sender.PK)
-   *    | key/keys |      | key/keys |
-   *    | signature|      +----------+
-   *    +----------+
-   */
-
-  ///  Verify 'data' and 'signature' field with sender's public key
-  ///
-  /// @return SecureMessage object
-  Future<SecureMessage?> verify(ReliableMessage rMsg) async {
-    ReliableMessageDelegate transceiver = delegate!;
-    // 1. verify data signature with sender's public key
-    Uint8List ct = await rMsg.data;
-    Uint8List sig = await rMsg.signature;
-    if (await transceiver.verifyDataSignature(ct, sig, rMsg)) {
-      // 2. pack message
-      Map info = rMsg.copyMap(false);
-      info.remove('signature');
-      return SecureMessage.parse(info);
-    } else {
-      // assert(false, 'message signature not match: $this');
-      // TODO: check whether visa is expired, query new document for this contact
-      return null;
-    }
   }
 
 }

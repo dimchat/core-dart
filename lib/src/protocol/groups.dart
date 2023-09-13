@@ -96,6 +96,8 @@ abstract class GroupCommand implements HistoryCommand {
   static ResetCommand reset(ID group, {required List<ID> members}) =>
       ResetGroupCommand.from(group, members: members);
 
+  ///  Administrators, Assistants
+
   static HireCommand hire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
       HireGroupCommand.from(group, administrators: administrators, assistants: assistants);
   static FireCommand fire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
@@ -136,9 +138,11 @@ abstract class ResetCommand implements GroupCommand {
 
 abstract class HireCommand implements GroupCommand {
 
+  /// Administrators
   List<ID>? get administrators;
   set administrators(List<ID>? members);
 
+  /// Assistants (Bots)
   List<ID>? get assistants;
   set assistants(List<ID>? bots);
 
@@ -147,9 +151,11 @@ abstract class HireCommand implements GroupCommand {
 
 abstract class FireCommand implements GroupCommand {
 
+  /// Administrators
   List<ID>? get administrators;
   set administrators(List<ID>? members);
 
+  /// Assistants (Bots)
   List<ID>? get assistants;
   set assistants(List<ID>? bots);
 

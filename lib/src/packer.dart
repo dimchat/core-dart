@@ -31,18 +31,10 @@
 import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
 
 ///  Message Packer
 ///  ~~~~~~~~~~~~~~
 abstract class Packer {
-
-  ///  Get group ID which should be exposed to public network
-  ///
-  /// @param head - message envelope
-  /// @param body - message content
-  /// @return exposed group ID
-  Future<ID?> getOvertGroup(Envelope head, Content body);
 
   //
   //  InstantMessage -> SecureMessage -> ReliableMessage -> Data

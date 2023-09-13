@@ -185,8 +185,6 @@ class BaseUser extends BaseEntity implements User {
   Future<bool> verify(Uint8List data, Uint8List signature) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
-    // NOTICE: I suggest using the private key paired with meta.key to sign message
-    //         so here should return the meta.key
     List<VerifyKey> keys = await barrack!.getPublicKeysForVerification(identifier);
     assert(keys.isNotEmpty, 'failed to get verify keys: $identifier');
     for (VerifyKey pKey in keys) {
@@ -219,8 +217,6 @@ class BaseUser extends BaseEntity implements User {
   Future<Uint8List> sign(Uint8List data) async {
     UserDataSource? barrack = dataSource;
     assert(barrack != null, 'user data source not set yet');
-    // NOTICE: I suggest use the private key which paired to visa.key
-    //         to sign message
     SignKey? sKey = await barrack!.getPrivateKeyForSignature(identifier);
     assert(sKey != null, 'failed to get sign key for user: $identifier');
     return sKey!.sign(data);
@@ -255,15 +251,12 @@ class BaseUser extends BaseEntity implements User {
     assert(barrack != null, 'user data source not set yet');
     // NOTICE: only sign visa with the private key paired with your meta.key
     SignKey? sKey = await barrack!.getPrivateKeyForVisaSignature(identifier);
-    if (sKey == null) {
-      assert(false, 'failed to get sign key for visa: $identifier');
-      return null;
-    } else if (doc.sign(sKey) == null) {
+    assert(sKey != null, 'failed to get sign key for visa: $identifier');
+    if (doc.sign(sKey!) == null) {
       assert(false, 'failed to sign visa: $identifier, $doc');
       return null;
-    } else {
-      return doc;
     }
+    return doc;
   }
 
   @override

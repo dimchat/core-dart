@@ -1,6 +1,6 @@
 ## 0.2.1
 
-- Overt group.
+- Align FileContent with PNF.
 
 ## 0.2.0
 

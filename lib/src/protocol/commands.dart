@@ -52,7 +52,7 @@ abstract class Command implements Content {
   ///  Get command name
   ///
   /// @return command name string
-  String? get cmd;
+  String get cmd;
 
   //
   //  Factory method

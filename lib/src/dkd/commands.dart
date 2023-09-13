@@ -48,9 +48,10 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);
 
   @override
-  String? get cmd {
+  String get cmd {
     CommandFactoryManager man = CommandFactoryManager();
-    return man.generalFactory.getCmd(toMap(), null);
+    return man.generalFactory.getCmd(toMap(), '')!;
+    // return getString('command', '')!;
   }
 }
 

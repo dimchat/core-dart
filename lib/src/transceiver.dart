@@ -49,8 +49,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
   //-------- InstantMessageDelegate
 
   @override
-  Future<Uint8List> serializeContent(Content content,
-      SymmetricKey password, InstantMessage iMsg) async {
+  Future<Uint8List> serializeContent(Content content, SymmetricKey password, InstantMessage iMsg) async {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
     return UTF8.encode(JSON.encode(content.toMap()));
@@ -83,7 +82,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
       assert(false, 'failed to encrypt key for contact: $receiver');
       return null;
     }
-    // encrypt with receiver's public key
+    // encrypt with public key of the receiver (or group member)
     return await contact.encrypt(key);
   }
 
@@ -91,33 +90,35 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
 
   @override
   Future<Uint8List?> decryptKey(Uint8List key, ID receiver, SecureMessage sMsg) async {
-    // NOTICE: the receiver will be group ID in a group message here
+    // NOTICE: the receiver must be a member ID
+    //         if it's a group message
     assert(!BaseMessage.isBroadcast(sMsg), 'broadcast message has no key: $sMsg');
     EntityDelegate? barrack = entityDelegate;
     assert(barrack != null, "entity delegate not set yet");
-    // decrypt key data with the receiver/group member's private key
-    if (receiver.isGroup) {
-      receiver = sMsg.receiver;
-    }
+    assert(receiver.isUser, 'receiver error: $receiver');
     User? user = await barrack?.getUser(receiver);
     if (user == null) {
-      assert(false, 'failed to decrypt key for user: $receiver');
+      assert(false, 'failed to decrypt key: ${sMsg.sender} => $receiver');
       return null;
     }
+    // decrypt with private key of the receiver (or group member)
     return await user.decrypt(key);
   }
 
   @override
-  Future<SymmetricKey?> deserializeKey(Uint8List? key, ID receiver, SecureMessage sMsg) async {
-    // NOTICE: the receiver will be group ID in a group message here
+  Future<SymmetricKey?> deserializeKey(Uint8List? key, SecureMessage sMsg) async {
     assert(!BaseMessage.isBroadcast(sMsg), 'broadcast message has no key: $sMsg');
     if (key == null) {
-      assert(false, 'reused key? get it from cache: ${sMsg.sender} -> $receiver');
+      assert(false, 'reused key? get it from cache: '
+          '${sMsg.sender} => ${sMsg.receiver}, ${sMsg.group}');
       return null;
     }
     String? json = UTF8.decode(key);
-    assert(json != null, 'key data error: $key');
-    Object? dict = JSON.decode(json!);
+    if (json == null) {
+      assert(false, 'key data error: $key');
+      return null;
+    }
+    Object? dict = JSON.decode(json);
     // TODO: translate short keys
     //       'A' -> 'algorithm'
     //       'D' -> 'data'
@@ -137,8 +138,11 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
   Future<Content?> deserializeContent(Uint8List data, SymmetricKey password, SecureMessage sMsg) async {
     // assert(sMsg.data.isNotEmpty, "message data empty");
     String? json = UTF8.decode(data);
-    assert(json != null, 'content data error: $data');
-    Object? dict = JSON.decode(json!);
+    if (json == null) {
+      assert(false, 'content data error: $data');
+      return null;
+    }
+    Object? dict = JSON.decode(json);
     // TODO: translate short keys
     //       'T' -> 'type'
     //       'N' -> 'sn'
@@ -153,7 +157,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     assert(barrack != null, 'entity delegate not set yet');
     ID sender = sMsg.sender;
     User? user = await barrack?.getUser(sender);
-    assert(user != null, 'failed to sign with user: $sender');
+    assert(user != null, 'failed to sign for user: $sender');
     return await user!.sign(data);
   }
 

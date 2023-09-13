@@ -49,7 +49,7 @@ import 'package:mkm/mkm.dart';
 ///  abstract method:
 ///      - Address generateAddress(int? network);
 abstract class BaseMeta extends Dictionary implements Meta {
-  BaseMeta(super.dict) : _type = null, _key = null, _seed = null, _fingerprint = null;
+  BaseMeta(super.dict) : _type = null, _key = null, _seed = null, _fingerprint = null, _status = 0;
 
   ///  Meta algorithm version
   ///
@@ -73,6 +73,8 @@ abstract class BaseMeta extends Dictionary implements Meta {
   ///      Build: fingerprint = sign(seed, privateKey)
   ///      Check: verify(seed, fingerprint, publicKey)
   TransportableData? _fingerprint;
+
+  int _status = 0;  // 1 for valid, -1 for invalid
 
   BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
       : super(null) {
@@ -102,6 +104,10 @@ abstract class BaseMeta extends Dictionary implements Meta {
       this['fingerprint'] = ted.toObject();
     }
     _fingerprint = ted;
+
+    // generated meta, or loaded from local storage,
+    // no need to verify again.
+    _status = 1;
   }
 
   @override
@@ -138,4 +144,90 @@ abstract class BaseMeta extends Dictionary implements Meta {
     }
     return ted?.data;
   }
+
+  //
+  //  Validation
+  //
+
+  @override
+  bool get isValid {
+    if (_status == 0) {
+      // meta from network, try to verify
+      if (MetaHelper.checkMeta(this)) {
+        // correct
+        _status = 1;
+      } else {
+        // error
+        _status = -1;
+      }
+    }
+    return _status > 0;
+  }
+
+  @override
+  bool matchIdentifier(ID identifier) => MetaHelper.matchIdentifier(identifier, this);
+
+  @override
+  bool matchPublicKey(VerifyKey pKey) => MetaHelper.matchPublicKey(pKey, this);
+
+}
+
+abstract class MetaHelper {
+
+  static bool checkMeta(Meta meta) {
+    VerifyKey key = meta.publicKey;
+    // assert(key != null, 'meta.key should not be empty: $meta');
+    String? seed = meta.seed;
+    Uint8List? fingerprint = meta.fingerprint;
+    bool noSeed = seed == null || seed.isEmpty;
+    bool noSig = fingerprint == null || fingerprint.isEmpty;
+    // check meta version
+    if (!MetaType.hasSeed(meta.type)) {
+      // this meta has no seed, so no signature too
+      return noSeed && noSig;
+    } else if (noSeed || noSig) {
+      // seed and fingerprint should not be empty
+      return false;
+    }
+    // verify fingerprint
+    return key.verify(UTF8.encode(seed), fingerprint);
+  }
+
+  static bool matchIdentifier(ID identifier, Meta meta) {
+    assert(meta.isValid, 'meta not valid: $meta');
+    // check ID.name
+    String? seed = meta.seed;
+    String? name = identifier.name;
+    if (name == null || name.isEmpty) {
+      if (seed != null && seed.isNotEmpty) {
+        return false;
+      }
+    } else if (name != seed) {
+      return false;
+    }
+    // check ID.address
+    Address old = identifier.address;
+    Address gen = Address.generate(meta, old.type);
+    return old == gen;
+  }
+
+  static bool matchPublicKey(VerifyKey pKey, Meta meta) {
+    assert(meta.isValid, 'meta not valid: $meta');
+    // check whether the public key equals to meta.key
+    if (pKey == meta.publicKey) {
+      return true;
+    }
+    // check with seed & fingerprint
+    if (MetaType.hasSeed(meta.type)) {
+      // check whether keys equal by verifying signature
+      String? seed = meta.seed;
+      Uint8List? fingerprint = meta.fingerprint;
+      return pKey.verify(UTF8.encode(seed!), fingerprint!);
+    } else {
+      // NOTICE: ID with BTC/ETH address has no username, so
+      //         just compare the key.data to check matching
+      return false;
+    }
+  }
+
 }

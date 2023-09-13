@@ -48,7 +48,7 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
     // original envelope
     _env = envelope;
     // envelope of the message responding to
-    Map origin = envelope == null ? {} : envelope.toMap();
+    Map origin = envelope == null ? {} : envelope.copyMap(false);
     // sn of the message responding to
     if (sn != null) {
       origin['sn'] = sn;

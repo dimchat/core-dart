@@ -247,13 +247,13 @@ class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
       : super.fromType(ContentType.kTransfer, currency: currency, amount: amount);
 
   @override
-  ID get remitter => ID.parse(getString('remitter', null))!;
+  ID get remitter => ID.parse(this['remitter'])!;
 
   @override
   set remitter(ID sender) => setString('remitter', sender);
 
   @override
-  ID get remittee => ID.parse(getString('remittee', null))!;
+  ID get remittee => ID.parse(this['remittee'])!;
 
   @override
   set remittee(ID receiver) => setString('remittee', receiver);

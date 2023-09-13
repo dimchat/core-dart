@@ -28,7 +28,6 @@ export 'src/msg/envelope.dart';
 export 'src/msg/instant.dart';
 export 'src/msg/secure.dart';
 export 'src/msg/reliable.dart';
-export 'src/msg/factory.dart';
 
 export 'src/mkm/address.dart';
 export 'src/mkm/identifier.dart';

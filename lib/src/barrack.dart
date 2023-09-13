@@ -43,7 +43,8 @@ import 'mkm/user.dart';
 ///     2nd, if they were updated, we can refresh them immediately here
 abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSource {
 
-  Future<EncryptKey?> _visaKey(ID user) async {
+  // protected
+  Future<EncryptKey?> getVisaKey(ID user) async {
     Document? doc = await getDocument(user, Document.kVisa);
     if (doc is Visa/* && doc.isValid*/) {
       return doc.publicKey;
@@ -51,7 +52,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     return null;
   }
 
-  Future<VerifyKey?> _metaKey(ID user) async {
+  // protected
+  Future<VerifyKey?> getMetaKey(ID user) async {
     Meta? meta = await getMeta(user);
     // assert(meta != null, 'failed to get meta for: $entity');
     return meta?.publicKey;
@@ -64,13 +66,13 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   @override
   Future<EncryptKey?> getPublicKeyForEncryption(ID user) async {
     // 1. get key from visa
-    EncryptKey? visaKey = await _visaKey(user);
+    EncryptKey? visaKey = await getVisaKey(user);
     if (visaKey != null) {
       // if visa.key exists, use it for encryption
       return visaKey;
     }
     // 2. get key from meta
-    VerifyKey? metaKey = await _metaKey(user);
+    VerifyKey? metaKey = await getMetaKey(user);
     if (metaKey is EncryptKey) {
       // if visa.key not exists and meta.key is encrypt key,
       // use it for encryption
@@ -84,14 +86,14 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   Future<List<VerifyKey>> getPublicKeysForVerification(ID user) async {
     List<VerifyKey> keys = [];
     // 1. get key from visa
-    EncryptKey? visaKey = await _visaKey(user);
+    EncryptKey? visaKey = await getVisaKey(user);
     if (visaKey is VerifyKey) {
       // the sender may use communication key to sign message.data,
       // so try to verify it with visa.key here
       keys.add(visaKey as VerifyKey);
     }
     // 2. get key from meta
-    VerifyKey? metaKey = await _metaKey(user);
+    VerifyKey? metaKey = await getMetaKey(user);
     if (metaKey != null) {
       // the sender may use identity key to sign message.data,
       // try to verify it with meta.key
@@ -165,6 +167,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   //  Broadcast Group
   //
 
+  // private
   static String? getGroupSeed(ID group) {
     String? name = group.name;
     if (name != null) {
@@ -176,6 +179,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     return name;
   }
 
+  // protected
   static ID getBroadcastFounder(ID group) {
     String? name = getGroupSeed(group);
     if (name == null) {
@@ -189,6 +193,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     }
   }
 
+  // protected
   static ID getBroadcastOwner(ID group) {
     String? name = getGroupSeed(group);
     if (name == null) {
@@ -202,6 +207,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     }
   }
 
+  // protected
   static List<ID> getBroadcastMembers(ID group) {
     String? name = getGroupSeed(group);
     if (name == null) {

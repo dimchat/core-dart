@@ -105,6 +105,7 @@ class BaseDocument extends Dictionary implements Document {
     if (docType == null) {
       AccountFactoryManager man = AccountFactoryManager();
       docType = man.generalFactory.getDocumentType(toMap(), null);
+      // docType = getString('type', null);
     }
     return docType;
   }
@@ -118,7 +119,7 @@ class BaseDocument extends Dictionary implements Document {
   ///  Get serialized properties
   ///
   /// @return JsON string
-  String? _data() {
+  String? _getData() {
     _json ??= getString('data', null);
     return _json;
   }
@@ -126,7 +127,7 @@ class BaseDocument extends Dictionary implements Document {
   ///  Get signature for serialized properties
   ///
   /// @return signature data
-  Uint8List? _signature() {
+  Uint8List? _getSignature() {
     TransportableData? ted = _sig;
     if (ted == null) {
       Object base64 = this['signature'];
@@ -142,7 +143,7 @@ class BaseDocument extends Dictionary implements Document {
       return null;
     }
     if (_properties == null) {
-      String? data = _data();
+      String? data = _getData();
       if (data == null) {
         // create new properties
         _properties = {};
@@ -183,8 +184,8 @@ class BaseDocument extends Dictionary implements Document {
       // already verify OK
       return true;
     }
-    String? data = _data();
-    Uint8List? signature = _signature();
+    String? data = _getData();
+    Uint8List? signature = _getSignature();
     if (data == null) {
       // NOTICE: if data is empty, signature should be empty at the same time
       //         this happen while entity document not found
@@ -212,7 +213,7 @@ class BaseDocument extends Dictionary implements Document {
     if (_status > 0) {
       // already signed/verified
       assert(_json != null, 'document data error: $this');
-      signature = _signature();
+      signature = _getSignature();
       assert(signature != null, 'document signature error: $this');
       return signature;
     }

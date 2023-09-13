@@ -50,12 +50,16 @@ class BaseVisa extends BaseDocument implements Visa {
 
   BaseVisa.from(ID identifier, {required String data, required String signature})
       : super.from(identifier, data: data, signature: signature) {
+    this['type'] = Document.kVisa;
     // lazy
     _key = null;
     _avatar = null;
   }
 
-  BaseVisa.fromID(ID identifier) : super.fromType(identifier, Document.kVisa);
+  BaseVisa.fromID(ID identifier)
+      : super.fromType(identifier, Document.kVisa) {
+    this['type'] = Document.kVisa;
+  }
 
   @override
   EncryptKey? get publicKey {
@@ -103,11 +107,15 @@ class BaseBulletin extends BaseDocument implements Bulletin {
 
   BaseBulletin.from(ID identifier, {required String data, required String signature})
       : super.from(identifier, data: data, signature: signature) {
+    this['type'] = Document.kBulletin;
     // lazy
     _bots = null;
   }
 
-  BaseBulletin.fromID(ID identifier) : super.fromType(identifier, Document.kBulletin);
+  BaseBulletin.fromID(ID identifier)
+      : super.fromType(identifier, Document.kBulletin) {
+    this['type'] = Document.kBulletin;
+  }
 
   @override
   ID? get founder => ID.parse(getProperty('founder'));
