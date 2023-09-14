@@ -79,7 +79,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     assert(receiver.isUser, 'receiver error: $receiver');
     User? contact = await barrack?.getUser(receiver);
     if (contact == null) {
-      assert(false, 'failed to encrypt key for contact: $receiver');
+      assert(false, 'failed to encrypt message key for contact: $receiver');
       return null;
     }
     // encrypt with public key of the receiver (or group member)
@@ -98,7 +98,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     assert(receiver.isUser, 'receiver error: $receiver');
     User? user = await barrack?.getUser(receiver);
     if (user == null) {
-      assert(false, 'failed to decrypt key: ${sMsg.sender} => $receiver');
+      assert(false, 'failed to decrypt key: ${sMsg.sender} => $receiver, ${sMsg.group}');
       return null;
     }
     // decrypt with private key of the receiver (or group member)
@@ -115,7 +115,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     }
     String? json = UTF8.decode(key);
     if (json == null) {
-      assert(false, 'key data error: $key');
+      assert(false, 'message key data error: $key');
       return null;
     }
     Object? dict = JSON.decode(json);
@@ -157,7 +157,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     assert(barrack != null, 'entity delegate not set yet');
     ID sender = sMsg.sender;
     User? user = await barrack?.getUser(sender);
-    assert(user != null, 'failed to sign for user: $sender');
+    assert(user != null, 'failed to sign message data for user: $sender');
     return await user!.sign(data);
   }
 
@@ -170,7 +170,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     ID sender = rMsg.sender;
     User? contact = await barrack?.getUser(sender);
     if (contact == null) {
-      assert(false, 'failed to verify signature for contact: $sender');
+      assert(false, 'failed to verify message signature for contact: $sender');
       return false;
     }
     return await contact.verify(data, signature);

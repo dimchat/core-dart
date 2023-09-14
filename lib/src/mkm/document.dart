@@ -44,56 +44,46 @@ class BaseDocument extends Dictionary implements Document {
   Map? _properties;
   int _status = 0;  // 1 for valid, -1 for invalid
 
-  ///  Create entity document with data and signature loaded from local storage
-  ///
-  /// @param identifier - entity ID
-  /// @param data - document data in JsON format
-  /// @param signature - signature of document data in Base64 format
-  BaseDocument.from(ID identifier, {required String data, required String signature})
-      : super(null) {
-    // ID
-    this['ID'] = identifier.toString();
-    _identifier = identifier;
-
-    // json data
-    this['data'] = data;
-    _json = data;
-
-    // signature
-    this['signature'] = signature;
-    _sig = null;  // lazy
-
-    _properties = null;
-
-    // all documents must be verified before saving into local storage
-    _status = 1;
-  }
-
-  ///  Create a new empty document
+  ///  1. Create a new empty document
+  ///  2. Create entity document with data and signature loaded from local storage
   ///
   /// @param identifier - entity ID
   /// @param docType    - document type
-  BaseDocument.fromType(ID identifier, String? docType)
+  /// @param data - document data in JsON format
+  /// @param signature - signature of document data in Base64 format
+  BaseDocument.from(ID identifier, String docType, {String? data, String? signature})
       : super(null) {
     // ID
     this['ID'] = identifier.toString();
     _identifier = identifier;
 
-    _json = null;
-    _sig = null;
+    // document type
+    assert(!docType.isNotEmpty && docType == '*', 'document type error: $docType');
+    this['type'] = docType;
 
-    if (docType == null || docType.isEmpty || docType == '*') {
+    // document data(Json) & signature(Base64)
+    if (data == null || signature == null) {
+      assert(data == null && signature == null, 'document data/signature error: $data, $signature');
+      // 1. Create a new empty document
+      _json = null;
+      _sig = null;
+      // initialize properties with created time
       _properties = {
+        'type': docType,  // deprecated
         'created_time': DateTime.now().millisecondsSinceEpoch / 1000.0,
       };
+      _status = 0;
     } else {
-      _properties = {
-        'type': docType,
-        'created_time': DateTime.now().millisecondsSinceEpoch / 1000.0,
-      };
+      assert(data.isNotEmpty && signature.isNotEmpty, 'document data/signature error: $data, $signature');
+      // 2. Create entity document with data and signature loaded from local storage
+      this['data'] = data;
+      this['signature'] = signature;
+      _json = data;
+      _sig = null;  // lazy
+      _properties = null;  // lazy
+      // all documents must be verified before saving into local storage
+      _status = 1;
     }
-
-    _status = 0;
   }
 
   @override
@@ -101,7 +91,7 @@ class BaseDocument extends Dictionary implements Document {
 
   @override
   String? get type {
-    String? docType = getProperty('type');
+    String? docType = getProperty('type');  // deprecated
     if (docType == null) {
       AccountFactoryManager man = AccountFactoryManager();
       docType = man.generalFactory.getDocumentType(toMap(), null);

@@ -48,17 +48,11 @@ class BaseVisa extends BaseDocument implements Visa {
   /// Avatar URL
   PortableNetworkFile? _avatar;
 
-  BaseVisa.from(ID identifier, {required String data, required String signature})
-      : super.from(identifier, data: data, signature: signature) {
-    this['type'] = Document.kVisa;
+  BaseVisa.from(ID identifier, {String? data, String? signature})
+      : super.from(identifier, Document.kVisa, data: data, signature: signature) {
     // lazy
     _key = null;
     _avatar = null;
-  }
-
-  BaseVisa.fromID(ID identifier)
-      : super.fromType(identifier, Document.kVisa) {
-    this['type'] = Document.kVisa;
   }
 
   @override
@@ -105,16 +99,10 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   /// Group bots for split and distribute group messages
   List<ID>? _bots;
 
-  BaseBulletin.from(ID identifier, {required String data, required String signature})
-      : super.from(identifier, data: data, signature: signature) {
-    this['type'] = Document.kBulletin;
+  BaseBulletin.from(ID identifier, {String? data, String? signature})
+      : super.from(identifier, Document.kBulletin, data: data, signature: signature) {
     // lazy
     _bots = null;
-  }
-
-  BaseBulletin.fromID(ID identifier)
-      : super.fromType(identifier, Document.kBulletin) {
-    this['type'] = Document.kBulletin;
   }
 
   @override
@@ -159,11 +147,11 @@ class GeneralDocumentFactory implements DocumentFactory {
     if (data == null || signature == null || data.isEmpty || signature.isEmpty) {
       // create empty document
       if (docType == Document.kVisa) {
-        return BaseVisa.fromID(identifier);
+        return BaseVisa.from(identifier);
       } else if (docType == Document.kBulletin) {
-        return BaseBulletin.fromID(identifier);
+        return BaseBulletin.from(identifier);
       } else {
-        return BaseDocument.fromType(identifier, docType);
+        return BaseDocument.from(identifier, docType);
       }
     } else {
       // create document with data & signature from local storage
@@ -172,7 +160,7 @@ class GeneralDocumentFactory implements DocumentFactory {
       } else if (docType == Document.kBulletin) {
         return BaseBulletin.from(identifier, data: data, signature: signature);
       } else {
-        return BaseDocument.from(identifier, data: data, signature: signature);
+        return BaseDocument.from(identifier, docType, data: data, signature: signature);
       }
     }
   }
