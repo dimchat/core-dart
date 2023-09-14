@@ -96,35 +96,6 @@ abstract class ArrayContent implements Content {
 }
 
 
-///  Application Customized message: {
-///      type : 0xCC,
-///      sn   : 123,
-///
-///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
-///      act   : "{ACTION}",  // action name (3.g.: "throw")
-///      extra : info         // action parameters
-///  }
-abstract class CustomizedContent implements Content {
-
-  /// get App ID
-  String get application;
-
-  /// get Module name
-  String get module;
-
-  /// get Action name
-  String get action;
-
-  //
-  //  Factory
-  //
-
-  static CustomizedContent create({required String app, required String mod, required String act}) =>
-      AppCustomizedContent.from(app: app, mod: mod, act: act);
-}
-
-
 ///  Top-Secret message: {
 ///      type : 0xFF,
 ///      sn   : 456,
@@ -210,56 +181,27 @@ abstract class PageContent implements Content {
 }
 
 
-///  Money message: {
-///      type : 0x40,
+///  Name Card content: {
+///      type : 0x33,
 ///      sn   : 123,
 ///
-///      currency : "RMB", // USD, USDT, ...
-///      amount   : 100.00
+///      ID     : "{ID}",        // contact's ID
+///      name   : "{nickname}}", // contact's name
+///      avatar : "{URL}",       // avatar - PNF(URL)
 ///  }
-abstract class MoneyContent implements Content {
+abstract class NameCard implements Content {
 
-  String get currency;
+  ID get identifier;
 
-  double get amount;
-  set amount(double value);
+  String get name;
+
+  PortableNetworkFile? get avatar;
 
   //
   //  Factory
   //
 
-  static MoneyContent create(int? msgType, {required String currency, required double amount}) {
-    if (msgType == null) {
-      return BaseMoneyContent.from(currency: currency, amount: amount);
-    } else {
-      return BaseMoneyContent.fromType(msgType, currency: currency, amount: amount);
-    }
-  }
-}
+  static NameCard create(ID identifier, String name, PortableNetworkFile? avatar) =>
+      NameCardContent.from(identifier, name, avatar);
 
-///  Transfer money message: {
-///      type : 0x41,
-///      sn   : 123,
-///
-///      currency : "RMB",    // USD, USDT, ...
-///      amount   : 100.00,
-///      remitter : "{FROM}", // sender ID
-///      remittee : "{TO}"    // receiver ID
-///  }
-abstract class TransferContent implements MoneyContent {
-
-  /// sender
-  ID get remitter;
-  set remitter(ID sender);
-
-  /// receiver
-  ID get remittee;
-  set remittee(ID receiver);
-
-  //
-  //  Factory
-  //
-
-  static TransferContent create({required String currency, required double amount}) =>
-      TransferMoneyContent.from(currency: currency, amount: amount);
 }

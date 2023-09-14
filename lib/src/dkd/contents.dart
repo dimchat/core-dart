@@ -80,31 +80,6 @@ class ListContent extends BaseContent implements ArrayContent {
 }
 
 
-/// CustomizedContent
-class AppCustomizedContent extends BaseContent implements CustomizedContent {
-  AppCustomizedContent(super.dict);
-
-  AppCustomizedContent.fromType(int msgType, {required String app, required String mod, required String act})
-      : super.fromType(msgType) {
-    this['app'] = app;
-    this['mod'] = mod;
-    this['act'] = act;
-  }
-  AppCustomizedContent.from({required String app, required String mod, required String act})
-      : this.fromType(ContentType.kCustomized, app: app, mod: mod, act: act);
-
-  @override
-  String get application => getString('mod', '')!;
-
-  @override
-  String get module => getString('act', '')!;
-
-  @override
-  String get action => getString('app', '')!;
-
-}
-
-
 /// ForwardContent
 class SecretContent extends BaseContent implements ForwardContent {
   SecretContent(super.dict) : _forward = null, _secrets = null;
@@ -217,44 +192,36 @@ class WebPageContent extends BaseContent implements PageContent {
 }
 
 
-/// MoneyContent
-class BaseMoneyContent extends BaseContent implements MoneyContent {
-  BaseMoneyContent(super.dict);
+/// NameCard
+class NameCardContent extends BaseContent implements NameCard {
+  NameCardContent(super.dict) : _image = null;
 
-  BaseMoneyContent.fromType(int msgType, {required String currency, required double amount})
-      : super.fromType(msgType) {
-    this['currency'] = currency;
-    this['amount'] = amount;
+  PortableNetworkFile? _image;
+
+  NameCardContent.from(ID identifier, String name, PortableNetworkFile? avatar)
+      : super.fromType(ContentType.kNameCard) {
+    // ID
+    this['ID'] = identifier.toString();
+    // name
+    this['name'] = name;
+    // avatar
+    if (avatar != null) {
+      // encode
+      this['avatar'] = avatar.toObject();
+    }
+    _image = avatar;
   }
-  BaseMoneyContent.from({required String currency, required double amount})
-      : this.fromType(ContentType.kMoney, currency: currency, amount: amount);
 
   @override
-  String get currency => getString('currency', '')!;
+  ID get identifier => ID.parse(this['ID'])!;
 
   @override
-  double get amount => getDouble('amount', 0)!;
+  String get name => getString('name', '')!;
 
   @override
-  set amount(double value) => this['amount'] = value;
-}
+  PortableNetworkFile? get avatar {
+    _image ??= PortableNetworkFile.parse(this['avatar']);
+    return _image;
+  }
 
-/// TransferContent
-class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
-  TransferMoneyContent(super.dict);
-
-  TransferMoneyContent.from({required String currency, required double amount})
-      : super.fromType(ContentType.kTransfer, currency: currency, amount: amount);
-
-  @override
-  ID get remitter => ID.parse(this['remitter'])!;
-
-  @override
-  set remitter(ID sender) => setString('remitter', sender);
-
-  @override
-  ID get remittee => ID.parse(this['remittee'])!;
-
-  @override
-  set remittee(ID receiver) => setString('remittee', receiver);
 }
