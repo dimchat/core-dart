@@ -58,7 +58,7 @@ class BaseDocument extends Dictionary implements Document {
     _identifier = identifier;
 
     // document type
-    assert(!docType.isNotEmpty && docType == '*', 'document type error: $docType');
+    assert(docType.isNotEmpty && docType != '*', 'document type error: $docType');
     this['type'] = docType;
 
     // document data(Json) & signature(Base64)

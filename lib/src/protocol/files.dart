@@ -61,7 +61,7 @@ abstract class FileContent implements Content {
   set filename(String? name);
 
   Uri? get url;
-  set url(Uri? location);
+  set url(Uri? remote);
 
   /// symmetric key to decrypt the encrypted data from URL
   DecryptKey? get password;

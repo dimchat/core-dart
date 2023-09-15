@@ -7,6 +7,8 @@ export 'package:mkm/mkm.dart';
 export 'package:dkd/dkd.dart';
 
 export 'src/crypto/keys.dart';
+export 'src/crypto/ted.dart';
+export 'src/crypto/pnf.dart';
 
 export 'src/protocol/contents.dart';
 export 'src/protocol/files.dart';
