@@ -49,6 +49,11 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
     _env = envelope;
     // envelope of the message responding to
     Map origin = envelope == null ? {} : envelope.copyMap(false);
+    assert(origin.containsKey('data') == false
+        && origin.containsKey('key') == false
+        && origin.containsKey('keys') == false
+        && origin.containsKey('meta') == false
+        && origin.containsKey('visa') == false, 'impure envelope: $origin');
     // sn of the message responding to
     if (sn != null) {
       origin['sn'] = sn;

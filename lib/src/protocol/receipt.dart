@@ -67,23 +67,13 @@ abstract class ReceiptCommand implements Command {
   //
 
   static ReceiptCommand create(String text, Envelope envelope, {int? sn, String? signature}) {
+    assert(envelope.containsKey('data') == false
+        && envelope.containsKey('key') == false
+        && envelope.containsKey('keys') == false
+        && envelope.containsKey('meta') == false
+        && envelope.containsKey('visa') == false, 'impure envelope: $envelope');
     // create base receipt command
     return BaseReceiptCommand.from(text, envelope: envelope, sn: sn, signature: signature);
-  }
-
-  static ReceiptCommand from(String text, ReliableMessage? rMsg) {
-    Envelope? env;
-    if (rMsg != null) {
-      Map info = rMsg.copyMap(false);
-      info.remove('data');
-      info.remove('key');
-      info.remove('keys');
-      info.remove('meta');
-      info.remove('visa');
-      env = Envelope.parse(info);
-    }
-    // create base receipt command with text & original envelope
-    return BaseReceiptCommand.from(text, envelope: env);
   }
 
 }

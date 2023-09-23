@@ -1,3 +1,7 @@
+## 0.2.4
+
+- Create ReceiptCommand from envelope.
+
 ## 0.2.3
 
 - TED/PNF wrappers.

@@ -109,13 +109,13 @@ abstract class MetaCommand implements Command {
   ///
   /// @param identifier - entity ID
   /// @param meta - entity Meta
-  static response(ID identifier, Meta meta) =>
+  static MetaCommand response(ID identifier, Meta meta) =>
       BaseMetaCommand.from(identifier, meta: meta);
 
   ///  Query Meta
   ///
   /// @param identifier - entity ID
-  static query(ID identifier) =>
+  static MetaCommand query(ID identifier) =>
       BaseMetaCommand.from(identifier);
 
 }
@@ -148,7 +148,7 @@ abstract class DocumentCommand implements MetaCommand {
   /// @param identifier - entity ID
   /// @param meta - entity Meta
   /// @param doc - entity Document
-  static response(ID identifier, Meta? meta, Document doc) =>
+  static DocumentCommand response(ID identifier, Meta? meta, Document doc) =>
       BaseDocumentCommand.from(identifier, meta: meta, document: doc);
 
   /// 1. Query Entity Document
@@ -156,7 +156,7 @@ abstract class DocumentCommand implements MetaCommand {
   ///
   /// @param identifier - entity ID
   /// @param signature - document signature
-  static query(ID identifier, String? signature) =>
+  static DocumentCommand query(ID identifier, String? signature) =>
       BaseDocumentCommand.from(identifier, signature: signature);
 
 }
