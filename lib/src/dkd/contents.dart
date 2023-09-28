@@ -108,18 +108,21 @@ class SecretContent extends BaseContent implements ForwardContent {
 
   @override
   List<ReliableMessage> get secrets {
-    if (_secrets == null) {
+    List<ReliableMessage>? messages = _secrets;
+    if (messages == null) {
       var info = this['secrets'];
       if (info is List) {
         // get from secrets
-        _secrets = ForwardContent.convert(info);
+        _secrets = messages = ForwardContent.convert(info);
       } else {
+        assert(info == null, 'secret messages error: $info');
         // get from 'forward'
         ReliableMessage? msg = forward;
-        _secrets = msg == null ? [] : [msg];
+        messages = msg == null ? [] : [msg];
+        _secrets = messages;
       }
     }
-    return _secrets!;
+    return messages;
   }
 
 }
@@ -156,7 +159,7 @@ class WebPageContent extends BaseContent implements PageContent {
   }
 
   @override
-  String get title => getString('title', null)!;
+  String get title => getString('title', '')!;
 
   @override
   set title(String string) => this['title'] = string;
@@ -165,8 +168,7 @@ class WebPageContent extends BaseContent implements PageContent {
   String? get desc => getString('desc', null);
 
   @override
-  set desc(String? string) =>
-      string == null ? remove('desc') : this['desc'] = string;
+  set desc(String? string) => this['desc'] = string;
 
   @override
   Uint8List? get icon {

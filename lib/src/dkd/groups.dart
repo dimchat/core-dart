@@ -108,7 +108,7 @@ class InviteGroupCommand extends BaseGroupCommand implements InviteCommand {
 
 
 ///
-/// ExpelCommand
+/// ExpelCommand (Deprecated, use 'reset' instead)
 ///
 class ExpelGroupCommand extends BaseGroupCommand implements ExpelCommand {
   ExpelGroupCommand(super.dict);

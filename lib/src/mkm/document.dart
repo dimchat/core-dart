@@ -42,7 +42,7 @@ class BaseDocument extends Dictionary implements Document {
   TransportableData? _sig;  // LocalUser(identifier).sign(data)
 
   Map? _properties;
-  int _status = 0;  // 1 for valid, -1 for invalid
+  int _status = 0;          // 1 for valid, -1 for invalid
 
   ///  1. Create a new empty document
   ///  2. Create entity document with data and signature loaded from local storage

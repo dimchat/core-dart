@@ -62,7 +62,7 @@ abstract class GroupCommand implements HistoryCommand {
   static const String kAbdicate = "abdicate";
   // member
   static const String kInvite   = "invite";
-  static const String kExpel    = "expel";
+  static const String kExpel    = "expel";  // Deprecated (use 'reset' instead)
   static const String kJoin     = "join";
   static const String kQuit     = "quit";
   static const String kQuery    = "query";
@@ -86,6 +86,7 @@ abstract class GroupCommand implements HistoryCommand {
 
   static InviteCommand invite(ID group, {ID? member, List<ID>? members}) =>
       InviteGroupCommand.from(group, member: member, members: members);
+  /// Deprecated (use 'reset' instead)
   static ExpelCommand expel(ID group, {ID? member, List<ID>? members}) =>
       ExpelGroupCommand.from(group, member: member, members: members);
 
@@ -111,6 +112,7 @@ abstract class InviteCommand implements GroupCommand {
 
 
 abstract class ExpelCommand implements GroupCommand {
+  /// Deprecated (use 'reset' instead)
 }
 
 

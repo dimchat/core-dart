@@ -51,6 +51,8 @@ abstract class Group extends Entity {
   // NOTICE: the owner must be a member
   //         (usually the first one)
   Future<List<ID>> get members;
+
+  /// group bots
   Future<List<ID>> get assistants;
 }
 
