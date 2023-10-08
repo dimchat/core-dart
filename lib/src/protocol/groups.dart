@@ -84,6 +84,9 @@ abstract class GroupCommand implements HistoryCommand {
   //  Factories
   //
 
+  static GroupCommand create(String cmd, ID group, {ID? member, List<ID>? members}) =>
+      BaseGroupCommand.from(cmd, group, member: member, members: members);
+
   static InviteCommand invite(ID group, {ID? member, List<ID>? members}) =>
       InviteGroupCommand.from(group, member: member, members: members);
   /// Deprecated (use 'reset' instead)

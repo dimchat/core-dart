@@ -31,7 +31,7 @@
 import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:mkm/format.dart';
 
 import 'base.dart';
 
@@ -54,30 +54,29 @@ import 'base.dart';
 class EncryptedMessage extends BaseMessage implements SecureMessage {
   EncryptedMessage(super.dict) : _body = null, _encKey = null, _encKeys = null;
 
-  TransportableData? _body;
+  Uint8List? _body;
   TransportableData? _encKey;
   Map? _encKeys;  // String => String
 
   @override
   Future<Uint8List> get data async {
-    TransportableData? ted = _body;
-    if (ted == null) {
-      Object? base64 = this['data'];
-      assert(base64 != null, 'message data cannot be empty: $this');
-      if (!BaseMessage.isBroadcast(this)) {
+    if (_body == null) {
+      Object? text = this['data'];
+      if (text == null) {
+        assert(false, 'message data cannot be empty: ${toMap()}');
+      } else if (!BaseMessage.isBroadcast(this)) {
         // message content had been encrypted by a symmetric key,
         // so the data should be encoded here (with algorithm 'base64' as default).
-        _body = ted = TransportableData.parse(base64);
-      } else if (base64 is String) {
+        _body = TransportableData.decode(text);
+      } else if (text is String) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
-        Uint8List plaintext = UTF8.encode(base64);  // JsON
-        _body = ted = TransportableData.create(plaintext);
+        _body = UTF8.encode(text);  // JsON
       } else {
-        assert(false, 'content data error: $base64');
+        assert(false, 'content data error: $text');
       }
     }
-    return ted!.data;
+    return _body!;
   }
 
   @override

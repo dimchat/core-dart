@@ -30,8 +30,9 @@
  */
 import 'dart:typed_data';
 
-import 'package:dkd/dkd.dart';
+import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
+import 'package:dkd/dkd.dart';
 
 import '../dkd/contents.dart';
 
@@ -176,7 +177,7 @@ abstract class PageContent implements Content {
   //  Factory
   //
 
-  static PageContent create({required Uri url, required String title, String? desc, Uint8List? icon}) =>
+  static PageContent create({required Uri url, required String title, String? desc, TransportableData? icon}) =>
       WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
 }
 

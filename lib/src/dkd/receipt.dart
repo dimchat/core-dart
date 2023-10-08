@@ -29,7 +29,7 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:mkm/type.dart';
 
 import '../protocol/commands.dart';
 import '../protocol/receipt.dart';
@@ -41,28 +41,18 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
   /// original message envelope
   Envelope? _env;
 
-  BaseReceipt.from(String text, {Envelope? envelope, int? sn, String? signature})
-      : super.fromName(Command.kReceipt) {
+  BaseReceipt.from(String text, Map? origin) : super.fromName(Command.kReceipt) {
     // text message
     this['text'] = text;
-    // original envelope
-    _env = envelope;
-    // envelope of the message responding to
-    Map origin = envelope == null ? {} : envelope.copyMap(false);
-    assert(origin.containsKey('data') == false
-        && origin.containsKey('key') == false
-        && origin.containsKey('keys') == false
-        && origin.containsKey('meta') == false
-        && origin.containsKey('visa') == false, 'impure envelope: $origin');
-    // sn of the message responding to
-    if (sn != null) {
-      origin['sn'] = sn;
-    }
-    // signature of the message responding to
-    if (signature != null) {
-      origin['signature'] = signature;
-    }
-    if (origin.isNotEmpty) {
+    // original envelope of message responding to,
+    // includes 'sn' and 'signature'
+    if (origin != null) {
+      assert(!(origin.isEmpty ||
+          origin.containsKey('data') ||
+          origin.containsKey('key') ||
+          origin.containsKey('keys') ||
+          origin.containsKey('meta') ||
+          origin.containsKey('visa')), 'impure envelope: $origin');
       this['origin'] = origin;
     }
   }
@@ -94,7 +84,6 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
 class BaseReceiptCommand extends BaseReceipt with ReceiptCommandMixIn {
   BaseReceiptCommand(super.dict);
 
-  BaseReceiptCommand.from(String text, {Envelope? envelope, int? sn, String? signature})
-      : super.from(text, envelope: envelope, sn: sn, signature: signature);
+  BaseReceiptCommand.from(String text, Map? origin) : super.from(text, origin);
 
 }

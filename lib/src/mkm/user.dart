@@ -30,6 +30,7 @@
  */
 import 'dart:typed_data';
 
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
 import 'entity.dart';
@@ -163,18 +164,22 @@ class BaseUser extends BaseEntity implements User {
 
   @override
   UserDataSource? get dataSource {
-    EntityDataSource? barrack = super.dataSource;
-    if (barrack == null) {
-      return null;
+    var facebook = super.dataSource;
+    if (facebook is UserDataSource) {
+      return facebook;
     }
-    assert(barrack is UserDataSource, 'user data source error: $barrack');
-    return barrack as UserDataSource;
+    assert(facebook == null, 'user data source error: $facebook');
+    return null;
   }
 
   @override
   Future<Visa?> get visa async {
-    Document? doc = await getDocument(Document.kVisa);
-    return doc is Visa/* && doc.isValid*/ ? doc : null;
+    var doc = await getDocument(Document.kVisa);
+    if (doc is Visa/* && doc.isValid*/) {
+      return doc;
+    }
+    assert(doc == null, 'user document error: $doc');
+    return null;
   }
 
   @override

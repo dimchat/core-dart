@@ -25,7 +25,7 @@
  */
 import 'dart:typed_data';
 
-import 'package:mkm/mkm.dart';
+import 'package:mkm/crypto.dart';
 
 ///  File Content MixIn: {
 ///
@@ -58,21 +58,31 @@ class BaseFileWrapper extends Dictionary {
   ///
   /// file data
   ///
-  Uint8List? get data {
+  TransportableData? get data {
     TransportableData? ted = _attachment;
     if (ted == null) {
       Object? base64 = this['data'];
       _attachment = ted = TransportableData.parse(base64);
     }
-    return ted?.data;
+    return ted;
   }
 
-  set data(Uint8List? fileData) {
-    TransportableData? ted;
-    if (fileData == null/* || fileData.isEmpty*/) {
+  set data(TransportableData? ted) {
+    if (ted == null) {
       remove('data');
     } else {
-      ted = TransportableData.create(fileData);
+      this['data'] = ted.toObject();
+    }
+    _attachment = ted;
+  }
+  /// set binary data
+  void setDate(Uint8List? binary) {
+    TransportableData? ted;
+    if (binary == null || binary.isEmpty) {
+      ted = null;
+      remove('data');
+    } else {
+      ted = TransportableData.create(binary);
       this['data'] = ted.toObject();
     }
     _attachment = ted;

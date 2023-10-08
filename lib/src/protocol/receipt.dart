@@ -66,14 +66,38 @@ abstract class ReceiptCommand implements Command {
   //  Factory method
   //
 
-  static ReceiptCommand create(String text, Envelope envelope, {int? sn, String? signature}) {
-    assert(envelope.containsKey('data') == false
-        && envelope.containsKey('key') == false
-        && envelope.containsKey('keys') == false
-        && envelope.containsKey('meta') == false
-        && envelope.containsKey('visa') == false, 'impure envelope: $envelope');
-    // create base receipt command
-    return BaseReceiptCommand.from(text, envelope: envelope, sn: sn, signature: signature);
+  /// Create base receipt command with text & original message info
+  static ReceiptCommand create(String text, Envelope? head, Content? body) {
+    Map? info;
+    if (head == null) {
+      info = null;
+    } else if (body == null) {
+      info = purify(head);
+    } else {
+      info = purify(head);
+      info['sn'] = body.sn;
+    }
+    var command = BaseReceiptCommand.from(text, info);
+    if (body != null) {
+      // check group
+      ID? group = body.group;
+      if (group != null) {
+        command.group = group;
+      }
+    }
+    return command;
+  }
+
+  static Map purify(Envelope envelope) {
+    Map info = envelope.copyMap(false);
+    if (info.containsKey('data')) {
+      info.remove('data');
+      info.remove('key');
+      info.remove('keys');
+      info.remove('meta');
+      info.remove('visa');
+    }
+    return info;
   }
 
 }

@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
 import 'mkm/entity.dart';
@@ -43,6 +44,46 @@ import 'mkm/user.dart';
 ///     2nd, if they were updated, we can refresh them immediately here
 abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSource {
 
+  // memory caches
+  final Map<ID, User>   _userMap = {};
+  final Map<ID, Group> _groupMap = {};
+
+  // protected
+  void cacheUser(User user) {
+    user.dataSource ??= this;
+    _userMap[user.identifier] = user;
+  }
+  // protected
+  void cacheGroup(Group group) {
+    group.dataSource ??= this;
+    _groupMap[group.identifier] = group;
+  }
+
+  /// Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+  /// this will remove 50% of cached objects
+  ///
+  /// @return number of survivors
+  int reduceMemory() {
+    int finger = 0;
+    finger = thanos(_userMap, finger);
+    finger = thanos(_groupMap, finger);
+    return finger >> 1;
+  }
+
+  ///  Create user when visa.key exists
+  ///
+  /// @param identifier - user ID
+  /// @return user, null on not ready
+  // protected
+  Future<User?> createUser(ID identifier);
+
+  ///  Create group when members exist
+  ///
+  /// @param identifier - group ID
+  /// @return group, null on not ready
+  // protected
+  Future<Group?> createGroup(ID identifier);
+
   // protected
   Future<EncryptKey?> getVisaKey(ID user) async {
     Document? doc = await getDocument(user, Document.kVisa);
@@ -57,6 +98,38 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     Meta? meta = await getMeta(user);
     // assert(meta != null, 'failed to get meta for: $entity');
     return meta?.publicKey;
+  }
+
+  //
+  //  Entity Delegate
+  //
+
+  @override
+  Future<User?> getUser(ID identifier) async {
+    // 1. get from user cache
+    User? user = _userMap[identifier];
+    if (user == null) {
+      // 2. create user and cache it
+      user = await createUser(identifier);
+      if (user != null) {
+        cacheUser(user);
+      }
+    }
+    return user;
+  }
+
+  @override
+  Future<Group?> getGroup(ID identifier) async {
+    // 1. get from group cache
+    Group? group = _groupMap[identifier];
+    if (group == null) {
+      // 2. create group and cache it
+      group = await createGroup(identifier);
+      if (group != null) {
+        cacheGroup(group);
+      }
+    }
+    return group;
   }
 
   //
@@ -223,4 +296,14 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     }
   }
 
+}
+
+/// Thanos
+/// ~~~~~~
+/// Thanos can kill half lives of a world with a snap of the finger
+int thanos(Map planet, int finger) {
+  // if ++finger is odd, remove it,
+  // else, let it go
+  planet.removeWhere((key, value) => (++finger & 1) == 1);
+  return finger;
 }

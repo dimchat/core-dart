@@ -74,12 +74,12 @@ abstract class MoneyContent implements Content {
 abstract class TransferContent implements MoneyContent {
 
   /// sender
-  ID get remitter;
-  set remitter(ID sender);
+  ID? get remitter;
+  set remitter(ID? sender);
 
   /// receiver
-  ID get remittee;
-  set remittee(ID receiver);
+  ID? get remittee;
+  set remittee(ID? receiver);
 
   //
   //  Factory

@@ -31,7 +31,7 @@
 import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:mkm/crypto.dart';
 
 import '../crypto/pnf.dart';
 import '../protocol/files.dart';
@@ -46,8 +46,8 @@ class BaseFileContent extends BaseContent implements FileContent {
 
   late final BaseFileWrapper _wrapper = BaseFileWrapper(toMap());
 
-  BaseFileContent.from(int? msgType, {Uint8List? data, String? filename,
-                                      Uri? url, DecryptKey? password})
+  BaseFileContent.from(int? msgType, TransportableData? data, String? filename,
+      Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.kFile) {
     // file data
     if (data != null) {
@@ -70,10 +70,10 @@ class BaseFileContent extends BaseContent implements FileContent {
   /// file data
 
   @override
-  Uint8List? get data => _wrapper.data;
+  Uint8List? get data => _wrapper.data?.data;
 
   @override
-  set data(Uint8List? fileData) => _wrapper.data = fileData;
+  set data(Uint8List? binary) => _wrapper.setDate(binary);
 
   /// file name
 
@@ -111,10 +111,9 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   /// small image
   TransportableData? _thumbnail;
 
-  ImageFileContent.from({Uint8List? data, String? filename,
-                         Uri? url, DecryptKey? password})
-      : super.from(ContentType.kImage, data: data, filename: filename,
-                                       url: url, password: password);
+  ImageFileContent.from(TransportableData? data, String? filename,
+      Uri? url, DecryptKey? password)
+      : super.from(ContentType.kImage, data, filename, url, password);
 
   @override
   Uint8List? get thumbnail {
@@ -146,10 +145,9 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
 class AudioFileContent extends BaseFileContent implements AudioContent {
   AudioFileContent(super.dict);
 
-  AudioFileContent.from({Uint8List? data, String? filename,
-                         Uri? url, DecryptKey? password})
-      : super.from(ContentType.kAudio, data: data, filename: filename,
-                                       url: url, password: password);
+  AudioFileContent.from(TransportableData? data, String? filename,
+      Uri? url, DecryptKey? password)
+      : super.from(ContentType.kAudio, data, filename, url, password);
 
   @override
   String? get text => getString('text', null);
@@ -168,10 +166,9 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   /// small image
   TransportableData? _snapshot;
 
-  VideoFileContent.from({Uint8List? data, String? filename,
-                         Uri? url, DecryptKey? password})
-      : super.from(ContentType.kVideo, data: data, filename: filename,
-                                       url: url, password: password);
+  VideoFileContent.from(TransportableData? data, String? filename,
+      Uri? url, DecryptKey? password)
+      : super.from(ContentType.kVideo, data, filename, url, password);
 
   @override
   Uint8List? get snapshot {

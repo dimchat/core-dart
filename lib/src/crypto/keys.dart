@@ -28,8 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/mkm.dart';
-
+import 'package:mkm/crypto.dart';
 
 ///
 /// Base Keys

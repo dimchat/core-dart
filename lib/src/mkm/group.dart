@@ -99,18 +99,22 @@ class BaseGroup extends BaseEntity implements Group {
 
   @override
   GroupDataSource? get dataSource {
-    EntityDataSource? barrack = super.dataSource;
-    if (barrack == null) {
-      return null;
+    var facebook = super.dataSource;
+    if (facebook is GroupDataSource) {
+      return facebook;
     }
-    assert(barrack is GroupDataSource, 'group data source error: $barrack');
-    return barrack as GroupDataSource;
+    assert(facebook == null, 'group data source error: $facebook');
+    return null;
   }
 
   @override
   Future<Bulletin?> get bulletin async {
-    Document? doc = await getDocument(Document.kBulletin);
-    return doc is Bulletin/* && doc.isValid*/ ? doc : null;
+    var doc = await getDocument(Document.kBulletin);
+    if (doc is Bulletin/* && doc.isValid*/) {
+      return doc;
+    }
+    assert(doc == null, 'group document error: $doc');
+    return null;
   }
 
   @override

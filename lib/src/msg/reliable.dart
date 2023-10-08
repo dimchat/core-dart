@@ -30,8 +30,9 @@
  */
 import 'dart:typed_data';
 
-import 'package:dkd/dkd.dart';
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
+import 'package:dkd/dkd.dart';
 
 import 'secure.dart';
 
@@ -72,7 +73,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       _signature = ted = TransportableData.parse(base64);
       assert(ted != null, 'failed to decode message signature: $base64');
     }
-    return ted!.data;
+    return ted!.data!;
   }
 
   ///  Sender's Meta

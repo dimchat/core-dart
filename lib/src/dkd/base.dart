@@ -30,6 +30,7 @@
  */
 import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
+import 'package:mkm/type.dart';
 
 class BaseContent extends Dictionary implements Content {
   BaseContent(super.dict) : _type = null, _sn = null, _time = null;
@@ -59,7 +60,7 @@ class BaseContent extends Dictionary implements Content {
       MessageFactoryManager man = MessageFactoryManager();
       _type = man.generalFactory.getContentType(toMap(), 0);
       // _type = getInt('type', 0);
-      assert(_type! >= 0, 'content type error: $this');
+      assert(_type! > 0, 'content type error: $this');
     }
     return _type ?? 0;
   }

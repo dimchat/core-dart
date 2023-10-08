@@ -30,6 +30,7 @@
  */
 import 'dart:typed_data';
 
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
 class BaseDocument extends Dictionary implements Document {
@@ -49,9 +50,9 @@ class BaseDocument extends Dictionary implements Document {
   ///
   /// @param identifier - entity ID
   /// @param docType    - document type
-  /// @param data - document data in JsON format
-  /// @param signature - signature of document data in Base64 format
-  BaseDocument.from(ID identifier, String docType, {String? data, String? signature})
+  /// @param data       - document data in JsON format
+  /// @param signature  - signature of document data in Base64 format
+  BaseDocument.from(ID identifier, String docType, {String? data, TransportableData? signature})
       : super(null) {
     // ID
     this['ID'] = identifier.toString();
@@ -77,9 +78,9 @@ class BaseDocument extends Dictionary implements Document {
       assert(data.isNotEmpty && signature.isNotEmpty, 'document data/signature error: $data, $signature');
       // 2. Create entity document with data and signature loaded from local storage
       this['data'] = data;
-      this['signature'] = signature;
+      this['signature'] = signature.toObject();
       _json = data;
-      _sig = null;  // lazy
+      _sig = signature;
       _properties = null;  // lazy
       // all documents must be verified before saving into local storage
       _status = 1;

@@ -30,8 +30,9 @@
  */
 import 'dart:typed_data';
 
-import 'package:dkd/dkd.dart';
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
+import 'package:dkd/dkd.dart';
 
 import 'mkm/entity.dart';
 import 'mkm/user.dart';
@@ -61,6 +62,18 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     return password.encrypt(data, iMsg);
   }
 
+  // @override
+  // Future<Object> encodeData(Uint8List data, InstantMessage iMsg) async {
+  //   if (BaseMessage.isBroadcast(iMsg)) {
+  //     // broadcast message content will not be encrypted (just encoded to JsON),
+  //     // so no need to encode to Base64 here
+  //     return UTF8.decode(data)!;
+  //   }
+  //   // message content had been encrypted by a symmetric key,
+  //   // so the data should be encoded here (with algorithm 'base64' as default).
+  //   return TransportableData.encode(data);
+  // }
+
   @override
   Future<Uint8List?> serializeKey(SymmetricKey password, InstantMessage iMsg) async {
     if (BaseMessage.isBroadcast(iMsg)) {
@@ -86,7 +99,21 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     return await contact.encrypt(key);
   }
 
+  // @override
+  // Future<Object> encodeKey(Uint8List key, InstantMessage iMsg) async {
+  //   assert(!BaseMessage.isBroadcast(iMsg), 'broadcast message has no key: $iMsg');
+  //   // message key had been encrypted by a public key,
+  //   // so the data should be encode here (with algorithm 'base64' as default).
+  //   return TransportableData.encode(key);
+  // }
+
   //-------- SecureMessageDelegate
+
+  // @override
+  // Future<Uint8List?> decodeKey(Object key, SecureMessage sMsg) async {
+  //   assert(!BaseMessage.isBroadcast(sMsg), 'broadcast message has no key: $sMsg');
+  //   return TransportableData.decode(key);
+  // }
 
   @override
   Future<Uint8List?> decryptKey(Uint8List key, ID receiver, SecureMessage sMsg) async {
@@ -128,6 +155,23 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     return SymmetricKey.parse(dict);
   }
 
+  // @override
+  // Future<Uint8List?> decodeData(Object data, SecureMessage sMsg) async {
+  //   if (BaseMessage.isBroadcast(sMsg)) {
+  //     // broadcast message content will not be encrypted (just encoded to JsON),
+  //     // so return the string data directly
+  //     if (data is String) {
+  //       return UTF8.encode(data);
+  //     } else {
+  //       assert(false, 'content data error: $data');
+  //       return null;
+  //     }
+  //   }
+  //   // message content had been encrypted by a symmetric key,
+  //   // so the data should be encoded here (with algorithm 'base64' as default).
+  //   return TransportableData.decode(data);
+  // }
+
   @override
   Future<Uint8List?> decryptContent(Uint8List data, SymmetricKey password, SecureMessage sMsg) async {
     // check 'IV' in sMsg for AES decryption
@@ -161,7 +205,17 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
     return await user!.sign(data);
   }
 
+  // @override
+  // Future<Object> encodeSignature(Uint8List signature, SecureMessage sMsg) async {
+  //   return TransportableData.encode(signature);
+  // }
+
   //-------- ReliableMessageDelegate
+
+  // @override
+  // Future<Uint8List?> decodeSignature(Object signature, ReliableMessage rMsg) async {
+  //   return TransportableData.decode(signature);
+  // }
 
   @override
   Future<bool> verifyDataSignature(Uint8List data, Uint8List signature, ReliableMessage rMsg) async {

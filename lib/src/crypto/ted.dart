@@ -25,7 +25,7 @@
  */
 import 'dart:typed_data';
 
-import 'package:mkm/mkm.dart';
+import 'package:mkm/crypto.dart';
 
 ///  Transportable Data Mixin: {
 ///
@@ -39,10 +39,19 @@ import 'package:mkm/mkm.dart';
 ///     1. "base64,{BASE64_ENCODE}"
 ///     2. "data:image/png;base64,{BASE64_ENCODE}"
 class BaseDataWrapper extends Dictionary {
-  BaseDataWrapper(super.dict) : _binary = null;
+  BaseDataWrapper(super.dict) : _data = null;
 
   /// binary data
-  Uint8List? _binary;
+  Uint8List? _data;
+
+  @override
+  bool get isEmpty {
+    if (super.isEmpty) {
+      return true;
+    }
+    Uint8List? binary = data;
+    return binary == null || binary.isEmpty;
+  }
 
   @override
   String toString() {
@@ -99,22 +108,22 @@ class BaseDataWrapper extends Dictionary {
   /// binary data
   ///
   Uint8List? get data {
-    if (_binary == null) {
+    if (_data == null) {
       String encoded = getString('data', '')!;
       if (encoded.isNotEmpty) {
         String alg = algorithm;
         if (alg == TransportableData.kBASE_64) {
-          _binary = Base64.decode(encoded);
+          _data = Base64.decode(encoded);
         } else if (alg == TransportableData.kBASE_58) {
-          _binary = Base58.decode(encoded);
+          _data = Base58.decode(encoded);
         } else if (alg == TransportableData.kHEX) {
-          _binary = Hex.decode(encoded);
+          _data = Hex.decode(encoded);
         } else {
           assert(false, 'data algorithm not support: $alg');
         }
       }
     }
-    return _binary;
+    return _data;
   }
 
   set data(Uint8List? binary) {
@@ -134,7 +143,7 @@ class BaseDataWrapper extends Dictionary {
       }
       this['data'] = encoded;
     }
-    _binary = binary;
+    _data = binary;
   }
 
 }

@@ -31,6 +31,7 @@
 import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
+import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
 
 import '../protocol/contents.dart';
@@ -138,12 +139,12 @@ class WebPageContent extends BaseContent implements PageContent {
   /// small image
   TransportableData? _icon;
 
-  WebPageContent.from({required Uri url, required String title, String? desc, Uint8List? icon})
+  WebPageContent.from({required Uri url, required String title, String? desc, TransportableData? icon})
       : super.fromType(ContentType.kPage) {
     this.url = url;
     this.title = title;
     this.desc = desc;
-    this.icon = icon;
+    setIcon(icon);
   }
 
   @override
@@ -182,14 +183,21 @@ class WebPageContent extends BaseContent implements PageContent {
 
   @override
   set icon(Uint8List? image) {
+    TransportableData? ted;
     if (image == null || image.isEmpty) {
-      remove('icon');
-      _icon = null;
+      ted = null;
     } else {
-      TransportableData ted = TransportableData.create(image);
-      this['icon'] = ted.toObject();
-      _icon = ted;
+      ted = TransportableData.create(image);
     }
+    setIcon(ted);
+  }
+  void setIcon(TransportableData? ted) {
+    if (ted == null) {
+      remove('icon');
+    } else {
+      this['icon'] = ted.toObject();
+    }
+    _icon = ted;
   }
 }
 

@@ -1,3 +1,7 @@
+## 0.2.5
+
+- Cache user & group entities in barrack.
+
 ## 0.2.4
 
 - Create ReceiptCommand from envelope.

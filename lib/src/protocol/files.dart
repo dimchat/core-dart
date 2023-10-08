@@ -31,7 +31,7 @@
 import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:mkm/crypto.dart';
 
 import '../dkd/files.dart';
 
@@ -71,34 +71,36 @@ abstract class FileContent implements Content {
   //  Factories
   //
 
-  static FileContent create(int msgType, {Uint8List? data, String? filename,
+  static FileContent create(int msgType, {TransportableData? data, String? filename,
                                           Uri? url, DecryptKey? password}) {
-    return BaseFileContent.from(msgType, data: data, filename: filename,
-                                         url: url, password: password);
+    if (msgType == ContentType.kImage) {
+      return ImageFileContent.from(data, filename, url, password);
+    } else if (msgType == ContentType.kAudio) {
+      return AudioFileContent.from(data, filename, url, password);
+    } else if (msgType == ContentType.kVideo) {
+      return VideoFileContent.from(data, filename, url, password);
+    }
+    return BaseFileContent.from(msgType, data, filename, url, password);
   }
 
-  static FileContent file({Uint8List? data, String? filename,
+  static FileContent file({TransportableData? data, String? filename,
                            Uri? url, DecryptKey? password}) {
-    return BaseFileContent.from(ContentType.kFile, data: data, filename: filename,
-                                                   url: url, password: password);
+    return BaseFileContent.from(ContentType.kFile, data, filename, url, password);
   }
 
-  static ImageContent image({Uint8List? data, String? filename,
+  static ImageContent image({TransportableData? data, String? filename,
                              Uri? url, DecryptKey? password}) {
-    return ImageFileContent.from(data: data, filename: filename,
-                                 url: url, password: password);
+    return ImageFileContent.from(data, filename, url, password);
   }
 
-  static AudioContent audio({Uint8List? data, String? filename,
+  static AudioContent audio({TransportableData? data, String? filename,
                              Uri? url, DecryptKey? password}) {
-    return AudioFileContent.from(data: data, filename: filename,
-                                 url: url, password: password);
+    return AudioFileContent.from(data, filename, url, password);
   }
 
-  static VideoContent video({Uint8List? data, String? filename,
+  static VideoContent video({TransportableData? data, String? filename,
                              Uri? url, DecryptKey? password}) {
-    return VideoFileContent.from(data: data, filename: filename,
-                                 url: url, password: password);
+    return VideoFileContent.from(data, filename, url, password);
   }
 }
 

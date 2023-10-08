@@ -30,6 +30,7 @@
  */
 import 'dart:typed_data';
 
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
 ///  User/Group Meta data
@@ -76,7 +77,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   int _status = 0;  // 1 for valid, -1 for invalid
 
-  BaseMeta.from(int version, VerifyKey key, String? seed, Uint8List? fingerprint)
+  BaseMeta.from(int version, VerifyKey key, {String? seed, TransportableData? fingerprint})
       : super(null) {
     //
     //  meta type
@@ -98,12 +99,10 @@ abstract class BaseMeta extends Dictionary implements Meta {
     //
     //  fingerprint
     //
-    TransportableData? ted;
     if (fingerprint != null) {
-      ted = TransportableData.create(fingerprint);
-      this['fingerprint'] = ted.toObject();
+      this['fingerprint'] = fingerprint.toObject();
     }
-    _fingerprint = ted;
+    _fingerprint = fingerprint;
 
     // generated meta, or loaded from local storage,
     // no need to verify again.

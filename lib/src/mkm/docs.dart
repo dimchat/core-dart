@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
 import 'document.dart';
@@ -48,7 +49,7 @@ class BaseVisa extends BaseDocument implements Visa {
   /// Avatar URL
   PortableNetworkFile? _avatar;
 
-  BaseVisa.from(ID identifier, {String? data, String? signature})
+  BaseVisa.from(ID identifier, {String? data, TransportableData? signature})
       : super.from(identifier, Document.kVisa, data: data, signature: signature) {
     // lazy
     _key = null;
@@ -99,7 +100,7 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   /// Group bots for split and distribute group messages
   List<ID>? _bots;
 
-  BaseBulletin.from(ID identifier, {String? data, String? signature})
+  BaseBulletin.from(ID identifier, {String? data, TransportableData? signature})
       : super.from(identifier, Document.kBulletin, data: data, signature: signature) {
     // lazy
     _bots = null;
@@ -130,71 +131,4 @@ class BaseBulletin extends BaseDocument implements Bulletin {
     _bots = bots;
   }
 
-}
-
-
-///
-/// General Document Factory
-///
-class GeneralDocumentFactory implements DocumentFactory {
-  GeneralDocumentFactory(String docType) : _type = docType;
-
-  final String _type;
-
-  @override
-  Document createDocument(ID identifier, {String? data, String? signature}) {
-    String docType = _getType(_type, identifier);
-    if (data == null || signature == null || data.isEmpty || signature.isEmpty) {
-      // create empty document
-      if (docType == Document.kVisa) {
-        return BaseVisa.from(identifier);
-      } else if (docType == Document.kBulletin) {
-        return BaseBulletin.from(identifier);
-      } else {
-        return BaseDocument.from(identifier, docType);
-      }
-    } else {
-      // create document with data & signature from local storage
-      if (docType == Document.kVisa) {
-        return BaseVisa.from(identifier, data: data, signature: signature);
-      } else if (docType == Document.kBulletin) {
-        return BaseBulletin.from(identifier, data: data, signature: signature);
-      } else {
-        return BaseDocument.from(identifier, docType, data: data, signature: signature);
-      }
-    }
-  }
-
-  @override
-  Document? parseDocument(Map doc) {
-    ID? identifier = ID.parse(doc['ID']);
-    if (identifier == null) {
-      // assert(false, 'document ID not found: $doc');
-      return null;
-    }
-    AccountFactoryManager man = AccountFactoryManager();
-    String? docType = man.generalFactory.getDocumentType(doc, null);
-    docType ??= _getType('*', identifier);
-    if (docType == Document.kVisa) {
-      return BaseVisa(doc);
-    } else if (docType == Document.kBulletin) {
-      return BaseBulletin(doc);
-    } else {
-      return BaseDocument(doc);
-    }
-  }
-}
-
-String _getType(String docType, ID identifier) {
-  if (docType == '*') {
-    if (identifier.isGroup) {
-      return Document.kBulletin;
-    } else if (identifier.isUser) {
-      return Document.kVisa;
-    } else {
-      return Document.kProfile;
-    }
-  } else {
-    return docType;
-  }
 }

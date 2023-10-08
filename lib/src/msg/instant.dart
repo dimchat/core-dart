@@ -72,7 +72,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
 
   @override
   set content(Content body) {
-    this['content'] = body.toMap();
+    setMap('content', body);
     _body = body;
   }
 

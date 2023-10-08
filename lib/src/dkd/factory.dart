@@ -29,7 +29,7 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:mkm/type.dart';
 
 import '../protocol/commands.dart';
 
@@ -74,7 +74,8 @@ class CommandGeneralFactory {
     }
     // get factory by command name
     String cmd = getCmd(info, '')!;
-    CommandFactory? factory = cmd.isEmpty ? null : getCommandFactory(cmd);
+    assert(cmd.isNotEmpty, 'command name not found: $content');
+    CommandFactory? factory = getCommandFactory(cmd);
     if (factory == null) {
       // unknown command name, get base command factory
       factory = _defaultFactory(info);
