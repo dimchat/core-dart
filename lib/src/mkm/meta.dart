@@ -182,7 +182,7 @@ abstract class MetaHelper {
     bool noSig = fingerprint == null || fingerprint.isEmpty;
     // check meta version
     if (!MetaType.hasSeed(meta.type)) {
-      // this meta has no seed, so no signature too
+      // this meta has no seed, so no fingerprint too
       return noSeed && noSig;
     } else if (noSeed || noSig) {
       // seed and fingerprint should not be empty

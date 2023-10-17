@@ -158,19 +158,19 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   @override
   Future<List<VerifyKey>> getPublicKeysForVerification(ID user) async {
     List<VerifyKey> keys = [];
-    // 1. get key from visa
-    EncryptKey? visaKey = await getVisaKey(user);
-    if (visaKey is VerifyKey) {
-      // the sender may use communication key to sign message.data,
-      // so try to verify it with visa.key here
-      keys.add(visaKey as VerifyKey);
-    }
-    // 2. get key from meta
+    // 1. get key from meta
     VerifyKey? metaKey = await getMetaKey(user);
     if (metaKey != null) {
       // the sender may use identity key to sign message.data,
       // try to verify it with meta.key
       keys.add(metaKey);
+    }
+    // 2. get key from visa
+    EncryptKey? visaKey = await getVisaKey(user);
+    if (visaKey is VerifyKey) {
+      // the sender may use communication key to sign message.data,
+      // so try to verify it with visa.key here
+      keys.add(visaKey as VerifyKey);
     }
     assert(keys.isNotEmpty, 'failed to get verify key for user: $user');
     return keys;

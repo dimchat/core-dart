@@ -54,6 +54,16 @@ abstract class HistoryCommand implements Command {
 }
 
 
+///  Group command: {
+///      type : 0x89,
+///      sn   : 123,
+///
+///      command : "invite",         // "expel", "quit"
+///      time    : 0,                // timestamp
+///      group   : "{GROUP_ID}",     // group ID
+///      member  : "{MEMBER_ID}",    // member ID
+///      members : ["{MEMBER_ID}",]  // member ID list
+///  }
 abstract class GroupCommand implements HistoryCommand {
 
   //-------- group command names begin --------
