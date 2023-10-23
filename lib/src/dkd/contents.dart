@@ -230,7 +230,14 @@ class NameCardContent extends BaseContent implements NameCard {
 
   @override
   PortableNetworkFile? get avatar {
-    _image ??= PortableNetworkFile.parse(this['avatar']);
+    if (_image == null) {
+      var url = this['avatar'];
+      if (url is String && url.isEmpty) {
+        // ignore empty URL
+      } else {
+        _image = PortableNetworkFile.parse(url);
+      }
+    }
     return _image;
   }
 
