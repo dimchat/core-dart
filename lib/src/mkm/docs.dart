@@ -31,6 +31,8 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
+import '../protocol/docs.dart';
+
 import 'document.dart';
 
 

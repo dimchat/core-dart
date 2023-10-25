@@ -33,7 +33,10 @@ import 'dart:typed_data';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
+import '../protocol/docs.dart';
+
 import 'entity.dart';
+import 'helper.dart';
 
 ///  User account for communication
 ///  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,14 +176,8 @@ class BaseUser extends BaseEntity implements User {
   }
 
   @override
-  Future<Visa?> get visa async {
-    var doc = await getDocument(Document.kVisa);
-    if (doc is Visa/* && doc.isValid*/) {
-      return doc;
-    }
-    assert(doc == null, 'user document error: $doc');
-    return null;
-  }
+  Future<Visa?> get visa async =>
+      DocumentHelper.lastVisa(await documents);
 
   @override
   Future<List<ID>> get contacts async =>
@@ -276,4 +273,5 @@ class BaseUser extends BaseEntity implements User {
     VerifyKey pKey = (await meta).publicKey;
     return doc.verify(pKey);
   }
+
 }

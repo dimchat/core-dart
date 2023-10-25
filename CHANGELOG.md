@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Document Helper.
+
 ## 0.2.5
 
 - Cache user & group entities in barrack.

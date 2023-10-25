@@ -31,9 +31,12 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
+import 'protocol/docs.dart';
 import 'mkm/entity.dart';
-import 'mkm/group.dart';
 import 'mkm/user.dart';
+import 'mkm/group.dart';
+import 'mkm/helper.dart';
+
 
 ///  Entity Database
 ///  ~~~~~~~~~~~~~~~
@@ -86,11 +89,9 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   // protected
   Future<EncryptKey?> getVisaKey(ID user) async {
-    Document? doc = await getDocument(user, Document.kVisa);
-    if (doc is Visa/* && doc.isValid*/) {
-      return doc.publicKey;
-    }
-    return null;
+    Visa? doc = await getVisa(user);
+    // assert(doc != null, 'failed to get visa for: $user');
+    return doc?.publicKey;
   }
 
   // protected
@@ -99,6 +100,12 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // assert(meta != null, 'failed to get meta for: $entity');
     return meta?.publicKey;
   }
+
+  Future<Visa?> getVisa(ID user) async =>
+      DocumentHelper.lastVisa(await getDocuments(user));
+
+  Future<Bulletin?> getBulletin(ID group) async =>
+      DocumentHelper.lastBulletin(await getDocuments(group));
 
   //
   //  Entity Delegate
@@ -185,11 +192,11 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // check broadcast group
     if (group.isBroadcast) {
       // founder of broadcast group
-      return getBroadcastFounder(group);
+      return BroadcastHelper.getBroadcastFounder(group);
     }
     // get from document
-    Document? doc = await getDocument(group, '*');
-    if (doc is Bulletin/* && doc.isValid*/) {
+    Bulletin? doc = await getBulletin(group);
+    if (doc != null/* && doc.isValid*/) {
       return doc.founder;
     }
     // TODO: load founder from database
@@ -201,11 +208,11 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // check broadcast group
     if (group.isBroadcast) {
       // owner of broadcast group
-      return getBroadcastOwner(group);
+      return BroadcastHelper.getBroadcastOwner(group);
     }
     // check group type
     if (group.type == EntityType.kGroup) {
-      // Polylogue's owner is its founder
+      // Polylogue owner is its founder
       return await getFounder(group);
     }
     // TODO: load owner from database
@@ -217,7 +224,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     // check broadcast group
     if (group.isBroadcast) {
       // members of broadcast group
-      return getBroadcastMembers(group);
+      return BroadcastHelper.getBroadcastMembers(group);
     }
     // TODO: load members from database
     return [];
@@ -225,8 +232,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<List<ID>> getAssistants(ID group) async {
-    Document? doc = await getDocument(group, Document.kBulletin);
-    if (doc is Bulletin/* && doc.isValid*/) {
+    Bulletin? doc = await getBulletin(group);
+    if (doc != null/* && doc.isValid*/) {
       List<ID>? bots = doc.assistants;
       if (bots != null) {
         return bots;
@@ -236,74 +243,4 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
     return [];
   }
 
-  //
-  //  Broadcast Group
-  //
-
-  // private
-  static String? getGroupSeed(ID group) {
-    String? name = group.name;
-    if (name != null) {
-      int len = name.length;
-      if (len == 0 || (len == 8 && name.toLowerCase() == "everyone")) {
-        name = null;
-      }
-    }
-    return name;
-  }
-
-  // protected
-  static ID getBroadcastFounder(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the founder of group 'everyone@everywhere'
-      //            'Albert Moky'
-      return ID.kFounder;
-    } else {
-      // DISCUSS: who should be the founder of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.founder@anywhere'
-      return ID.parse('$name.founder@anywhere')!;
-    }
-  }
-
-  // protected
-  static ID getBroadcastOwner(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the owner of group 'everyone@everywhere'
-      //            'anyone@anywhere'
-      return ID.kAnyone;
-    } else {
-      // DISCUSS: who should be the owner of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.owner@anywhere'
-      return ID.parse('$name.owner@anywhere')!;
-    }
-  }
-
-  // protected
-  static List<ID> getBroadcastMembers(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the member of group 'everyone@everywhere'
-      //            'anyone@anywhere'
-      return [ID.kAnyone];
-    } else {
-      // DISCUSS: who should be the member of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.member@anywhere'
-      ID owner = ID.parse('$name.owner@anywhere')!;
-      ID member = ID.parse('$name.member@anywhere')!;
-      return [owner, member];
-    }
-  }
-
-}
-
-/// Thanos
-/// ~~~~~~
-/// Thanos can kill half lives of a world with a snap of the finger
-int thanos(Map planet, int finger) {
-  // if ++finger is odd, remove it,
-  // else, let it go
-  planet.removeWhere((key, value) => (++finger & 1) == 1);
-  return finger;
 }

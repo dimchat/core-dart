@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  DIMP : Decentralized Instant Messaging Protocol
+ *  Ming-Ke-Ming : Decentralized User Identity Authentication
  *
  *                                Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -28,47 +28,50 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:mkm/crypto.dart';
-import 'package:dkd/dkd.dart';
+import 'package:mkm/mkm.dart';
 
-import 'secure.dart';
+///  User Document
+///  ~~~~~~~~~~~~~
+///  This interface is defined for authorizing other apps to login,
+///  which can generate a temporary asymmetric key pair for messaging.
+abstract class Visa implements Document {
 
-///  Reliable Message signed by an asymmetric key
-///  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///  This class is used to sign the SecureMessage
-///  It contains a 'signature' field which signed with sender's private key
-///
-///  data format: {
-///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
-///      //-- content data and key/keys
-///      data     : "...",  // base64_encode( symmetric_encrypt(content))
-///      key      : "...",  // base64_encode(asymmetric_encrypt(password))
-///      keys     : {
-///          "ID1": "key1", // base64_encode(asymmetric_encrypt(password))
-///      },
-///      //-- signature
-///      signature: "..."   // base64_encode(asymmetric_sign(data))
-///  }
-class NetworkMessage extends EncryptedMessage implements ReliableMessage {
-  NetworkMessage(super.dict) : _signature = null;
+  ///  Get public key to encrypt message for user
+  ///
+  /// @return public key as visa.key
+  EncryptKey? get publicKey;
 
-  TransportableData? _signature;
+  ///  Set public key for other user to encrypt message
+  ///
+  /// @param pKey - public key as visa.key
+  set publicKey(EncryptKey? pKey);
 
-  @override
-  Future<Uint8List> get signature async {
-    TransportableData? ted = _signature;
-    if (ted == null) {
-      Object? base64 = this['signature'];
-      assert(base64 != null, 'message signature cannot be empty: $this');
-      _signature = ted = TransportableData.parse(base64);
-      assert(ted != null, 'failed to decode message signature: $base64');
-    }
-    return ted!.data!;
-  }
+  ///  Get avatar URL
+  ///
+  /// @return PNF(URL)
+  PortableNetworkFile? get avatar;
 
+  ///  Set avatar URL
+  ///
+  /// @param url - PNF(URL)
+  set avatar(PortableNetworkFile? url);
+}
+
+abstract class Bulletin implements Document {
+
+  ///  Get group founder
+  ///
+  ///  @return user ID
+  ID? get founder;
+
+  ///  Get group assistants
+  ///
+  /// @return group bot ID list
+  List<ID>? get assistants;
+
+  ///  Set group assistants
+  ///
+  /// @param bots - group bot ID list
+  set assistants(List<ID>? bots);
 }

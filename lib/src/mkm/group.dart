@@ -30,7 +30,10 @@
  */
 import 'package:mkm/mkm.dart';
 
+import '../protocol/docs.dart';
+
 import 'entity.dart';
+import 'helper.dart';
 
 /// This class is for creating group
 ///
@@ -108,14 +111,8 @@ class BaseGroup extends BaseEntity implements Group {
   }
 
   @override
-  Future<Bulletin?> get bulletin async {
-    var doc = await getDocument(Document.kBulletin);
-    if (doc is Bulletin/* && doc.isValid*/) {
-      return doc;
-    }
-    assert(doc == null, 'group document error: $doc');
-    return null;
-  }
+  Future<Bulletin?> get bulletin async =>
+      DocumentHelper.lastBulletin(await documents);
 
   @override
   Future<ID> get founder async {
@@ -124,11 +121,15 @@ class BaseGroup extends BaseEntity implements Group {
   }
 
   @override
-  Future<ID> get owner async => (await dataSource!.getOwner(identifier))!;
+  Future<ID> get owner async =>
+      (await dataSource!.getOwner(identifier))!;
 
   @override
-  Future<List<ID>> get members async => await dataSource!.getMembers(identifier);
+  Future<List<ID>> get members async =>
+      await dataSource!.getMembers(identifier);
 
   @override
-  Future<List<ID>> get assistants async => await dataSource!.getAssistants(identifier);
+  Future<List<ID>> get assistants async =>
+      await dataSource!.getAssistants(identifier);
+
 }

@@ -53,8 +53,7 @@ abstract class Entity {
   set dataSource(EntityDataSource? delegate);
 
   Future<Meta> get meta;
-
-  Future<Document?> getDocument(String? docType);
+  Future<List<Document>> get documents;
 }
 
 /// This interface is for getting information for entity(user/group)
@@ -74,9 +73,8 @@ abstract class EntityDataSource {
   ///  Get document for entity ID
   ///
   /// @param identifier - entity ID
-  /// @param docType - document type
   /// @return Document
-  Future<Document?> getDocument(ID identifier, String? docType);
+  Future<List<Document>> getDocuments(ID identifier);
 }
 
 abstract class EntityDelegate {
@@ -144,9 +142,11 @@ class BaseEntity implements Entity {
       _barrack = facebook == null ? null : WeakReference(facebook);
 
   @override
-  Future<Meta> get meta async => (await dataSource!.getMeta(_id))!;
+  Future<Meta> get meta async =>
+      (await dataSource!.getMeta(_id))!;
 
   @override
-  Future<Document?> getDocument(String? docType) async =>
-      await dataSource?.getDocument(_id, docType);
+  Future<List<Document>> get documents async =>
+      await dataSource!.getDocuments(_id);
+
 }
