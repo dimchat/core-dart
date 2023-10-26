@@ -52,7 +52,7 @@ import '../dkd/files.dart';
 ///          ...
 ///      }
 ///  }
-abstract class FileContent implements Content {
+abstract interface class FileContent implements Content {
 
   Uint8List? get data;
   set data(Uint8List? fileData);
@@ -122,7 +122,7 @@ abstract class FileContent implements Content {
 ///      },
 ///      thumbnail : "..."        // base64_encode(smallImage)
 ///  }
-abstract class ImageContent implements FileContent {
+abstract interface class ImageContent implements FileContent {
 
   Uint8List? get thumbnail;
   set thumbnail(Uint8List? image);
@@ -146,7 +146,7 @@ abstract class ImageContent implements FileContent {
 ///      },
 ///      text     : "..."         // Automatic Speech Recognition
 ///  }
-abstract class AudioContent implements FileContent {
+abstract interface class AudioContent implements FileContent {
 
   String? get text;
   set text(String? asr);
@@ -170,7 +170,7 @@ abstract class AudioContent implements FileContent {
 ///      },
 ///      snapshot : "..."        // base64_encode(smallImage)
 ///  }
-abstract class VideoContent implements FileContent {
+abstract interface class VideoContent implements FileContent {
 
   Uint8List? get snapshot;
   set snapshot(Uint8List? image);

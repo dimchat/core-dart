@@ -49,7 +49,7 @@ import 'helper.dart';
 ///      (LocalUser)
 ///      3. sign(data)    - calculate signature of (encrypted content) data
 ///      4. decrypt(data) - decrypt (symmetric key) data
-abstract class User implements Entity {
+abstract interface class User implements Entity {
 
   /// user document
   Future<Visa?> get visa;
@@ -115,7 +115,7 @@ abstract class User implements Entity {
 ///     the private key pared with meta.key
 ///  6. public key for visa verification
 ///     meta.key only
-abstract class UserDataSource implements EntityDataSource {
+abstract interface class UserDataSource implements EntityDataSource {
 
   ///  Get contacts list
   ///

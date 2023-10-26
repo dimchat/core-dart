@@ -35,7 +35,7 @@ import 'package:mkm/mkm.dart';
 ///  ~~~~~~~~~~~~~
 ///  This interface is defined for authorizing other apps to login,
 ///  which can generate a temporary asymmetric key pair for messaging.
-abstract class Visa implements Document {
+abstract interface class Visa implements Document {
 
   ///  Get public key to encrypt message for user
   ///
@@ -58,7 +58,7 @@ abstract class Visa implements Document {
   set avatar(PortableNetworkFile? url);
 }
 
-abstract class Bulletin implements Document {
+abstract interface class Bulletin implements Document {
 
   ///  Get group founder
   ///

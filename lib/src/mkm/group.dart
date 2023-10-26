@@ -43,7 +43,7 @@ import 'helper.dart';
 ///         members
 ///         administrators - Optional
 ///         assistants     - group bots
-abstract class Group extends Entity {
+abstract interface class Group implements Entity {
 
   /// group document
   Future<Bulletin?> get bulletin;
@@ -63,7 +63,7 @@ abstract class Group extends Entity {
 ///
 /// 1. founder has the same public key with the group's meta.key
 /// 2. owner and members should be set complying with the consensus algorithm
-abstract class GroupDataSource implements EntityDataSource {
+abstract interface class GroupDataSource implements EntityDataSource {
 
   ///  Get group founder
   ///

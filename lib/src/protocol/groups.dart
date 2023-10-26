@@ -44,7 +44,7 @@ import 'commands.dart';
 ///      time    : 0,     // command timestamp
 ///      extra   : info   // command parameters
 ///  }
-abstract class HistoryCommand implements Command {
+abstract interface class HistoryCommand implements Command {
 
   //-------- history command names begin --------
   // account
@@ -64,7 +64,7 @@ abstract class HistoryCommand implements Command {
 ///      member  : "{MEMBER_ID}",    // member ID
 ///      members : ["{MEMBER_ID}",]  // member ID list
 ///  }
-abstract class GroupCommand implements HistoryCommand {
+abstract interface class GroupCommand implements HistoryCommand {
 
   //-------- group command names begin --------
   // founder/owner
@@ -120,38 +120,38 @@ abstract class GroupCommand implements HistoryCommand {
 }
 
 
-abstract class InviteCommand implements GroupCommand {
+abstract interface class InviteCommand implements GroupCommand {
 }
 
 
-abstract class ExpelCommand implements GroupCommand {
+abstract interface class ExpelCommand implements GroupCommand {
   /// Deprecated (use 'reset' instead)
 }
 
 
-abstract class JoinCommand implements GroupCommand {
+abstract interface class JoinCommand implements GroupCommand {
 }
 
 
-abstract class QuitCommand implements GroupCommand {
+abstract interface class QuitCommand implements GroupCommand {
 }
 
 
 ///  NOTICE:
 ///      This command is just for querying group info,
 ///      should not be saved in group history
-abstract class QueryCommand implements GroupCommand {
+abstract interface class QueryCommand implements GroupCommand {
 }
 
 
-abstract class ResetCommand implements GroupCommand {
+abstract interface class ResetCommand implements GroupCommand {
 }
 
 
 //  Administrators, Assistants
 
 
-abstract class HireCommand implements GroupCommand {
+abstract interface class HireCommand implements GroupCommand {
 
   /// Administrators
   List<ID>? get administrators;
@@ -164,7 +164,7 @@ abstract class HireCommand implements GroupCommand {
 }
 
 
-abstract class FireCommand implements GroupCommand {
+abstract interface class FireCommand implements GroupCommand {
 
   /// Administrators
   List<ID>? get administrators;
@@ -177,5 +177,5 @@ abstract class FireCommand implements GroupCommand {
 }
 
 
-abstract class ResignCommand implements GroupCommand {
+abstract interface class ResignCommand implements GroupCommand {
 }

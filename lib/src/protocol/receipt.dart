@@ -49,7 +49,7 @@ import 'commands.dart';
 ///          signature : "..."
 ///      }
 ///  }
-abstract class ReceiptCommand implements Command {
+abstract interface class ReceiptCommand implements Command {
 
   String get text;
 

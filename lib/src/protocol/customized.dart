@@ -42,7 +42,7 @@ import '../dkd/customized.dart';
 ///      act   : "{ACTION}",  // action name (3.g.: "throw")
 ///      extra : info         // action parameters
 ///  }
-abstract class CustomizedContent implements Content {
+abstract interface class CustomizedContent implements Content {
 
   /// get App ID
   String get application;

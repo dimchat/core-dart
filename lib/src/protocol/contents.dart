@@ -43,7 +43,7 @@ import '../dkd/contents.dart';
 ///
 ///      text : "..."
 ///  }
-abstract class TextContent implements Content {
+abstract interface class TextContent implements Content {
 
   String get text;
 
@@ -62,7 +62,7 @@ abstract class TextContent implements Content {
 ///
 ///      contents : [...]  // content array
 ///  }
-abstract class ArrayContent implements Content {
+abstract interface class ArrayContent implements Content {
 
   List<Content> get contents;
 
@@ -104,7 +104,7 @@ abstract class ArrayContent implements Content {
 ///      forward : {...}  // reliable (secure + certified) message
 ///      secrets : [...]  // reliable (secure + certified) messages
 ///  }
-abstract class ForwardContent implements Content {
+abstract interface class ForwardContent implements Content {
 
   /// forward message
   ReliableMessage? get forward;
@@ -159,7 +159,7 @@ abstract class ForwardContent implements Content {
 ///      title : "...",
 ///      desc  : "..."
 ///  }
-abstract class PageContent implements Content {
+abstract interface class PageContent implements Content {
 
   Uri get url;
   set url(Uri location);
@@ -190,7 +190,7 @@ abstract class PageContent implements Content {
 ///      name   : "{nickname}}", // contact's name
 ///      avatar : "{URL}",       // avatar - PNF(URL)
 ///  }
-abstract class NameCard implements Content {
+abstract interface class NameCard implements Content {
 
   ID get identifier;
 

@@ -41,7 +41,7 @@ import '../dkd/money.dart';
 ///      currency : "RMB", // USD, USDT, ...
 ///      amount   : 100.00
 ///  }
-abstract class MoneyContent implements Content {
+abstract interface class MoneyContent implements Content {
 
   String get currency;
 
@@ -71,7 +71,7 @@ abstract class MoneyContent implements Content {
 ///      remitter : "{FROM}", // sender ID
 ///      remittee : "{TO}"    // receiver ID
 ///  }
-abstract class TransferContent implements MoneyContent {
+abstract interface class TransferContent implements MoneyContent {
 
   /// sender
   ID? get remitter;

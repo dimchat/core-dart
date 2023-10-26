@@ -171,7 +171,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
 }
 
-abstract class MetaHelper {
+abstract interface class MetaHelper {
 
   static bool checkMeta(Meta meta) {
     VerifyKey key = meta.publicKey;

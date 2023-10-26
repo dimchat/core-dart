@@ -41,7 +41,7 @@ import '../dkd/factory.dart';
 ///      command : "...", // command name
 ///      extra   : info   // command parameters
 ///  }
-abstract class Command implements Content {
+abstract interface class Command implements Content {
 
   //-------- command names begin --------
   static const String kMeta = 'meta';
@@ -75,7 +75,7 @@ abstract class Command implements Content {
 
 ///  Command Factory
 ///  ~~~~~~~~~~~~~~~
-abstract class CommandFactory {
+abstract interface class CommandFactory {
 
   ///  Parse map object to command
   ///
@@ -93,7 +93,7 @@ abstract class CommandFactory {
 ///      ID      : "{ID}", // contact's ID
 ///      meta    : {...}   // when meta is empty, means query meta for ID
 ///  }
-abstract class MetaCommand implements Command {
+abstract interface class MetaCommand implements Command {
 
   ///  Entity ID
   ID get identifier;
@@ -130,7 +130,7 @@ abstract class MetaCommand implements Command {
 ///      document  : {...},      // when document is empty, means query for ID
 ///      signature : "..."       // old document's signature for querying
 ///  }
-abstract class DocumentCommand implements MetaCommand {
+abstract interface class DocumentCommand implements MetaCommand {
 
   ///  Entity Document
   Document? get document;

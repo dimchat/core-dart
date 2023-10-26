@@ -34,7 +34,7 @@ import 'package:dkd/dkd.dart';
 
 ///  Message Packer
 ///  ~~~~~~~~~~~~~~
-abstract class Packer {
+abstract interface class Packer {
 
   //
   //  InstantMessage -> SecureMessage -> ReliableMessage -> Data

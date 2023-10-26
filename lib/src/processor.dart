@@ -34,7 +34,7 @@ import 'package:dkd/dkd.dart';
 
 ///  Message Processor
 ///  ~~~~~~~~~~~~~~~~~
-abstract class Processor {
+abstract interface class Processor {
 
   ///  Process data package
   ///
