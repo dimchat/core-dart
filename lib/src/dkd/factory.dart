@@ -58,7 +58,8 @@ class CommandGeneralFactory {
   }
 
   String? getCmd(Map content, String? defaultValue) {
-    return Converter.getString(content['command'], defaultValue);
+    var cmd = content['command'];
+    return Converter.getString(cmd, defaultValue);
   }
 
   Command? parseCommand(Object? content) {

@@ -136,14 +136,14 @@ abstract interface class DocumentHelper {
         docType = doc.type;
         matched = docType == null || docType.isEmpty || docType == type;
         if (!matched) {
-          // type not matched, ignore it
+          // type not matched, skip it
           continue;
         }
       }
       // 2. check time
       if (last != null) {
         if (isExpired(doc, last)) {
-          // skip old document
+          // skip expired document
           continue;
         }
       }
@@ -161,13 +161,13 @@ abstract interface class DocumentHelper {
       // 1. check type
       matched = doc is Visa;
       if (!matched) {
-        // type not matched, ignore it
+        // type not matched, skip it
         continue;
       }
       // 2. check time
       if (last != null) {
         if (isExpired(doc, last)) {
-          // skip old document
+          // skip expired document
           continue;
         }
       }
@@ -185,13 +185,13 @@ abstract interface class DocumentHelper {
       // 1. check type
       matched = doc is Bulletin;
       if (!matched) {
-        // type not matched, ignore it
+        // type not matched, skip it
         continue;
       }
       // 2. check time
       if (last != null) {
         if (isExpired(doc, last)) {
-          // skip old document
+          // skip expired document
           continue;
         }
       }

@@ -144,7 +144,16 @@ class QuitGroupCommand extends BaseGroupCommand implements QuitCommand {
 class QueryGroupCommand extends BaseGroupCommand implements QueryCommand {
   QueryGroupCommand(super.dict);
 
-  QueryGroupCommand.from(ID group) : super.from(GroupCommand.kQuery, group);
+  @override
+  DateTime? get lastTime => getDateTime('last_time', null);
+
+  QueryGroupCommand.from(ID group, DateTime? lastTime)
+      : super.from(GroupCommand.kQuery, group) {
+    if (lastTime != null) {
+      setDateTime('last_time', lastTime);
+    }
+  }
+
 }
 
 

@@ -58,11 +58,12 @@ abstract interface class HistoryCommand implements Command {
 ///      type : 0x89,
 ///      sn   : 123,
 ///
-///      command : "invite",         // "expel", "quit"
-///      time    : 0,                // timestamp
-///      group   : "{GROUP_ID}",     // group ID
-///      member  : "{MEMBER_ID}",    // member ID
-///      members : ["{MEMBER_ID}",]  // member ID list
+///      command : "reset",   // "invite", "quit", "query", ...
+///      time    : 123.456,   // command timestamp
+///
+///      group   : "{GROUP_ID}",
+///      member  : "{MEMBER_ID}",
+///      members : ["{MEMBER_ID}",]
 ///  }
 abstract interface class GroupCommand implements HistoryCommand {
 
@@ -106,7 +107,8 @@ abstract interface class GroupCommand implements HistoryCommand {
   static JoinCommand join(ID group) => JoinGroupCommand.from(group);
   static QuitCommand quit(ID group) => QuitGroupCommand.from(group);
 
-  static QueryCommand query(ID group) => QueryGroupCommand.from(group);
+  static QueryCommand query(ID group, DateTime? lastTime) =>
+      QueryGroupCommand.from(group, lastTime);
   static ResetCommand reset(ID group, {required List<ID> members}) =>
       ResetGroupCommand.from(group, members: members);
 
@@ -137,13 +139,36 @@ abstract interface class QuitCommand implements GroupCommand {
 }
 
 
-///  NOTICE:
-///      This command is just for querying group info,
-///      should not be saved in group history
+///  History command: {
+///      type : 0x88,
+///      sn   : 123,
+///
+///      command : "query",
+///      time    : 123.456,
+///
+///      group     : "{GROUP_ID}",
+///      last_time : 0
+///  }
 abstract interface class QueryCommand implements GroupCommand {
+  // NOTICE:
+  //     This command is just for querying group info,
+  //     should not be saved in group history
+
+  /// Last group history time for querying
+  DateTime? get lastTime;
 }
 
 
+///  History command: {
+///      type : 0x89,
+///      sn   : 123,
+///
+///      command : "reset",
+///      time    : 123.456,
+///
+///      group   : "{GROUP_ID}",
+///      members : []
+///  }
 abstract interface class ResetCommand implements GroupCommand {
 }
 

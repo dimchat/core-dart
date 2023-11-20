@@ -113,6 +113,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<User?> getUser(ID identifier) async {
+    assert(identifier.isUser, 'user ID error: $identifier');
     // 1. get from user cache
     User? user = _userMap[identifier];
     if (user == null) {
@@ -127,6 +128,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<Group?> getGroup(ID identifier) async {
+    assert(identifier.isGroup, 'group ID error: $identifier');
     // 1. get from group cache
     Group? group = _groupMap[identifier];
     if (group == null) {
@@ -145,6 +147,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<EncryptKey?> getPublicKeyForEncryption(ID user) async {
+    assert(user.isUser, 'user ID error: $user');
     // 1. get key from visa
     EncryptKey? visaKey = await getVisaKey(user);
     if (visaKey != null) {
@@ -164,6 +167,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<List<VerifyKey>> getPublicKeysForVerification(ID user) async {
+    // assert(user.isUser, 'user ID error: $user');
     List<VerifyKey> keys = [];
     // 1. get key from meta
     VerifyKey? metaKey = await getMetaKey(user);
@@ -189,6 +193,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<ID?> getFounder(ID group) async {
+    assert(group.isGroup, 'group ID error: $group');
     // check broadcast group
     if (group.isBroadcast) {
       // founder of broadcast group
@@ -205,6 +210,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<ID?> getOwner(ID group) async {
+    assert(group.isGroup, 'group ID error: $group');
     // check broadcast group
     if (group.isBroadcast) {
       // owner of broadcast group
@@ -221,6 +227,7 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<List<ID>> getMembers(ID group) async {
+    assert(group.isGroup, 'group ID error: $group');
     // check broadcast group
     if (group.isBroadcast) {
       // members of broadcast group
@@ -232,6 +239,8 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
 
   @override
   Future<List<ID>> getAssistants(ID group) async {
+    assert(group.isGroup, 'group ID error: $group');
+    // get from document
     Bulletin? doc = await getBulletin(group);
     if (doc != null/* && doc.isValid*/) {
       List<ID>? bots = doc.assistants;

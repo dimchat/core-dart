@@ -64,16 +64,16 @@ abstract interface class Entity {
 /// 4. visa key, which can encrypt message for the receiver(user)
 abstract interface class EntityDataSource {
 
-  ///  Get meta for entity ID
+  ///  Get meta for entity
   ///
   /// @param identifier - entity ID
-  /// @return meta object
+  /// @return Meta object
   Future<Meta?> getMeta(ID identifier);
 
-  ///  Get document for entity ID
+  ///  Get documents for entity
   ///
   /// @param identifier - entity ID
-  /// @return Document
+  /// @return Document list
   Future<List<Document>> getDocuments(ID identifier);
 }
 

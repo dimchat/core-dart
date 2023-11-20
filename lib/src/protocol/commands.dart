@@ -128,15 +128,15 @@ abstract interface class MetaCommand implements Command {
 ///      ID        : "{ID}",     // entity ID
 ///      meta      : {...},      // only for handshaking with new friend
 ///      document  : {...},      // when document is empty, means query for ID
-///      signature : "..."       // old document's signature for querying
+///      last_time : 12345       // old document time for querying
 ///  }
 abstract interface class DocumentCommand implements MetaCommand {
 
   ///  Entity Document
   Document? get document;
 
-  ///  Document's signature (just for querying new document)
-  String? get signature;
+  ///  Last document time for querying
+  DateTime? get lastTime;
 
   //
   //  Factories
@@ -156,7 +156,7 @@ abstract interface class DocumentCommand implements MetaCommand {
   ///
   /// @param identifier - entity ID
   /// @param signature - document signature
-  static DocumentCommand query(ID identifier, String? signature) =>
-      BaseDocumentCommand.from(identifier, signature: signature);
+  static DocumentCommand query(ID identifier, DateTime? lastTime) =>
+      BaseDocumentCommand.query(identifier, lastTime);
 
 }

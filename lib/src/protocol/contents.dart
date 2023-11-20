@@ -154,31 +154,52 @@ abstract interface class ForwardContent implements Content {
 ///      type : 0x20,
 ///      sn   : 123,
 ///
-///      URL   : "https://github.com/moky/dimp", // Page URL
-///      icon  : "...",                          // base64_encode(icon)
-///      title : "...",
-///      desc  : "..."
+///      title : "...",                // Web title
+///      icon  : "...",                // base64_encode(icon)
+///      desc  : "...",
+///
+///      URL   : "https://dim.chat/",  // Web URL
+///
+///      HTML      : "...",            // Web content
+///      mime_type : "text/html",      // Content-Type
+///      encoding  : "utf8",
+///      base      : "about:blank"     // Base URL
+///
 ///  }
 abstract interface class PageContent implements Content {
-
-  Uri get url;
-  set url(Uri location);
 
   String get title;
   set title(String string);
 
-  String? get desc;
-  set desc(String? string);
-
   Uint8List? get icon;
   set icon(Uint8List? image);
 
+  String? get desc;
+  set desc(String? string);
+
+  Uri? get url;
+  set url(Uri? locator);
+
+  String? get html;
+  set html(String? content);
+
   //
-  //  Factory
+  //  Factories
   //
 
-  static PageContent create({required Uri url, required String title, String? desc, TransportableData? icon}) =>
-      WebPageContent.from(url: url, title: title, desc: desc, icon: icon);
+  static PageContent create({Uri? url, String? html,
+    required String title, TransportableData? icon, String? desc}) =>
+      WebPageContent.from(url: url, html: html,
+        title: title, icon: icon, desc: desc);
+
+  static PageContent createFromURL(Uri url, {
+    required String title, TransportableData? icon, String? desc}) =>
+      create(url: url, html: null, title: title, icon: icon, desc: desc);
+
+  static PageContent createFromHTML(String html, {
+    required String title, TransportableData? icon, String? desc}) =>
+      create(url: null, html: html, title: title, icon: icon, desc: desc);
+
 }
 
 

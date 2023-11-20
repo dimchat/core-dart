@@ -98,16 +98,19 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
 
   Document? _doc;
 
-  BaseDocumentCommand.from(ID identifier, {Meta? meta, Document? document, String? signature})
+  BaseDocumentCommand.from(ID identifier, {Meta? meta, Document? document})
       : super.from(identifier, cmd: Command.kDocument, meta: meta) {
     // document
     if (document != null) {
       this['document'] = document.toMap();
     }
     _doc = document;
-    // signature
-    if (signature != null) {
-      this['signature'] = signature;
+  }
+  BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
+      : super.from(identifier) {
+    // query with last document time
+    if (lastTime != null) {
+      setDateTime('last_time', lastTime);
     }
   }
 
@@ -118,5 +121,6 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   }
 
   @override
-  String? get signature => getString('signature', null);
+  DateTime? get lastTime => getDateTime('last_time', null);
+
 }

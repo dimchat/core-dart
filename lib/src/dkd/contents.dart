@@ -139,25 +139,21 @@ class WebPageContent extends BaseContent implements PageContent {
   /// small image
   TransportableData? _icon;
 
-  WebPageContent.from({required Uri url, required String title, String? desc, TransportableData? icon})
+  WebPageContent.from({required Uri? url, required String? html,
+    required String title, TransportableData? icon, String? desc,})
       : super.fromType(ContentType.kPage) {
+    // URL or HTML
     this.url = url;
+    this.html = html;
+    // title, icon, description
     this.title = title;
     this.desc = desc;
     setIcon(icon);
   }
 
-  @override
-  Uri get url {
-    _url ??= Uri.parse(getString('URL', null)!);
-    return _url!;
-  }
-
-  @override
-  set url(Uri location) {
-    this['URL'] = location.toString();
-    _url = location;
-  }
+  //
+  //  title
+  //
 
   @override
   String get title => getString('title', '')!;
@@ -165,11 +161,9 @@ class WebPageContent extends BaseContent implements PageContent {
   @override
   set title(String string) => this['title'] = string;
 
-  @override
-  String? get desc => getString('desc', null);
-
-  @override
-  set desc(String? string) => this['desc'] = string;
+  //
+  //  favicon.ico
+  //
 
   @override
   Uint8List? get icon {
@@ -191,6 +185,7 @@ class WebPageContent extends BaseContent implements PageContent {
     }
     setIcon(ted);
   }
+  // private
   void setIcon(TransportableData? ted) {
     if (ted == null) {
       remove('icon');
@@ -199,6 +194,43 @@ class WebPageContent extends BaseContent implements PageContent {
     }
     _icon = ted;
   }
+
+  //
+  //   keywords / descriptions
+  //
+
+  @override
+  String? get desc => getString('desc', null);
+
+  @override
+  set desc(String? string) => this['desc'] = string;
+
+  //
+  //  URL
+  //
+
+  @override
+  Uri? get url {
+    _url ??= Uri.parse(getString('URL', null)!);
+    return _url!;
+  }
+
+  @override
+  set url(Uri? locator) {
+    this['URL'] = locator?.toString();
+    _url = locator;
+  }
+
+  //
+  //  HTML
+  //
+
+  @override
+  String? get html => getString('html', null);
+
+  @override
+  set html(String? content) => this['html'] = content;
+
 }
 
 
