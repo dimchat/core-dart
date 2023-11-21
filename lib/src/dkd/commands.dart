@@ -107,7 +107,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
     _doc = document;
   }
   BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
-      : super.from(identifier) {
+      : super.from(identifier, cmd: Command.kDocument) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);
