@@ -152,10 +152,10 @@ abstract interface class DocumentCommand implements MetaCommand {
       BaseDocumentCommand.from(identifier, meta: meta, document: doc);
 
   /// 1. Query Entity Document
-  /// 2. Query Entity Document for updating with current signature
+  /// 2. Query Entity Document for updating with last time
   ///
   /// @param identifier - entity ID
-  /// @param signature - document signature
+  /// @param lastTime   - last document time
   static DocumentCommand query(ID identifier, DateTime? lastTime) =>
       BaseDocumentCommand.query(identifier, lastTime);
 

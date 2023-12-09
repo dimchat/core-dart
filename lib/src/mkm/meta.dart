@@ -33,6 +33,8 @@ import 'dart:typed_data';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
+import 'helper.dart';
+
 ///  User/Group Meta data
 ///  ~~~~~~~~~~~~~~~~~~~~
 ///  This class is used to generate entity ID
@@ -168,65 +170,5 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   bool matchPublicKey(VerifyKey pKey) => MetaHelper.matchPublicKey(pKey, this);
-
-}
-
-abstract interface class MetaHelper {
-
-  static bool checkMeta(Meta meta) {
-    VerifyKey key = meta.publicKey;
-    // assert(key != null, 'meta.key should not be empty: $meta');
-    String? seed = meta.seed;
-    Uint8List? fingerprint = meta.fingerprint;
-    bool noSeed = seed == null || seed.isEmpty;
-    bool noSig = fingerprint == null || fingerprint.isEmpty;
-    // check meta version
-    if (!MetaType.hasSeed(meta.type)) {
-      // this meta has no seed, so no fingerprint too
-      return noSeed && noSig;
-    } else if (noSeed || noSig) {
-      // seed and fingerprint should not be empty
-      return false;
-    }
-    // verify fingerprint
-    return key.verify(UTF8.encode(seed), fingerprint);
-  }
-
-  static bool matchIdentifier(ID identifier, Meta meta) {
-    assert(meta.isValid, 'meta not valid: $meta');
-    // check ID.name
-    String? seed = meta.seed;
-    String? name = identifier.name;
-    if (name == null || name.isEmpty) {
-      if (seed != null && seed.isNotEmpty) {
-        return false;
-      }
-    } else if (name != seed) {
-      return false;
-    }
-    // check ID.address
-    Address old = identifier.address;
-    Address gen = Address.generate(meta, old.type);
-    return old == gen;
-  }
-
-  static bool matchPublicKey(VerifyKey pKey, Meta meta) {
-    assert(meta.isValid, 'meta not valid: $meta');
-    // check whether the public key equals to meta.key
-    if (pKey == meta.publicKey) {
-      return true;
-    }
-    // check with seed & fingerprint
-    if (MetaType.hasSeed(meta.type)) {
-      // check whether keys equal by verifying signature
-      String? seed = meta.seed;
-      Uint8List? fingerprint = meta.fingerprint;
-      return pKey.verify(UTF8.encode(seed!), fingerprint!);
-    } else {
-      // NOTICE: ID with BTC/ETH address has no username, so
-      //         just compare the key.data to check matching
-      return false;
-    }
-  }
 
 }

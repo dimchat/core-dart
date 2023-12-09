@@ -85,7 +85,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     if (ted == null) {
       Object? base64 = this['key'];
       if (base64 == null) {
-        // check 'keys
+        // check 'keys'
         Map? keys = await encryptedKeys;
         if (keys != null) {
           base64 = keys[receiver.toString()];

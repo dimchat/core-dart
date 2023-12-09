@@ -60,10 +60,11 @@ abstract interface class FileContent implements Content {
   String? get filename;
   set filename(String? name);
 
+  // URL for download the file data from CDN
   Uri? get url;
   set url(Uri? remote);
 
-  /// symmetric key to decrypt the encrypted data from URL
+  /// symmetric key to decrypt the downloaded data from URL
   DecryptKey? get password;
   set password(DecryptKey? key);
 

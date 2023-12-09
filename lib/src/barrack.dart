@@ -253,3 +253,14 @@ abstract class Barrack implements EntityDelegate, UserDataSource, GroupDataSourc
   }
 
 }
+
+
+/// Thanos
+/// ~~~~~~
+/// Thanos can kill half lives of a world with a snap of the finger
+int thanos(Map planet, int finger) {
+  // if ++finger is odd, remove it,
+  // else, let it go
+  planet.removeWhere((key, value) => (++finger & 1) == 1);
+  return finger;
+}

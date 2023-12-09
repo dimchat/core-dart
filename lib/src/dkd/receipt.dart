@@ -35,13 +35,13 @@ import '../protocol/commands.dart';
 import '../protocol/receipt.dart';
 import 'commands.dart';
 
-abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
-  BaseReceipt(super.dict) : _env = null;
+class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
+  BaseReceiptCommand(super.dict) : _env = null;
 
   /// original message envelope
   Envelope? _env;
 
-  BaseReceipt.from(String text, Map? origin) : super.fromName(Command.kReceipt) {
+  BaseReceiptCommand.from(String text, Map? origin) : super.fromName(Command.kReceipt) {
     // text message
     this['text'] = text;
     // original envelope of message responding to,
@@ -60,7 +60,7 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
   @override
   String get text => getString('text', '')!;
 
-  @override
+  // protected
   Map? get origin => this['origin'];
 
   @override
@@ -77,13 +77,5 @@ abstract class BaseReceipt extends BaseCommand implements ReceiptCommand {
   @override
   String? get originalSignature =>
       Converter.getString(origin?['signature'], null);
-
-}
-
-
-class BaseReceiptCommand extends BaseReceipt with ReceiptCommandMixIn {
-  BaseReceiptCommand(super.dict);
-
-  BaseReceiptCommand.from(String text, Map? origin) : super.from(text, origin);
 
 }

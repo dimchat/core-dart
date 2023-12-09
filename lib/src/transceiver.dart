@@ -59,7 +59,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
   @override
   Future<Uint8List> encryptContent(Uint8List data, SymmetricKey password, InstantMessage iMsg) async {
     // store 'IV' in iMsg for AES decryption
-    return password.encrypt(data, iMsg);
+    return password.encrypt(data, iMsg.toMap());
   }
 
   // @override
@@ -175,7 +175,7 @@ abstract class Transceiver implements InstantMessageDelegate, SecureMessageDeleg
   @override
   Future<Uint8List?> decryptContent(Uint8List data, SymmetricKey password, SecureMessage sMsg) async {
     // check 'IV' in sMsg for AES decryption
-    return password.decrypt(data, sMsg);
+    return password.decrypt(data, sMsg.toMap());
   }
 
   @override

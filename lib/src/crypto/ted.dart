@@ -108,22 +108,23 @@ class BaseDataWrapper extends Dictionary {
   /// binary data
   ///
   Uint8List? get data {
-    if (_data == null) {
+    Uint8List? bin = _data;
+    if (bin == null) {
       String encoded = getString('data', '')!;
       if (encoded.isNotEmpty) {
         String alg = algorithm;
         if (alg == TransportableData.kBASE_64) {
-          _data = Base64.decode(encoded);
+          _data = bin = Base64.decode(encoded);
         } else if (alg == TransportableData.kBASE_58) {
-          _data = Base58.decode(encoded);
+          _data = bin = Base58.decode(encoded);
         } else if (alg == TransportableData.kHEX) {
-          _data = Hex.decode(encoded);
+          _data = bin = Hex.decode(encoded);
         } else {
           assert(false, 'data algorithm not support: $alg');
         }
       }
     }
-    return _data;
+    return bin;
   }
 
   set data(Uint8List? binary) {

@@ -53,14 +53,9 @@ abstract interface class ReceiptCommand implements Command {
 
   String get text;
 
-  // protected
-  Map? get origin;
-
   Envelope? get originalEnvelope;
   int? get originalSerialNumber;
   String? get originalSignature;
-
-  bool matchMessage(InstantMessage iMsg);
 
   //
   //  Factory method
@@ -98,57 +93,6 @@ abstract interface class ReceiptCommand implements Command {
       info.remove('visa');
     }
     return info;
-  }
-
-}
-
-mixin ReceiptCommandMixIn on ReceiptCommand {
-
-  @override
-  bool matchMessage(InstantMessage iMsg) {
-    if (origin == null) {
-      // receipt without original message info
-      return false;
-    }
-    // check signature
-    String? sig1 = originalSignature;
-    if (sig1 != null) {
-      // if contains signature, check it
-      String? sig2 = iMsg.getString('signature', null);
-      if (sig2 != null) {
-        return checkSignatures(sig1, sig2);
-      }
-    }
-    // check envelope
-    Envelope? env1 = originalEnvelope;
-    if (env1 != null) {
-      // if contains envelope, check it
-      if (!checkEnvelopes(env1, iMsg.envelope)) {
-        return false;
-      }
-    }
-    // check serial number
-    // (only the original message's receiver can know this number)
-    return originalSerialNumber == iMsg.content.sn;
-  }
-
-  static bool checkSignatures(String sig1, String sig2) {
-    if (sig1.length > 8) {
-      sig1 = sig1.substring(sig1.length - 8);
-    }
-    if (sig2.length > 8) {
-      sig2 = sig2.substring(sig2.length - 8);
-    }
-    return sig1 == sig2;
-  }
-
-  static bool checkEnvelopes(Envelope env1, Envelope env2) {
-    if (env1.sender != env2.sender) {
-      return false;
-    }
-    ID? to1 = env1.group ?? env1.receiver;
-    ID? to2 = env2.group ?? env2.receiver;
-    return to1 == to2;
   }
 
 }

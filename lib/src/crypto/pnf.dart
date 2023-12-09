@@ -108,7 +108,7 @@ class BaseFileWrapper extends Dictionary {
     Uri? remote = _remoteURL;
     if (remote == null) {
       String? locator = getString('URL', null);
-      if (locator != null/* && locator.isNotEmpty*/) {
+      if (locator != null && locator.isNotEmpty) {
         _remoteURL = remote = Uri.parse(locator);
       }
     }
