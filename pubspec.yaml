@@ -10,8 +10,8 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  dkd: ^0.3.1
-  mkm: ^0.3.1
+  dkd: ^0.3.2
+  mkm: ^0.3.2
 
 dev_dependencies:
   lints: ^2.0.0

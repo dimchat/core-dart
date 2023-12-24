@@ -59,7 +59,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   Map? _encKeys;  // String => String
 
   @override
-  Future<Uint8List> get data async {
+  Uint8List get data {
     if (_body == null) {
       Object? text = this['data'];
       if (text == null) {
@@ -80,13 +80,13 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Future<Uint8List?> get encryptedKey async {
+  Uint8List? get encryptedKey {
     TransportableData? ted = _encKey;
     if (ted == null) {
       Object? base64 = this['key'];
       if (base64 == null) {
         // check 'keys'
-        Map? keys = await encryptedKeys;
+        Map? keys = encryptedKeys;
         if (keys != null) {
           base64 = keys[receiver.toString()];
         }
@@ -97,7 +97,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Future<Map?> get encryptedKeys async {
+  Map? get encryptedKeys {
     _encKeys ??= this['keys'];
     return _encKeys;
   }

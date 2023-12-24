@@ -60,7 +60,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   TransportableData? _signature;
 
   @override
-  Future<Uint8List> get signature async {
+  Uint8List get signature {
     TransportableData? ted = _signature;
     if (ted == null) {
       Object? base64 = this['signature'];
