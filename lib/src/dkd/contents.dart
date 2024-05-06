@@ -28,8 +28,6 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dkd/dkd.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
@@ -137,10 +135,10 @@ class WebPageContent extends BaseContent implements PageContent {
   Uri? _url;
 
   /// small image
-  TransportableData? _icon;
+  Uri? _icon;
 
   WebPageContent.from({required Uri? url, required String? html,
-    required String title, TransportableData? icon, String? desc,})
+    required String title, Uri? icon, String? desc,})
       : super.fromType(ContentType.kPage) {
     // URL or HTML
     this.url = url;
@@ -148,7 +146,7 @@ class WebPageContent extends BaseContent implements PageContent {
     // title, icon, description
     this.title = title;
     this.desc = desc;
-    setIcon(icon);
+    this.icon = icon;
   }
 
   //
@@ -166,33 +164,24 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  Uint8List? get icon {
-    TransportableData? ted = _icon;
-    if (ted == null) {
-      Object? base64 = this['icon'];
-      _icon = ted = TransportableData.parse(base64);
+  Uri? get icon {
+    if (_icon == null) {
+      var base64 = getString('icon', null);
+      if (base64 != null) {
+        _icon = Uri.parse(base64);
+      }
     }
-    return ted?.data;
+    return url;
   }
 
   @override
-  set icon(Uint8List? image) {
-    TransportableData? ted;
-    if (image == null || image.isEmpty) {
-      ted = null;
-    } else {
-      ted = TransportableData.create(image);
-    }
-    setIcon(ted);
-  }
-  // private
-  void setIcon(TransportableData? ted) {
-    if (ted == null) {
+  set icon(Uri? base64) {
+    if (base64 == null) {
       remove('icon');
     } else {
-      this['icon'] = ted.toObject();
+      this['icon'] = base64.toString();
     }
-    _icon = ted;
+    _icon = base64;
   }
 
   //

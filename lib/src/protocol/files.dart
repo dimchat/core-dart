@@ -103,6 +103,7 @@ abstract interface class FileContent implements Content {
                              Uri? url, DecryptKey? password}) {
     return VideoFileContent.from(data, filename, url, password);
   }
+
 }
 
 
@@ -121,12 +122,14 @@ abstract interface class FileContent implements Content {
 ///          data      : "{BASE64_ENCODE}",
 ///          ...
 ///      },
-///      thumbnail : "..."        // base64_encode(smallImage)
+///      thumbnail : "data:image/jpeg;base64,..."
 ///  }
 abstract interface class ImageContent implements FileContent {
 
-  Uint8List? get thumbnail;
-  set thumbnail(Uint8List? image);
+  /// Base-64 image
+  Uri? get thumbnail;
+  set thumbnail(Uri? base64);
+
 }
 
 
@@ -151,6 +154,7 @@ abstract interface class AudioContent implements FileContent {
 
   String? get text;
   set text(String? asr);
+
 }
 
 
@@ -169,10 +173,11 @@ abstract interface class AudioContent implements FileContent {
 ///          data      : "{BASE64_ENCODE}",
 ///          ...
 ///      },
-///      snapshot : "..."        // base64_encode(smallImage)
+///      snapshot : "data:image/jpeg;base64,..."
 ///  }
 abstract interface class VideoContent implements FileContent {
 
-  Uint8List? get snapshot;
-  set snapshot(Uint8List? image);
+  Uri? get snapshot;
+  set snapshot(Uri? base64);
+
 }

@@ -109,33 +109,33 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   ImageFileContent(super.dict) : _thumbnail = null;
 
   /// small image
-  TransportableData? _thumbnail;
+  Uri? _thumbnail;
 
   ImageFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.kImage, data, filename, url, password);
 
   @override
-  Uint8List? get thumbnail {
-    TransportableData? ted = _thumbnail;
-    if (ted == null) {
-      Object? base64 = this['thumbnail'];
-      _thumbnail = ted = TransportableData.parse(base64);
+  Uri? get thumbnail {
+    if (_thumbnail == null) {
+      var base64 = getString('thumbnail', null);
+      if (base64 != null) {
+        _thumbnail = Uri.parse(base64);
+      }
     }
-    return ted?.data;
+    return _thumbnail;
   }
 
   @override
-  set thumbnail(Uint8List? image) {
-    TransportableData? ted;
-    if (image == null/* || image.isEmpty*/) {
+  set thumbnail(Uri? base64) {
+    if (base64 == null) {
       remove('thumbnail');
     } else {
-      ted = TransportableData.create(image);
-      this['thumbnail'] = ted.toObject();
+      this['thumbnail'] = base64.toString();
     }
-    _thumbnail = ted;
+    _thumbnail = base64;
   }
+
 }
 
 
@@ -154,6 +154,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 
   @override
   set text(String? asr) => this['text'] = asr;
+
 }
 
 
@@ -164,31 +165,31 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   VideoFileContent(super.dict) : _snapshot = null;
 
   /// small image
-  TransportableData? _snapshot;
+  Uri? _snapshot;
 
   VideoFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.kVideo, data, filename, url, password);
 
   @override
-  Uint8List? get snapshot {
-    TransportableData? ted = _snapshot;
-    if (ted == null) {
-      Object? base64 = this['snapshot'];
-      _snapshot = ted = TransportableData.parse(base64);
+  Uri? get snapshot {
+    if (_snapshot == null) {
+      var base64 = getString('snapshot', null);
+      if (base64 != null) {
+        _snapshot = Uri.parse(base64);
+      }
     }
-    return ted?.data;
+    return _snapshot;
   }
 
   @override
-  set snapshot(Uint8List? image) {
-    TransportableData? ted;
-    if (image == null/* || image.isEmpty*/) {
+  set snapshot(Uri? base64) {
+    if (base64 == null) {
       remove('snapshot');
     } else {
-      ted = TransportableData.create(image);
-      this['snapshot'] = ted.toObject();
+      this['snapshot'] = base64.toString();
     }
-    _snapshot = ted;
+    _snapshot = base64;
   }
+
 }

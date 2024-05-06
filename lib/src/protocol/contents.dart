@@ -28,8 +28,6 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
 import 'package:dkd/dkd.dart';
@@ -53,6 +51,7 @@ abstract interface class TextContent implements Content {
 
   static TextContent create(String message) =>
       BaseTextContent.fromText(message);
+
 }
 
 
@@ -155,8 +154,8 @@ abstract interface class ForwardContent implements Content {
 ///      sn   : 123,
 ///
 ///      title : "...",                // Web title
-///      icon  : "...",                // base64_encode(icon)
 ///      desc  : "...",
+///      icon  : "data:image/x-icon;base64,...",
 ///
 ///      URL   : "https://github.com/moky/dimp",
 ///
@@ -171,8 +170,9 @@ abstract interface class PageContent implements Content {
   String get title;
   set title(String string);
 
-  Uint8List? get icon;
-  set icon(Uint8List? image);
+  /// Base-64 image
+  Uri? get icon;
+  set icon(Uri? base64);
 
   String? get desc;
   set desc(String? string);
@@ -188,16 +188,16 @@ abstract interface class PageContent implements Content {
   //
 
   static PageContent create({Uri? url, String? html,
-    required String title, TransportableData? icon, String? desc}) =>
+    required String title, Uri? icon, String? desc}) =>
       WebPageContent.from(url: url, html: html,
         title: title, icon: icon, desc: desc);
 
   static PageContent createFromURL(Uri url, {
-    required String title, TransportableData? icon, String? desc}) =>
+    required String title, Uri? icon, String? desc}) =>
       create(url: url, html: null, title: title, icon: icon, desc: desc);
 
   static PageContent createFromHTML(String html, {
-    required String title, TransportableData? icon, String? desc}) =>
+    required String title, Uri? icon, String? desc}) =>
       create(url: null, html: html, title: title, icon: icon, desc: desc);
 
 }
