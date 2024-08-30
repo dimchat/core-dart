@@ -54,8 +54,8 @@ abstract interface class Visa implements Document {
 
   ///  Set avatar URL
   ///
-  /// @param url - PNF(URL)
-  set avatar(PortableNetworkFile? url);
+  /// @param img - image URL
+  set avatar(PortableNetworkFile? img);
 }
 
 abstract interface class Bulletin implements Document {

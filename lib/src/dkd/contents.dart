@@ -135,10 +135,10 @@ class WebPageContent extends BaseContent implements PageContent {
   Uri? _url;
 
   /// small image
-  Uri? _icon;
+  PortableNetworkFile? _icon;
 
   WebPageContent.from({required Uri? url, required String? html,
-    required String title, Uri? icon, String? desc,})
+    required String title, PortableNetworkFile? icon, String? desc,})
       : super.fromType(ContentType.kPage) {
     // URL or HTML
     this.url = url;
@@ -164,24 +164,23 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  Uri? get icon {
-    if (_icon == null) {
+  PortableNetworkFile? get icon {
+    PortableNetworkFile? img = _icon;
+    if (img == null) {
       var base64 = getString('icon', null);
-      if (base64 != null) {
-        _icon = Uri.parse(base64);
-      }
+      img = _icon = PortableNetworkFile.parse(base64);
     }
-    return url;
+    return img;
   }
 
   @override
-  set icon(Uri? base64) {
-    if (base64 == null) {
+  set icon(PortableNetworkFile? img) {
+    if (img == null) {
       remove('icon');
     } else {
-      this['icon'] = base64.toString();
+      this['icon'] = img.toObject();
     }
-    _icon = base64;
+    _icon = img;
   }
 
   //
@@ -251,15 +250,12 @@ class NameCardContent extends BaseContent implements NameCard {
 
   @override
   PortableNetworkFile? get avatar {
-    if (_image == null) {
+    PortableNetworkFile? img = _image;
+    if (img == null) {
       var url = this['avatar'];
-      if (url is String && url.isEmpty) {
-        // ignore empty URL
-      } else {
-        _image = PortableNetworkFile.parse(url);
-      }
+      img = _image = PortableNetworkFile.parse(url);
     }
-    return _image;
+    return img;
   }
 
 }

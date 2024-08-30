@@ -127,8 +127,8 @@ abstract interface class FileContent implements Content {
 abstract interface class ImageContent implements FileContent {
 
   /// Base-64 image
-  Uri? get thumbnail;
-  set thumbnail(Uri? base64);
+  PortableNetworkFile? get thumbnail;
+  set thumbnail(PortableNetworkFile? img);
 
 }
 
@@ -177,7 +177,8 @@ abstract interface class AudioContent implements FileContent {
 ///  }
 abstract interface class VideoContent implements FileContent {
 
-  Uri? get snapshot;
-  set snapshot(Uri? base64);
+  /// Base-64 image
+  PortableNetworkFile? get snapshot;
+  set snapshot(PortableNetworkFile? img);
 
 }

@@ -1,3 +1,7 @@
+## 1.0.0
+
+- PNF for images.
+
 ## 0.3.3
 
 - Remove ReceiptCommandMixIn.

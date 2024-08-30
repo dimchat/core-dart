@@ -81,21 +81,18 @@ class BaseVisa extends BaseDocument implements Visa {
 
   @override
   PortableNetworkFile? get avatar {
-    if (_avatar == null) {
+    PortableNetworkFile? img = _avatar;
+    if (img == null) {
       var url = getProperty('avatar');
-      if (url is String && url.isEmpty) {
-        // ignore empty URL
-      } else {
-        _avatar = PortableNetworkFile.parse(url);
-      }
+      img = _avatar = PortableNetworkFile.parse(url);
     }
-    return _avatar;
+    return img;
   }
 
   @override
-  set avatar(PortableNetworkFile? url) {
-    setProperty('avatar', url?.toObject());
-    _avatar = url;
+  set avatar(PortableNetworkFile? img) {
+    setProperty('avatar', img?.toObject());
+    _avatar = img;
   }
 }
 

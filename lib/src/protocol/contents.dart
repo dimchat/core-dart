@@ -171,8 +171,8 @@ abstract interface class PageContent implements Content {
   set title(String string);
 
   /// Base-64 image
-  Uri? get icon;
-  set icon(Uri? base64);
+  PortableNetworkFile? get icon;
+  set icon(PortableNetworkFile? img);
 
   String? get desc;
   set desc(String? string);
@@ -188,16 +188,16 @@ abstract interface class PageContent implements Content {
   //
 
   static PageContent create({Uri? url, String? html,
-    required String title, Uri? icon, String? desc}) =>
+    required String title, PortableNetworkFile? icon, String? desc}) =>
       WebPageContent.from(url: url, html: html,
         title: title, icon: icon, desc: desc);
 
   static PageContent createFromURL(Uri url, {
-    required String title, Uri? icon, String? desc}) =>
+    required String title, PortableNetworkFile? icon, String? desc}) =>
       create(url: url, html: null, title: title, icon: icon, desc: desc);
 
   static PageContent createFromHTML(String html, {
-    required String title, Uri? icon, String? desc}) =>
+    required String title, PortableNetworkFile? icon, String? desc}) =>
       create(url: null, html: html, title: title, icon: icon, desc: desc);
 
 }

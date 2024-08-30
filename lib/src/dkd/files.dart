@@ -109,31 +109,30 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   ImageFileContent(super.dict) : _thumbnail = null;
 
   /// small image
-  Uri? _thumbnail;
+  PortableNetworkFile? _thumbnail;
 
   ImageFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.kImage, data, filename, url, password);
 
   @override
-  Uri? get thumbnail {
-    if (_thumbnail == null) {
+  PortableNetworkFile? get thumbnail {
+    PortableNetworkFile? img = _thumbnail;
+    if (img == null) {
       var base64 = getString('thumbnail', null);
-      if (base64 != null) {
-        _thumbnail = Uri.parse(base64);
-      }
+      img = _thumbnail = PortableNetworkFile.parse(base64);
     }
-    return _thumbnail;
+    return img;
   }
 
   @override
-  set thumbnail(Uri? base64) {
-    if (base64 == null) {
+  set thumbnail(PortableNetworkFile? img) {
+    if (img == null) {
       remove('thumbnail');
     } else {
-      this['thumbnail'] = base64.toString();
+      this['thumbnail'] = img.toObject();
     }
-    _thumbnail = base64;
+    _thumbnail = img;
   }
 
 }
@@ -165,31 +164,30 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   VideoFileContent(super.dict) : _snapshot = null;
 
   /// small image
-  Uri? _snapshot;
+  PortableNetworkFile? _snapshot;
 
   VideoFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.kVideo, data, filename, url, password);
 
   @override
-  Uri? get snapshot {
-    if (_snapshot == null) {
+  PortableNetworkFile? get snapshot {
+    PortableNetworkFile? img = _snapshot;
+    if (img == null) {
       var base64 = getString('snapshot', null);
-      if (base64 != null) {
-        _snapshot = Uri.parse(base64);
-      }
+      img = _snapshot = PortableNetworkFile.parse(base64);
     }
-    return _snapshot;
+    return img;
   }
 
   @override
-  set snapshot(Uri? base64) {
-    if (base64 == null) {
+  set snapshot(PortableNetworkFile? img) {
+    if (img == null) {
       remove('snapshot');
     } else {
-      this['snapshot'] = base64.toString();
+      this['snapshot'] = img.toObject();
     }
-    _snapshot = base64;
+    _snapshot = img;
   }
 
 }
