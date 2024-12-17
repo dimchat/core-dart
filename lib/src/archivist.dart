@@ -2,12 +2,12 @@
  *
  *  DIMP : Decentralized Instant Messaging Protocol
  *
- *                                Written in 2023 by Moky <albert.moky@gmail.com>
+ *                                Written in 2024 by Moky <albert.moky@gmail.com>
  *
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2024 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,52 +28,45 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
+import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
-import 'base.dart';
+import 'mkm/group.dart';
+import 'mkm/user.dart';
 
-///  Instant Message
+
+///  Entity Database
 ///  ~~~~~~~~~~~~~~~
-///
-///  data format: {
-///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
-///      //-- content
-///      content  : {...}
-///  }
-class PlainMessage extends BaseMessage implements InstantMessage {
-  PlainMessage(super.dict) : _body = null;
+///  Manage meta/document for all entities
+abstract interface class Archivist {
 
-  /// message body
-  Content? _body;
+  ///  Create user when visa.key exists
+  ///
+  /// @param identifier - user ID
+  /// @return user, null on not ready
+  Future<User?> createUser(ID identifier);
 
-  PlainMessage.from(Envelope head, Content body) : super.fromEnvelope(head) {
-    content = body;
-  }
+  ///  Create group when members exist
+  ///
+  /// @param identifier - group ID
+  /// @return group, null on not ready
+  Future<Group?> createGroup(ID identifier);
 
-  @override
-  DateTime? get time => content.time ?? envelope.time;
+  ///  Get meta.key
+  ///
+  /// @param user - user ID
+  /// @return null on not found
+  Future<VerifyKey?> getMetaKey(ID user);
 
-  @override
-  ID? get group => content.group;
+  ///  Get visa.key
+  ///
+  /// @param user - user ID
+  /// @return null on not found
+  Future<EncryptKey?> getVisaKey(ID user);
 
-  @override
-  int get type => content.type;
-
-  @override
-  Content get content {
-    _body ??= Content.parse(this['content']);
-    assert(_body != null, 'message content not found: $this');
-    return _body!;
-  }
-
-  // @override
-  set content(Content body) {
-    setMap('content', body);
-    _body = body;
-  }
+  ///  Get all local users (for decrypting received message)
+  ///
+  /// @return users with private key
+  Future<List<User>> get localUsers;
 
 }

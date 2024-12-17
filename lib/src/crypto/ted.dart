@@ -60,7 +60,7 @@ class BaseDataWrapper extends Dictionary {
       return encoded;
     }
     String alg = getString('algorithm', '')!;
-    if (alg == TransportableData.kDefault) {
+    if (alg == TransportableData.BASE_64) {
       alg = '';
     }
     if (alg.isEmpty) {
@@ -91,7 +91,7 @@ class BaseDataWrapper extends Dictionary {
   String get algorithm {
     String alg = getString('algorithm', '')!;
     if (alg.isEmpty) {
-      alg = TransportableData.kDefault;
+      alg = TransportableData.BASE_64;
     }
     return alg;
   }
@@ -113,11 +113,11 @@ class BaseDataWrapper extends Dictionary {
       String encoded = getString('data', '')!;
       if (encoded.isNotEmpty) {
         String alg = algorithm;
-        if (alg == TransportableData.kBASE_64) {
+        if (alg == TransportableData.BASE_64) {
           _data = bin = Base64.decode(encoded);
-        } else if (alg == TransportableData.kBASE_58) {
+        } else if (alg == TransportableData.BASE_58) {
           _data = bin = Base58.decode(encoded);
-        } else if (alg == TransportableData.kHEX) {
+        } else if (alg == TransportableData.HEX) {
           _data = bin = Hex.decode(encoded);
         } else {
           assert(false, 'data algorithm not support: $alg');
@@ -133,11 +133,11 @@ class BaseDataWrapper extends Dictionary {
     } else {
       String encoded = '';
       String alg = algorithm;
-      if (alg == TransportableData.kBASE_64) {
+      if (alg == TransportableData.BASE_64) {
         encoded = Base64.encode(binary);
-      } else if (alg == TransportableData.kBASE_58) {
+      } else if (alg == TransportableData.BASE_58) {
         encoded = Base58.encode(binary);
-      } else if (alg == TransportableData.kHEX) {
+      } else if (alg == TransportableData.HEX) {
         encoded = Hex.encode(binary);
       } else {
         assert(false, 'data algorithm not support: $alg');

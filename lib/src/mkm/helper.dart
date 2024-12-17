@@ -36,86 +36,23 @@ import 'package:mkm/mkm.dart';
 import '../protocol/docs.dart';
 
 
-abstract interface class BroadcastHelper {
-
-  // private
-  static String? getGroupSeed(ID group) {
-    String? name = group.name;
-    if (name != null) {
-      int len = name.length;
-      if (len == 0 || (len == 8 && name.toLowerCase() == "everyone")) {
-        name = null;
-      }
-    }
-    return name;
-  }
-
-  // protected
-  static ID getBroadcastFounder(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the founder of group 'everyone@everywhere'
-      //            'Albert Moky'
-      return ID.kFounder;
-    } else {
-      // DISCUSS: who should be the founder of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.founder@anywhere'
-      return ID.parse('$name.founder@anywhere')!;
-    }
-  }
-
-  // protected
-  static ID getBroadcastOwner(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the owner of group 'everyone@everywhere'
-      //            'anyone@anywhere'
-      return ID.kAnyone;
-    } else {
-      // DISCUSS: who should be the owner of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.owner@anywhere'
-      return ID.parse('$name.owner@anywhere')!;
-    }
-  }
-
-  // protected
-  static List<ID> getBroadcastMembers(ID group) {
-    String? name = getGroupSeed(group);
-    if (name == null) {
-      // Consensus: the member of group 'everyone@everywhere'
-      //            'anyone@anywhere'
-      return [ID.kAnyone];
-    } else {
-      // DISCUSS: who should be the member of group 'xxx@everywhere'?
-      //          'anyone@anywhere', or 'xxx.member@anywhere'
-      ID owner = ID.parse('$name.owner@anywhere')!;
-      ID member = ID.parse('$name.member@anywhere')!;
-      return [owner, member];
-    }
-  }
-
-}
-
-
 abstract interface class MetaHelper {
 
   static bool checkMeta(Meta meta) {
     VerifyKey key = meta.publicKey;
-    // assert(key != null, 'meta.key should not be empty: $meta');
     String? seed = meta.seed;
     Uint8List? fingerprint = meta.fingerprint;
-    bool noSeed = seed == null || seed.isEmpty;
-    bool noSig = fingerprint == null || fingerprint.isEmpty;
-    // check meta version
-    if (!MetaType.hasSeed(meta.type)) {
+    // check meta seed & signature
+    if (seed == null || seed.isEmpty) {
       // this meta has no seed, so no fingerprint too
-      return noSeed && noSig;
-    } else if (noSeed || noSig) {
-      // seed and fingerprint should not be empty
+      return fingerprint == null || fingerprint.isEmpty;
+    } else if (fingerprint == null || fingerprint.isEmpty) {
+      // fingerprint should not be empty here
       return false;
     }
     // verify fingerprint
-    return key.verify(UTF8.encode(seed), fingerprint);
+    Uint8List data = UTF8.encode(seed);
+    return key.verify(data, fingerprint);
   }
 
   static bool matchIdentifier(ID identifier, Meta meta) {
@@ -143,16 +80,20 @@ abstract interface class MetaHelper {
       return true;
     }
     // check with seed & fingerprint
-    if (MetaType.hasSeed(meta.type)) {
-      // check whether keys equal by verifying signature
-      String? seed = meta.seed;
-      Uint8List? fingerprint = meta.fingerprint;
-      return pKey.verify(UTF8.encode(seed!), fingerprint!);
-    } else {
+    String? seed = meta.seed;
+    if (seed == null || seed.isEmpty) {
       // NOTICE: ID with BTC/ETH address has no username, so
       //         just compare the key.data to check matching
       return false;
     }
+    Uint8List? fingerprint = meta.fingerprint;
+    if (fingerprint == null || fingerprint.isEmpty) {
+      // fingerprint should not be empty here
+      return false;
+    }
+    // check whether keys equal by verifying signature
+    Uint8List data = UTF8.encode(seed);
+    return pKey.verify(data, fingerprint);
   }
 
 }
@@ -194,11 +135,9 @@ abstract interface class DocumentHelper {
         }
       }
       // 2. check time
-      if (last != null) {
-        if (isExpired(doc, last)) {
-          // skip expired document
-          continue;
-        }
+      if (last != null && isExpired(doc, last)) {
+        // skip old document
+        continue;
       }
       // got it
       last = doc;
@@ -218,11 +157,9 @@ abstract interface class DocumentHelper {
         continue;
       }
       // 2. check time
-      if (last != null) {
-        if (isExpired(doc, last)) {
-          // skip expired document
-          continue;
-        }
+      if (last != null && isExpired(doc, last)) {
+        // skip old document
+        continue;
       }
       // got it
       last = doc;
@@ -242,11 +179,9 @@ abstract interface class DocumentHelper {
         continue;
       }
       // 2. check time
-      if (last != null) {
-        if (isExpired(doc, last)) {
-          // skip expired document
-          continue;
-        }
+      if (last != null && isExpired(doc, last)) {
+        // skip old document
+        continue;
       }
       // got it
       last = doc;

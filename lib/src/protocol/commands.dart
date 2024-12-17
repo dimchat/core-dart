@@ -42,11 +42,12 @@ import '../dkd/factory.dart';
 ///      extra   : info   // command parameters
 ///  }
 abstract interface class Command implements Content {
+  // ignore_for_file: constant_identifier_names
 
   //-------- command names begin --------
-  static const String kMeta = 'meta';
-  static const String kDocument = 'document';
-  static const String kReceipt = 'receipt';
+  static const String META     = 'meta';
+  static const String DOCUMENT = 'document';
+  static const String RECEIPT  = 'receipt';
   //-------- command names end --------
 
   ///  Get command name

@@ -48,10 +48,11 @@ abstract interface class HistoryCommand implements Command {
 
   //-------- history command names begin --------
   // account
-  static const String kRegister = "register";
-  static const String kSuicide  = "suicide";
+  static const String REGISTER = "register";
+  static const String SUICIDE  = "suicide";
 //-------- history command names end --------
 }
+// ignore_for_file: constant_identifier_names
 
 
 ///  Group command: {
@@ -69,19 +70,19 @@ abstract interface class GroupCommand implements HistoryCommand {
 
   //-------- group command names begin --------
   // founder/owner
-  static const String kFound    = "found";
-  static const String kAbdicate = "abdicate";
+  static const String FOUND    = "found";
+  static const String ABDICATE = "abdicate";
   // member
-  static const String kInvite   = "invite";
-  static const String kExpel    = "expel";  // Deprecated (use 'reset' instead)
-  static const String kJoin     = "join";
-  static const String kQuit     = "quit";
-  static const String kQuery    = "query";
-  static const String kReset    = "reset";
+  static const String INVITE   = "invite";
+  static const String EXPEL    = "expel";  // Deprecated (use 'reset' instead)
+  static const String JOIN     = "join";
+  static const String QUIT     = "quit";
+  static const String QUERY    = "query";
+  static const String RESET    = "reset";
   // administrator/assistant
-  static const String kHire     = "hire";
-  static const String kFire     = "fire";
-  static const String kResign   = "resign";
+  static const String HIRE     = "hire";
+  static const String FIRE     = "fire";
+  static const String RESIGN   = "resign";
   //-------- group command names end --------
 
 

@@ -156,11 +156,12 @@ class BaseDocument extends Dictionary implements Document {
     _status = 0;
     // 2. update property value with name
     Map? dict = properties;
-    assert(dict != null, 'failed to get properties: $this');
-    if (value == null) {
-      dict?.remove(name);
+    if (dict == null) {
+      assert(false, 'failed to get properties: $this');
+    } else if (value == null) {
+      dict.remove(name);
     } else {
-      dict?[name] = value;
+      dict[name] = value;
     }
     // 3. clear data signature after properties changed
     remove('data');

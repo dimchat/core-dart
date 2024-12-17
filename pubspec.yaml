@@ -1,6 +1,6 @@
 name: dimp
 description: Decentralized Instant Messaging Protocol (DIMP).
-version: 1.0.0
+version: 1.1.0
 homepage: https://github.com/dimchat/core-dart
 repository: https://github.com/dimchat/core-dart
 issue_tracker: https://github.com/dimchat/core-dart/issues
@@ -10,8 +10,8 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  dkd: ^1.0.0
-  mkm: ^1.0.0
+  dkd: ^1.1.1
+  mkm: ^1.1.1
 
 dev_dependencies:
   lints: ^2.0.0

@@ -41,7 +41,7 @@ class BaseTextContent extends BaseContent implements TextContent {
   BaseTextContent(super.dict);
 
   BaseTextContent.fromText(String message)
-      : super.fromType(ContentType.kText) {
+      : super.fromType(ContentType.TEXT) {
     this['text'] = message;
   }
 
@@ -57,7 +57,7 @@ class ListContent extends BaseContent implements ArrayContent {
   List<Content>? _list;
 
   ListContent.fromContents(List<Content> contents)
-      : super.fromType(ContentType.kArray) {
+      : super.fromType(ContentType.ARRAY) {
     // set contents
     this['contents'] = ArrayContent.revert(contents);
     _list = contents;
@@ -87,13 +87,13 @@ class SecretContent extends BaseContent implements ForwardContent {
   List<ReliableMessage>? _secrets;
 
   SecretContent.fromMessage(ReliableMessage msg)
-      : super.fromType(ContentType.kForward) {
+      : super.fromType(ContentType.FORWARD) {
     _forward = msg;
     _secrets = null;
     this['forward'] = msg.toMap();
   }
   SecretContent.fromMessages(List<ReliableMessage> messages)
-      : super.fromType(ContentType.kForward) {
+      : super.fromType(ContentType.FORWARD) {
     _forward = null;
     _secrets = messages;
     this['secrets'] = ForwardContent.revert(messages);
@@ -139,7 +139,7 @@ class WebPageContent extends BaseContent implements PageContent {
 
   WebPageContent.from({required Uri? url, required String? html,
     required String title, PortableNetworkFile? icon, String? desc,})
-      : super.fromType(ContentType.kPage) {
+      : super.fromType(ContentType.PAGE) {
     // URL or HTML
     this.url = url;
     this.html = html;
@@ -229,7 +229,7 @@ class NameCardContent extends BaseContent implements NameCard {
   PortableNetworkFile? _image;
 
   NameCardContent.from(ID identifier, String name, PortableNetworkFile? avatar)
-      : super.fromType(ContentType.kNameCard) {
+      : super.fromType(ContentType.NAME_CARD) {
     // ID
     this['ID'] = identifier.toString();
     // name

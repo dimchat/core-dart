@@ -42,7 +42,7 @@ class HireGroupCommand extends BaseGroupCommand implements HireCommand {
   HireGroupCommand(super.dict);
 
   HireGroupCommand.from(ID group, {List<ID>? administrators, List<ID>? assistants})
-      : super.from(GroupCommand.kHire, group) {
+      : super.from(GroupCommand.HIRE, group) {
     if (administrators != null) {
       this['administrators'] = ID.revert(administrators);
     }
@@ -99,7 +99,7 @@ class FireGroupCommand extends BaseGroupCommand implements FireCommand {
   FireGroupCommand(super.dict);
 
   FireGroupCommand.from(ID group, {List<ID>? administrators, List<ID>? assistants})
-      : super.from(GroupCommand.kFire, group) {
+      : super.from(GroupCommand.FIRE, group) {
     if (administrators != null) {
       this['administrators'] = ID.revert(administrators);
     }
@@ -155,5 +155,5 @@ class FireGroupCommand extends BaseGroupCommand implements FireCommand {
 class ResignGroupCommand extends BaseGroupCommand implements ResignCommand {
   ResignGroupCommand(super.dict);
 
-  ResignGroupCommand.from(ID group) : super.from(GroupCommand.kResign, group);
+  ResignGroupCommand.from(ID group) : super.from(GroupCommand.RESIGN, group);
 }

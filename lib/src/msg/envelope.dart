@@ -51,7 +51,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
 
   MessageEnvelope.from({required ID sender, required ID? receiver, DateTime? time})
       : super(null) {
-    receiver ??= ID.kAnyone;
+    receiver ??= ID.ANYONE;
     time ??= DateTime.now();
     _sender = sender;
     _receiver = receiver;
@@ -72,7 +72,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
   ID get receiver {
     if (_receiver == null) {
       _receiver = ID.parse(this['receiver']);
-      _receiver ??= ID.kAnyone;
+      _receiver ??= ID.ANYONE;
     }
     return _receiver!;
   }

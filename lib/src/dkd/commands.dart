@@ -45,7 +45,7 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromType(int msgType, String cmd) : super.fromType(msgType) {
     this['command'] = cmd;
   }
-  BaseCommand.fromName(String cmd) : this.fromType(ContentType.kCommand, cmd);
+  BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
 
   @override
   String get cmd {
@@ -66,7 +66,7 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
   Meta? _meta;
 
   BaseMetaCommand.from(ID identifier, {String? cmd, Meta? meta})
-      : super.fromName(cmd ?? Command.kMeta) {
+      : super.fromName(cmd ?? Command.META) {
     // ID
     this['ID'] = identifier.toString();
     _id = identifier;
@@ -99,7 +99,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   Document? _doc;
 
   BaseDocumentCommand.from(ID identifier, {Meta? meta, Document? document})
-      : super.from(identifier, cmd: Command.kDocument, meta: meta) {
+      : super.from(identifier, cmd: Command.DOCUMENT, meta: meta) {
     // document
     if (document != null) {
       this['document'] = document.toMap();
@@ -107,7 +107,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
     _doc = document;
   }
   BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
-      : super.from(identifier, cmd: Command.kDocument) {
+      : super.from(identifier, cmd: Command.DOCUMENT) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);

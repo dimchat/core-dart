@@ -56,10 +56,11 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   ///  Meta algorithm version
   ///
-  ///      0x01 - username@address
-  ///      0x02 - btc_address
-  ///      0x03 - username@btc_address
-  int? _type;
+  ///      1 = MKM : username@address (default)
+  ///      2 = BTC : btc_address
+  ///      4 = ETH : eth_address
+  ///      ...
+  String? _type;
 
   ///  Public key (used for signature)
   ///
@@ -79,13 +80,13 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   int _status = 0;  // 1 for valid, -1 for invalid
 
-  BaseMeta.from(int version, VerifyKey key, {String? seed, TransportableData? fingerprint})
+  BaseMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint})
       : super(null) {
     //
     //  meta type
     //
-    this['type'] = version;
-    _type = version;
+    this['type'] = type;
+    _type = type;
     //
     //  public key
     //
@@ -112,8 +113,8 @@ abstract class BaseMeta extends Dictionary implements Meta {
   }
 
   @override
-  int get type {
-    _type ??= AccountFactoryManager().generalFactory.getMetaType(toMap(), 0);
+  String get type {
+    _type ??= AccountFactoryManager().generalFactory.getMetaType(toMap(), '');
     // _type ??= getInt('type', 0);
     return _type!;
   }
@@ -125,10 +126,17 @@ abstract class BaseMeta extends Dictionary implements Meta {
     return _key!;
   }
 
+  // protected
+  bool get hasSeed;
+  // bool get hasSeed {
+  //   String algorithm = type;
+  //   return algorithm == '1' || algorithm == 'MKM';
+  // }
+
   @override
   String? get seed {
-    if (_seed == null && MetaType.hasSeed(type)) {
-      _seed = getString('seed', null);
+    if (_seed == null && hasSeed) {
+      _seed = getString('seed', '');
       assert(_seed!.isNotEmpty, 'meta.seed empty: $this');
     }
     return _seed;
@@ -137,7 +145,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   @override
   Uint8List? get fingerprint {
     TransportableData? ted = _fingerprint;
-    if (ted == null && MetaType.hasSeed(type)) {
+    if (ted == null && hasSeed) {
       Object? base64 = this['fingerprint'];
       assert(base64 != null, 'meta.fingerprint should not be empty: $this');
       _fingerprint = ted = TransportableData.parse(base64);

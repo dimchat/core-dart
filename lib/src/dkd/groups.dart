@@ -42,7 +42,7 @@ class BaseHistoryCommand extends BaseCommand implements HistoryCommand {
   BaseHistoryCommand(super.dict);
 
   BaseHistoryCommand.fromName(String cmd)
-      : super.fromType(ContentType.kHistory, cmd);
+      : super.fromType(ContentType.HISTORY, cmd);
 }
 
 
@@ -103,7 +103,7 @@ class InviteGroupCommand extends BaseGroupCommand implements InviteCommand {
   InviteGroupCommand(super.dict);
 
   InviteGroupCommand.from(ID group, {ID? member, List<ID>? members})
-      : super.from(GroupCommand.kInvite, group, member: member, members: members);
+      : super.from(GroupCommand.INVITE, group, member: member, members: members);
 }
 
 
@@ -114,7 +114,7 @@ class ExpelGroupCommand extends BaseGroupCommand implements ExpelCommand {
   ExpelGroupCommand(super.dict);
 
   ExpelGroupCommand.from(ID group, {ID? member, List<ID>? members})
-      : super.from(GroupCommand.kExpel, group, member: member, members: members);
+      : super.from(GroupCommand.EXPEL, group, member: member, members: members);
 }
 
 
@@ -124,7 +124,7 @@ class ExpelGroupCommand extends BaseGroupCommand implements ExpelCommand {
 class JoinGroupCommand extends BaseGroupCommand implements JoinCommand {
   JoinGroupCommand(super.dict);
 
-  JoinGroupCommand.from(ID group) : super.from(GroupCommand.kJoin, group);
+  JoinGroupCommand.from(ID group) : super.from(GroupCommand.JOIN, group);
 }
 
 
@@ -134,7 +134,7 @@ class JoinGroupCommand extends BaseGroupCommand implements JoinCommand {
 class QuitGroupCommand extends BaseGroupCommand implements QuitCommand {
   QuitGroupCommand(super.dict);
 
-  QuitGroupCommand.from(ID group) : super.from(GroupCommand.kQuit, group);
+  QuitGroupCommand.from(ID group) : super.from(GroupCommand.QUIT, group);
 }
 
 
@@ -148,7 +148,7 @@ class QueryGroupCommand extends BaseGroupCommand implements QueryCommand {
   DateTime? get lastTime => getDateTime('last_time', null);
 
   QueryGroupCommand.from(ID group, DateTime? lastTime)
-      : super.from(GroupCommand.kQuery, group) {
+      : super.from(GroupCommand.QUERY, group) {
     if (lastTime != null) {
       setDateTime('last_time', lastTime);
     }
@@ -164,5 +164,5 @@ class ResetGroupCommand extends BaseGroupCommand implements ResetCommand {
   ResetGroupCommand(super.dict);
 
   ResetGroupCommand.from(ID group, {required List<ID> members})
-      : super.from(GroupCommand.kReset, group, members: members);
+      : super.from(GroupCommand.RESET, group, members: members);
 }

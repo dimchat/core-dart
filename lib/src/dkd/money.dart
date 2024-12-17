@@ -30,6 +30,7 @@
  */
 import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
+import 'package:mkm/type.dart';
 
 import '../protocol/money.dart';
 import 'base.dart';
@@ -39,22 +40,28 @@ import 'base.dart';
 class BaseMoneyContent extends BaseContent implements MoneyContent {
   BaseMoneyContent(super.dict);
 
-  BaseMoneyContent.fromType(int msgType, {required String currency, required double amount})
+  BaseMoneyContent.fromType(int msgType, {required String currency, required num amount})
       : super.fromType(msgType) {
     this['currency'] = currency;
     this['amount'] = amount;
   }
-  BaseMoneyContent.from({required String currency, required double amount})
-      : this.fromType(ContentType.kMoney, currency: currency, amount: amount);
+  BaseMoneyContent.from({required String currency, required num amount})
+      : this.fromType(ContentType.MONEY, currency: currency, amount: amount);
 
   @override
   String get currency => getString('currency', '')!;
 
   @override
-  double get amount => getDouble('amount', 0)!;
+  num get amount {
+    var val = this['amount'];
+    if (val is num) {
+      return val;
+    }
+    return Converter.getDouble(val, 0)!;
+  }
 
   @override
-  set amount(double value) => this['amount'] = value;
+  set amount(num value) => this['amount'] = value;
 }
 
 
@@ -62,8 +69,8 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
 class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
   TransferMoneyContent(super.dict);
 
-  TransferMoneyContent.from({required String currency, required double amount})
-      : super.fromType(ContentType.kTransfer, currency: currency, amount: amount);
+  TransferMoneyContent.from({required String currency, required num amount})
+      : super.fromType(ContentType.TRANSFER, currency: currency, amount: amount);
 
   @override
   ID? get remitter => ID.parse(this['remitter']);

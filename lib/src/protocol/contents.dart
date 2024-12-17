@@ -73,7 +73,7 @@ abstract interface class ArrayContent implements Content {
       ListContent.fromContents(contents);
 
 
-  static List<Content> convert(List contents) {
+  static List<Content> convert(Iterable contents) {
     List<Content> array = [];
     Content? res;
     for (var item in contents) {
@@ -85,7 +85,7 @@ abstract interface class ArrayContent implements Content {
     return array;
   }
 
-  static List<Map> revert(List<Content> contents) {
+  static List<Map> revert(Iterable<Content> contents) {
     List<Map> array = [];
     for (Content item in contents) {
       array.add(item.toMap());
@@ -126,7 +126,7 @@ abstract interface class ForwardContent implements Content {
   }
 
 
-  static List<ReliableMessage> convert(List messages) {
+  static List<ReliableMessage> convert(Iterable messages) {
     List<ReliableMessage> array = [];
     ReliableMessage? msg;
     for (var item in messages) {
@@ -138,7 +138,7 @@ abstract interface class ForwardContent implements Content {
     return array;
   }
 
-  static List<Map> revert(List<ReliableMessage> messages) {
+  static List<Map> revert(Iterable<ReliableMessage> messages) {
     List<Map> array = [];
     for (ReliableMessage msg in messages) {
       array.add(msg.toMap());

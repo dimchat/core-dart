@@ -60,7 +60,6 @@ class BaseContent extends Dictionary implements Content {
       MessageFactoryManager man = MessageFactoryManager();
       _type = man.generalFactory.getContentType(toMap(), 0);
       // _type = getInt('type', 0);
-      assert(_type! > 0, 'content type error: $this');
     }
     return _type ?? 0;
   }

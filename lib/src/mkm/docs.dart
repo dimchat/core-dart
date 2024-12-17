@@ -37,7 +37,8 @@ import 'document.dart';
 
 
 ///
-/// Base User Document
+/// Base Document for User
+/// ~~~~~~~~~~~~~~~~~~~~~~
 ///
 class BaseVisa extends BaseDocument implements Visa {
   BaseVisa(super.dict) : _key = null, _avatar = null;
@@ -52,7 +53,7 @@ class BaseVisa extends BaseDocument implements Visa {
   PortableNetworkFile? _avatar;
 
   BaseVisa.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, Document.kVisa, data: data, signature: signature) {
+      : super.from(identifier, Document.VISA, data: data, signature: signature) {
     // lazy
     _key = null;
     _avatar = null;
@@ -98,7 +99,8 @@ class BaseVisa extends BaseDocument implements Visa {
 
 
 ///
-/// Base Group Document
+/// Base Document for Group
+/// ~~~~~~~~~~~~~~~~~~~~~~~
 ///
 class BaseBulletin extends BaseDocument implements Bulletin {
   BaseBulletin(super.dict) : _bots = null;
@@ -107,7 +109,7 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   List<ID>? _bots;
 
   BaseBulletin.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, Document.kBulletin, data: data, signature: signature) {
+      : super.from(identifier, Document.BULLETIN, data: data, signature: signature) {
     // lazy
     _bots = null;
   }

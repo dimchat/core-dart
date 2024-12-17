@@ -45,14 +45,14 @@ abstract interface class MoneyContent implements Content {
 
   String get currency;
 
-  double get amount;
-  set amount(double value);
+  num get amount;
+  set amount(num value);
 
   //
   //  Factory
   //
 
-  static MoneyContent create(int? msgType, {required String currency, required double amount}) {
+  static MoneyContent create(int? msgType, {required String currency, required num amount}) {
     if (msgType == null) {
       return BaseMoneyContent.from(currency: currency, amount: amount);
     } else {
@@ -85,6 +85,6 @@ abstract interface class TransferContent implements MoneyContent {
   //  Factory
   //
 
-  static TransferContent create({required String currency, required double amount}) =>
+  static TransferContent create({required String currency, required num amount}) =>
       TransferMoneyContent.from(currency: currency, amount: amount);
 }

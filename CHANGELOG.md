@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Archivist.
+
 ## 1.0.0
 
 - PNF for images.

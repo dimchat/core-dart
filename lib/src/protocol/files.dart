@@ -74,11 +74,11 @@ abstract interface class FileContent implements Content {
 
   static FileContent create(int msgType, {TransportableData? data, String? filename,
                                           Uri? url, DecryptKey? password}) {
-    if (msgType == ContentType.kImage) {
+    if (msgType == ContentType.IMAGE) {
       return ImageFileContent.from(data, filename, url, password);
-    } else if (msgType == ContentType.kAudio) {
+    } else if (msgType == ContentType.AUDIO) {
       return AudioFileContent.from(data, filename, url, password);
-    } else if (msgType == ContentType.kVideo) {
+    } else if (msgType == ContentType.VIDEO) {
       return VideoFileContent.from(data, filename, url, password);
     }
     return BaseFileContent.from(msgType, data, filename, url, password);
@@ -86,7 +86,7 @@ abstract interface class FileContent implements Content {
 
   static FileContent file({TransportableData? data, String? filename,
                            Uri? url, DecryptKey? password}) {
-    return BaseFileContent.from(ContentType.kFile, data, filename, url, password);
+    return BaseFileContent.from(ContentType.FILE, data, filename, url, password);
   }
 
   static ImageContent image({TransportableData? data, String? filename,

@@ -48,7 +48,7 @@ class BaseFileContent extends BaseContent implements FileContent {
 
   BaseFileContent.from(int? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
-      : super.fromType(msgType ?? ContentType.kFile) {
+      : super.fromType(msgType ?? ContentType.FILE) {
     // file data
     if (data != null) {
       _wrapper.data = data;
@@ -113,7 +113,7 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
 
   ImageFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
-      : super.from(ContentType.kImage, data, filename, url, password);
+      : super.from(ContentType.IMAGE, data, filename, url, password);
 
   @override
   PortableNetworkFile? get thumbnail {
@@ -146,7 +146,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 
   AudioFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
-      : super.from(ContentType.kAudio, data, filename, url, password);
+      : super.from(ContentType.AUDIO, data, filename, url, password);
 
   @override
   String? get text => getString('text', null);
@@ -168,7 +168,7 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
 
   VideoFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
-      : super.from(ContentType.kVideo, data, filename, url, password);
+      : super.from(ContentType.VIDEO, data, filename, url, password);
 
   @override
   PortableNetworkFile? get snapshot {

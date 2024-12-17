@@ -45,7 +45,7 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
     this['act'] = act;
   }
   AppCustomizedContent.from({required String app, required String mod, required String act})
-      : this.fromType(ContentType.kCustomized, app: app, mod: mod, act: act);
+      : this.fromType(ContentType.CUSTOMIZED, app: app, mod: mod, act: act);
 
   @override
   String get application => getString('mod', '')!;
