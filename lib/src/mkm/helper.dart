@@ -115,7 +115,7 @@ abstract interface class DocumentHelper {
   }
 
   /// Select last document matched the type
-  static Document? lastDocument(List<Document> documents, [String? type]) {
+  static Document? lastDocument(Iterable<Document> documents, [String? type]) {
     if (type == null || type == '*') {
       type = '';
     }
@@ -146,7 +146,7 @@ abstract interface class DocumentHelper {
   }
 
   /// Select last visa document
-  static Visa? lastVisa(List<Document> documents) {
+  static Visa? lastVisa(Iterable<Document> documents) {
     Visa? last;
     bool matched;
     for (Document doc in documents) {
@@ -168,7 +168,7 @@ abstract interface class DocumentHelper {
   }
 
   /// Select last bulletin document
-  static Bulletin? lastBulletin(List<Document> documents) {
+  static Bulletin? lastBulletin(Iterable<Document> documents) {
     Bulletin? last;
     bool matched;
     for (Document doc in documents) {

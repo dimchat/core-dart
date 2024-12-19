@@ -34,13 +34,11 @@ import 'mkm/entity.dart';
 import 'mkm/user.dart';
 import 'mkm/group.dart';
 
-import 'archivist.dart';
-
 
 ///  Entity Factory
 ///  ~~~~~~~~~~~~~~
 ///  Entity pool to manage User/Contact/Group/Member instances
-abstract class Barrack implements EntityDelegate {
+class Barrack implements EntityDelegate {
 
   // memory caches
   final Map<ID, User>   _userMap = {};
@@ -48,8 +46,23 @@ abstract class Barrack implements EntityDelegate {
 
   // protected
   void cacheUser(User user) => _userMap[user.identifier] = user;
+
   // protected
   void cacheGroup(Group group) => _groupMap[group.identifier] = group;
+
+  //
+  //  Entity Delegate
+  //
+
+  @override
+  Future<User?> getUser(ID identifier) async => _userMap[identifier];
+
+  @override
+  Future<Group?> getGroup(ID identifier) async => _groupMap[identifier];
+
+  //
+  //  Garbage Collection
+  //
 
   /// Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
   /// this will remove 50% of cached objects
@@ -70,42 +83,6 @@ abstract class Barrack implements EntityDelegate {
     // else, let it go
     planet.removeWhere((key, value) => (++finger & 1) == 1);
     return finger;
-  }
-
-  Archivist get archivist;
-
-  //
-  //  Entity Delegate
-  //
-
-  @override
-  Future<User?> getUser(ID identifier) async {
-    assert(identifier.isUser, 'user ID error: $identifier');
-    // 1. get from user cache
-    User? user = _userMap[identifier];
-    if (user == null) {
-      // 2. create user and cache it
-      user = await archivist.createUser(identifier);
-      if (user != null) {
-        cacheUser(user);
-      }
-    }
-    return user;
-  }
-
-  @override
-  Future<Group?> getGroup(ID identifier) async {
-    assert(identifier.isGroup, 'group ID error: $identifier');
-    // 1. get from group cache
-    Group? group = _groupMap[identifier];
-    if (group == null) {
-      // 2. create group and cache it
-      group = await archivist.createGroup(identifier);
-      if (group != null) {
-        cacheGroup(group);
-      }
-    }
-    return group;
   }
 
 }
