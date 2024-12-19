@@ -33,8 +33,6 @@ import 'dart:typed_data';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 
-import '../protocol/docs.dart';
-
 
 abstract interface class MetaHelper {
 
@@ -94,99 +92,6 @@ abstract interface class MetaHelper {
     // check whether keys equal by verifying signature
     Uint8List data = UTF8.encode(seed);
     return pKey.verify(data, fingerprint);
-  }
-
-}
-
-
-abstract interface class DocumentHelper {
-
-  /// Check whether this time is before old time
-  static bool isBefore(DateTime? oldTime, DateTime? thisTime) {
-    if (oldTime == null || thisTime == null) {
-      return false;
-    }
-    return thisTime.isBefore(oldTime);
-  }
-
-  /// Check whether this document's time is before old document's time
-  static bool isExpired(Document thisDoc, Document oldDoc) {
-    return isBefore(oldDoc.time, thisDoc.time);
-  }
-
-  /// Select last document matched the type
-  static Document? lastDocument(Iterable<Document> documents, [String? type]) {
-    if (type == null || type == '*') {
-      type = '';
-    }
-    bool checkType = type.isNotEmpty;
-
-    Document? last;
-    String? docType;
-    bool matched;
-    for (Document doc in documents) {
-      // 1. check type
-      if (checkType) {
-        docType = doc.type;
-        matched = docType == null || docType.isEmpty || docType == type;
-        if (!matched) {
-          // type not matched, skip it
-          continue;
-        }
-      }
-      // 2. check time
-      if (last != null && isExpired(doc, last)) {
-        // skip old document
-        continue;
-      }
-      // got it
-      last = doc;
-    }
-    return last;
-  }
-
-  /// Select last visa document
-  static Visa? lastVisa(Iterable<Document> documents) {
-    Visa? last;
-    bool matched;
-    for (Document doc in documents) {
-      // 1. check type
-      matched = doc is Visa;
-      if (!matched) {
-        // type not matched, skip it
-        continue;
-      }
-      // 2. check time
-      if (last != null && isExpired(doc, last)) {
-        // skip old document
-        continue;
-      }
-      // got it
-      last = doc;
-    }
-    return last;
-  }
-
-  /// Select last bulletin document
-  static Bulletin? lastBulletin(Iterable<Document> documents) {
-    Bulletin? last;
-    bool matched;
-    for (Document doc in documents) {
-      // 1. check type
-      matched = doc is Bulletin;
-      if (!matched) {
-        // type not matched, skip it
-        continue;
-      }
-      // 2. check time
-      if (last != null && isExpired(doc, last)) {
-        // skip old document
-        continue;
-      }
-      // got it
-      last = doc;
-    }
-    return last;
   }
 
 }

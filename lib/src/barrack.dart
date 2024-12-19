@@ -37,7 +37,7 @@ import 'mkm/group.dart';
 
 ///  Entity Factory
 ///  ~~~~~~~~~~~~~~
-///  Entity pool to manage User/Contact/Group/Member instances
+///  Entity pool to manage User/Group instances
 class Barrack implements EntityDelegate {
 
   // memory caches

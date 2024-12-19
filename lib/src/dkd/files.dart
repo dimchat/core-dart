@@ -42,9 +42,11 @@ import 'base.dart';
 /// File Content
 ///
 class BaseFileContent extends BaseContent implements FileContent {
-  BaseFileContent(super.dict);
+  BaseFileContent(super.dict) {
+    _wrapper = BaseFileWrapper(toMap());
+  }
 
-  late final BaseFileWrapper _wrapper = BaseFileWrapper(toMap());
+  late final BaseFileWrapper _wrapper;
 
   BaseFileContent.from(int? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)

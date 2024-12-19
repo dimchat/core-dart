@@ -33,7 +33,6 @@ import 'package:mkm/mkm.dart';
 import '../protocol/docs.dart';
 
 import 'entity.dart';
-import 'helper.dart';
 
 /// This class is for creating group
 ///
@@ -88,48 +87,4 @@ abstract interface class GroupDataSource implements EntityDataSource {
   /// @param group - group ID
   /// @return bot ID list
   Future<List<ID>> getAssistants(ID group);
-}
-
-//
-//  Base Group
-//
-
-class BaseGroup extends BaseEntity implements Group {
-  BaseGroup(super.id) : _founder = null;
-
-  /// once the group founder is set, it will never change
-  ID? _founder;
-
-  @override
-  GroupDataSource? get dataSource {
-    var facebook = super.dataSource;
-    if (facebook is GroupDataSource) {
-      return facebook;
-    }
-    assert(facebook == null, 'group data source error: $facebook');
-    return null;
-  }
-
-  @override
-  Future<Bulletin?> get bulletin async =>
-      DocumentHelper.lastBulletin(await documents);
-
-  @override
-  Future<ID> get founder async {
-    _founder ??= await dataSource!.getFounder(identifier);
-    return _founder!;
-  }
-
-  @override
-  Future<ID> get owner async =>
-      (await dataSource!.getOwner(identifier))!;
-
-  @override
-  Future<List<ID>> get members async =>
-      await dataSource!.getMembers(identifier);
-
-  @override
-  Future<List<ID>> get assistants async =>
-      await dataSource!.getAssistants(identifier);
-
 }
