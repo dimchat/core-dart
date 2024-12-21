@@ -72,6 +72,8 @@ class BaseDataWrapper extends Dictionary {
     }
   }
 
+  /// Encode with 'Content-Type'
+  /// ~~~~~~~~~~~~~~~~~~~~~~~~~~
   /// toString(mimeType)
   String encode(String mimeType) {
     assert(!mimeType.contains(' '), 'content-type error: $mimeType');

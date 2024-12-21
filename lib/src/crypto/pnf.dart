@@ -128,12 +128,12 @@ class BaseFileWrapper extends Dictionary {
   /// decrypt key
   ///
   DecryptKey? get password {
-    _password ??= SymmetricKey.parse(this['password']);
+    _password ??= SymmetricKey.parse(this['key']);
     return _password;
   }
 
   set password(DecryptKey? key) {
-    setMap('password', key);
+    setMap('key', key);
     _password = key;
   }
 

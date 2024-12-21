@@ -60,6 +60,7 @@ class BaseContent extends Dictionary implements Content {
       MessageFactoryManager man = MessageFactoryManager();
       _type = man.generalFactory.getContentType(toMap(), 0);
       // _type = getInt('type', 0);
+      assert(_type! >= 0, 'content type error: $toMap()');
     }
     return _type ?? 0;
   }
@@ -67,7 +68,7 @@ class BaseContent extends Dictionary implements Content {
   @override
   int get sn {
     _sn ??= getInt('sn', 0);
-    assert(_sn! > 0, 'serial number error: $this');
+    assert(_sn! > 0, 'serial number error: $toMap()');
     return _sn ?? 0;
   }
 

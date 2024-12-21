@@ -85,7 +85,8 @@ class BaseVisa extends BaseDocument implements Visa {
     PortableNetworkFile? img = _avatar;
     if (img == null) {
       var url = getProperty('avatar');
-      img = _avatar = PortableNetworkFile.parse(url);
+      img = PortableNetworkFile.parse(url);
+      _avatar = img;
     }
     return img;
   }
