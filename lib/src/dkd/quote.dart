@@ -2,12 +2,12 @@
  *
  *  DIMP : Decentralized Instant Messaging Protocol
  *
- *                                Written in 2023 by Moky <albert.moky@gmail.com>
+ *                                Written in 2024 by Moky <albert.moky@gmail.com>
  *
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2024 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,37 +31,38 @@
 import 'package:dkd/dkd.dart';
 import 'package:mkm/type.dart';
 
-import '../protocol/commands.dart';
-import '../protocol/receipt.dart';
-import 'commands.dart';
+import '../protocol/quote.dart';
 
-class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
-  BaseReceiptCommand(super.dict);
+import 'base.dart';
+
+
+/// QuoteContent
+class BaseQuoteContent extends BaseContent implements QuoteContent {
+  BaseQuoteContent(super.dict);
 
   /// original message envelope
   Envelope? _env;
 
-  BaseReceiptCommand.from(String text, Map? origin) : super.fromName(Command.RECEIPT) {
+  BaseQuoteContent.from(String text, Map origin) : super.fromType(ContentType.QUOTE) {
     // text message
     this['text'] = text;
-    // original envelope of message responding to,
-    // includes 'sn' and 'signature'
-    if (origin != null) {
-      assert(!(origin.isEmpty ||
-          origin.containsKey('data') ||
-          origin.containsKey('key') ||
-          origin.containsKey('keys') ||
-          origin.containsKey('meta') ||
-          origin.containsKey('visa')), 'impure envelope: $origin');
-      this['origin'] = origin;
-    }
+    // original envelope of message quote with,
+    // includes 'sender', 'receiver', 'type' and 'sn'
+    this['origin'] = origin;
   }
 
   @override
   String get text => getString('text', '')!;
 
   // protected
-  Map? get origin => this['origin'];
+  Map? get origin {
+    var info = this['origin'];
+    if (info is Map) {
+      return info;
+    }
+    assert(info == null, 'origin error: $info');
+    return null;
+  }
 
   @override
   Envelope? get originalEnvelope {
@@ -74,8 +75,42 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   int? get originalSerialNumber =>
       Converter.getInt(origin?['sn'], null);
 
+}
+
+
+/// CombineContent
+class CombineForwardContent extends BaseContent implements CombineContent {
+  CombineForwardContent(super.dict);
+
+  List<InstantMessage>? _history;
+
+  CombineForwardContent.from(String title, List<InstantMessage> messages)
+      : super.fromType(ContentType.COMBINE_FORWARD) {
+    // chat name
+    this['title'] = title;
+    // chat history
+    this['messages'] = CombineContent.revert(messages);
+    _history = messages;
+  }
+
   @override
-  String? get originalSignature =>
-      Converter.getString(origin?['signature'], null);
+  String get title => getString('title', '')!;
+
+  @override
+  List<InstantMessage> get messages {
+    List<InstantMessage>? array = _history;
+    if (array == null) {
+      var info = this['messages'];
+      if (info is List) {
+        // get from secrets
+        array = CombineContent.convert(info);
+      } else {
+        assert(info == null, 'combined messages error: $info');
+        array = [];
+      }
+      _history = array;
+    }
+    return array;
+  }
 
 }

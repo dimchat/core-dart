@@ -25,7 +25,8 @@
  */
 import 'dart:typed_data';
 
-import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 ///  Transportable Data Mixin: {
 ///
@@ -39,7 +40,7 @@ import 'package:mkm/crypto.dart';
 ///     1. "base64,{BASE64_ENCODE}"
 ///     2. "data:image/png;base64,{BASE64_ENCODE}"
 class BaseDataWrapper extends Dictionary {
-  BaseDataWrapper(super.dict) : _data = null;
+  BaseDataWrapper(super.dict);
 
   /// binary data
   Uint8List? _data;
@@ -60,7 +61,7 @@ class BaseDataWrapper extends Dictionary {
       return encoded;
     }
     String alg = getString('algorithm', '')!;
-    if (alg == TransportableData.BASE_64) {
+    if (alg == TransportableData.DEFAULT) {
       alg = '';
     }
     if (alg.isEmpty) {
@@ -93,7 +94,7 @@ class BaseDataWrapper extends Dictionary {
   String get algorithm {
     String alg = getString('algorithm', '')!;
     if (alg.isEmpty) {
-      alg = TransportableData.BASE_64;
+      alg = TransportableData.DEFAULT;
     }
     return alg;
   }

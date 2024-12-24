@@ -31,9 +31,10 @@
 import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
+import '../command_plugins.dart';
 import '../protocol/commands.dart';
+
 import 'base.dart';
-import 'factory.dart';
 
 
 ///
@@ -48,9 +49,9 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
 
   @override
-  String get cmd {
-    CommandFactoryManager man = CommandFactoryManager();
-    return man.generalFactory.getCmd(toMap(), '')!;
+  String get commandName {
+    var holder = SharedCommandHolder();
+    return holder.helper!.getCommandName(toMap(), '')!;
     // return getString('command', '')!;
   }
 }
@@ -60,12 +61,12 @@ class BaseCommand extends BaseContent implements Command  {
 /// MetaCommand
 ///
 class BaseMetaCommand extends BaseCommand implements MetaCommand {
-  BaseMetaCommand(super.dict) : _id = null, _meta = null;
+  BaseMetaCommand(super.dict);
 
   ID? _id;
   Meta? _meta;
 
-  BaseMetaCommand.from(ID identifier, {String? cmd, Meta? meta})
+  BaseMetaCommand.from(ID identifier, String? cmd, Meta? meta)
       : super.fromName(cmd ?? Command.META) {
     // ID
     this['ID'] = identifier.toString();
@@ -94,12 +95,12 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 /// DocumentCommand
 ///
 class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
-  BaseDocumentCommand(super.dict) : _doc = null;
+  BaseDocumentCommand(super.dict);
 
   Document? _doc;
 
-  BaseDocumentCommand.from(ID identifier, {Meta? meta, Document? document})
-      : super.from(identifier, cmd: Command.DOCUMENT, meta: meta) {
+  BaseDocumentCommand.from(ID identifier, Meta? meta, Document? document)
+      : super.from(identifier, Command.DOCUMENT, meta) {
     // document
     if (document != null) {
       this['document'] = document.toMap();
@@ -107,7 +108,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
     _doc = document;
   }
   BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
-      : super.from(identifier, cmd: Command.DOCUMENT) {
+      : super.from(identifier, Command.DOCUMENT, null) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);

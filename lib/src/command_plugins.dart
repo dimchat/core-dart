@@ -28,60 +28,35 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
-import 'package:dkd/plugins.dart';
-import 'package:mkm/mkm.dart';
-import 'package:mkm/type.dart';
+import 'protocol/helpers.dart';
 
-class BaseContent extends Dictionary implements Content {
-  BaseContent(super.dict);
+///  Command GeneralFactory
+///  ~~~~~~~~~~~~~~~~~~~~~~
+abstract interface class GeneralCommandHelper /*implements CommandHelper */{
 
-  /// message type: text, image, ...
-  int? _type;
+  //
+  //  CMD
+  //
 
-  /// serial number: random number to identify message content
-  int? _sn;
+  String? getCommandName(Map content, String? defaultValue);
 
-  /// message time
-  DateTime? _time;
+}
 
-  BaseContent.fromType(int msgType) : super(null) {
-    DateTime now = DateTime.now();
-    _type = msgType;
-    _sn = InstantMessage.generateSerialNumber(msgType, now);
-    _time = now;
-    this['type'] = _type;
-    this['sn'] = _sn;
-    setDateTime('time', _time);
-  }
+/// Command FactoryManager
+/// ~~~~~~~~~~~~~~~~~~~~~~
+class SharedCommandHolder {
+  factory SharedCommandHolder() => _instance;
+  static final SharedCommandHolder _instance = SharedCommandHolder._internal();
+  SharedCommandHolder._internal();
 
-  @override
-  int get type {
-    if (_type == null) {
-      var holder = SharedMessageHolder();
-      _type = holder.helper!.getContentType(toMap(), 0);
-      // _type = getInt('type', 0);
-      assert(_type! >= 0, 'content type error: $toMap()');
-    }
-    return _type ?? 0;
-  }
+  /// Command
+  CommandHelper? get commandHelper =>
+      CommandHolder().commandHelper;
 
-  @override
-  int get sn {
-    _sn ??= getInt('sn', 0);
-    assert(_sn! > 0, 'serial number error: $toMap()');
-    return _sn ?? 0;
-  }
+  set commandHelper(CommandHelper? helper) =>
+      CommandHolder().commandHelper = helper;
 
-  @override
-  DateTime? get time {
-    _time ??= getDateTime('time', null);
-    return _time;
-  }
+  /// General Helper
+  GeneralCommandHelper? helper;
 
-  @override
-  ID? get group => ID.parse(this['group']);
-
-  @override
-  set group(ID? identifier) => setString('group', identifier);
 }

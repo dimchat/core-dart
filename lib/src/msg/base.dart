@@ -28,9 +28,9 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 import 'package:dkd/dkd.dart';
+import 'package:mkm/type.dart';
 
 /*
  *  Message Transforming
@@ -67,7 +67,7 @@ import 'package:dkd/dkd.dart';
 ///      ...
 ///  }
 abstract class BaseMessage extends Dictionary implements Message {
-  BaseMessage(super.dict) : _envelope = null;
+  BaseMessage(super.dict);
 
   Envelope? _envelope;
 
@@ -80,6 +80,8 @@ abstract class BaseMessage extends Dictionary implements Message {
     _envelope ??= Envelope.parse(toMap());
     return _envelope!;
   }
+
+  //--------
 
   @override
   ID get sender => envelope.sender;
@@ -96,6 +98,8 @@ abstract class BaseMessage extends Dictionary implements Message {
   @override
   int? get type => envelope.type;
 
+  //--------
+
   static bool isBroadcast(Message msg) {
     if (msg.receiver.isBroadcast) {
       return true;
@@ -108,4 +112,5 @@ abstract class BaseMessage extends Dictionary implements Message {
     ID? group = ID.parse(overtGroup);
     return group != null && group.isBroadcast;
   }
+
 }

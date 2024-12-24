@@ -29,6 +29,8 @@
  * ==============================================================================
  */
 import 'package:mkm/crypto.dart';
+import 'package:mkm/plugins.dart';
+import 'package:mkm/type.dart';
 
 ///
 /// Base Keys
@@ -45,18 +47,16 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
   //
 
   static String getKeyAlgorithm(Map key) {
-    CryptographyKeyFactoryManager man = CryptographyKeyFactoryManager();
-    return man.generalFactory.getAlgorithm(key, '')!;
+    var holder = SharedCryptoHolder();
+    return holder.helper!.getKeyAlgorithm(key, '')!;
   }
 
   static bool matchEncryptKey(EncryptKey pKey, DecryptKey sKey) {
-    CryptographyKeyFactoryManager man = CryptographyKeyFactoryManager();
-    return man.generalFactory.matchSymmetricKeys(pKey, sKey);
+    return GeneralCryptoHelper.matchSymmetricKeys(pKey, sKey);
   }
 
   static bool matchSignKey(SignKey sKey, VerifyKey pKey) {
-    CryptographyKeyFactoryManager man = CryptographyKeyFactoryManager();
-    return man.generalFactory.matchAsymmetricKeys(sKey, pKey);
+    return GeneralCryptoHelper.matchAsymmetricKeys(sKey, pKey);
   }
 
   static bool symmetricKeyEquals(SymmetricKey a, SymmetricKey b) {

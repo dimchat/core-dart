@@ -45,7 +45,7 @@ import 'base.dart';
 ///      content  : {...}
 ///  }
 class PlainMessage extends BaseMessage implements InstantMessage {
-  PlainMessage(super.dict) : _body = null;
+  PlainMessage(super.dict);
 
   /// message body
   Content? _body;
@@ -65,8 +65,12 @@ class PlainMessage extends BaseMessage implements InstantMessage {
 
   @override
   Content get content {
-    _body ??= Content.parse(this['content']);
-    assert(_body != null, 'message content not found: $this');
+    if (_body == null) {
+      var info = this['content'];
+      assert(info != null, 'message content not found: $toMap()');
+      _body ??= Content.parse(info);
+      assert(_body != null, 'message content error: $info');
+    }
     return _body!;
   }
 

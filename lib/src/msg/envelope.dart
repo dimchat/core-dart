@@ -28,9 +28,9 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/crypto.dart';
 import 'package:mkm/mkm.dart';
 import 'package:dkd/dkd.dart';
+import 'package:mkm/type.dart';
 
 ///  Envelope for message
 ///  ~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ import 'package:dkd/dkd.dart';
 ///      time     : 123
 ///  }
 class MessageEnvelope extends Dictionary implements Envelope {
-  MessageEnvelope(super.dict) : _sender = null, _receiver = null, _time = null;
+  MessageEnvelope(super.dict);
 
   ID? _sender;
   ID? _receiver;

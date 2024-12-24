@@ -30,8 +30,8 @@
  */
 import 'dart:typed_data';
 
-import 'package:mkm/crypto.dart';
 import 'package:dkd/dkd.dart';
+import 'package:mkm/format.dart';
 
 import 'secure.dart';
 
@@ -55,7 +55,7 @@ import 'secure.dart';
 ///      signature: "..."   // base64_encode(asymmetric_sign(data))
 ///  }
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
-  NetworkMessage(super.dict) : _signature = null;
+  NetworkMessage(super.dict);
 
   TransportableData? _signature;
 

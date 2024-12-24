@@ -32,6 +32,7 @@ import 'dart:typed_data';
 
 import 'package:dkd/dkd.dart';
 import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
 
 import '../crypto/pnf.dart';
 import '../protocol/files.dart';
@@ -51,6 +52,7 @@ class BaseFileContent extends BaseContent implements FileContent {
   BaseFileContent.from(int? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.FILE) {
+    _wrapper = BaseFileWrapper(toMap());
     // file data
     if (data != null) {
       _wrapper.data = data;
@@ -108,7 +110,7 @@ class BaseFileContent extends BaseContent implements FileContent {
 /// ImageContent
 ///
 class ImageFileContent extends BaseFileContent implements ImageContent {
-  ImageFileContent(super.dict) : _thumbnail = null;
+  ImageFileContent(super.dict);
 
   /// small image
   PortableNetworkFile? _thumbnail;
@@ -163,7 +165,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 /// VideoContent
 ///
 class VideoFileContent extends BaseFileContent implements VideoContent {
-  VideoFileContent(super.dict) : _snapshot = null;
+  VideoFileContent(super.dict);
 
   /// small image
   PortableNetworkFile? _snapshot;

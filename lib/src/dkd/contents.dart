@@ -52,7 +52,7 @@ class BaseTextContent extends BaseContent implements TextContent {
 
 /// ArrayContent
 class ListContent extends BaseContent implements ArrayContent {
-  ListContent(super.dict) : _list = null;
+  ListContent(super.dict);
 
   List<Content>? _list;
 
@@ -65,15 +65,17 @@ class ListContent extends BaseContent implements ArrayContent {
 
   @override
   List<Content> get contents {
-    if (_list == null) {
+    var array = _list;
+    if (array == null) {
       var info = this['contents'];
       if (info is List) {
-        _list = ArrayContent.convert(info);
+        array = ArrayContent.convert(info);
       } else {
-        _list = [];
+        array = [];
       }
+      _list = array;
     }
-    return _list!;
+    return array;
   }
 
 }
@@ -81,7 +83,7 @@ class ListContent extends BaseContent implements ArrayContent {
 
 /// ForwardContent
 class SecretContent extends BaseContent implements ForwardContent {
-  SecretContent(super.dict) : _forward = null, _secrets = null;
+  SecretContent(super.dict);
 
   ReliableMessage? _forward;
   List<ReliableMessage>? _secrets;
@@ -112,14 +114,14 @@ class SecretContent extends BaseContent implements ForwardContent {
       var info = this['secrets'];
       if (info is List) {
         // get from secrets
-        _secrets = messages = ForwardContent.convert(info);
+        messages = ForwardContent.convert(info);
       } else {
         assert(info == null, 'secret messages error: $info');
         // get from 'forward'
         ReliableMessage? msg = forward;
         messages = msg == null ? [] : [msg];
-        _secrets = messages;
       }
+      _secrets = messages;
     }
     return messages;
   }
@@ -129,7 +131,7 @@ class SecretContent extends BaseContent implements ForwardContent {
 
 /// PageContent
 class WebPageContent extends BaseContent implements PageContent {
-  WebPageContent(super.dict) : _url = null, _icon = null;
+  WebPageContent(super.dict);
 
   /// web URL
   Uri? _url;
@@ -224,7 +226,7 @@ class WebPageContent extends BaseContent implements PageContent {
 
 /// NameCard
 class NameCardContent extends BaseContent implements NameCard {
-  NameCardContent(super.dict) : _image = null;
+  NameCardContent(super.dict);
 
   PortableNetworkFile? _image;
 
@@ -253,7 +255,8 @@ class NameCardContent extends BaseContent implements NameCard {
     PortableNetworkFile? img = _image;
     if (img == null) {
       var url = this['avatar'];
-      img = _image = PortableNetworkFile.parse(url);
+      img = PortableNetworkFile.parse(url);
+      _image = img;
     }
     return img;
   }

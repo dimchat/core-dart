@@ -26,6 +26,8 @@
 import 'dart:typed_data';
 
 import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 ///  File Content MixIn: {
 ///
@@ -42,7 +44,7 @@ import 'package:mkm/crypto.dart';
 ///      }
 ///  }
 class BaseFileWrapper extends Dictionary {
-  BaseFileWrapper(super.dict) : _attachment = null, _remoteURL = null, _password = null;
+  BaseFileWrapper(super.dict);
 
   /// file data (not encrypted)
   TransportableData? _attachment;

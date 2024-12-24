@@ -31,9 +31,10 @@
 import 'dart:typed_data';
 
 import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
-
-import 'helper.dart';
+import 'package:mkm/plugins.dart';
+import 'package:mkm/type.dart';
 
 ///  User/Group Meta data
 ///  ~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +53,7 @@ import 'helper.dart';
 ///  abstract method:
 ///      - Address generateAddress(int? network);
 abstract class BaseMeta extends Dictionary implements Meta {
-  BaseMeta(super.dict) : _type = null, _key = null, _seed = null, _fingerprint = null, _status = 0;
+  BaseMeta(super.dict);
 
   ///  Meta algorithm version
   ///
@@ -114,7 +115,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   String get type {
-    _type ??= AccountFactoryManager().generalFactory.getMetaType(toMap(), '');
+    _type ??= SharedAccountHolder().helper!.getMetaType(toMap(), '');
     // _type ??= getInt('type', 0);
     return _type!;
   }
@@ -162,7 +163,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   bool get isValid {
     if (_status == 0) {
       // meta from network, try to verify
-      if (MetaHelper.checkMeta(this)) {
+      if (checkValid()) {
         // correct
         _status = 1;
       } else {
@@ -173,10 +174,31 @@ abstract class BaseMeta extends Dictionary implements Meta {
     return _status > 0;
   }
 
-  @override
-  bool matchIdentifier(ID identifier) => MetaHelper.matchIdentifier(identifier, this);
-
-  @override
-  bool matchPublicKey(VerifyKey pKey) => MetaHelper.matchPublicKey(pKey, this);
+  // private
+  bool checkValid() {
+    VerifyKey key = publicKey;
+    if (hasSeed) {
+      // check 'seed' & 'fingerprint'
+    } else if (containsKey('seed') || containsKey('fingerprint')) {
+      // this meta has no seed, so
+      // it should not contains 'seed' or 'fingerprint'
+      return false;
+    } else {
+      // this meta has no seed, so it's always valid
+      // when the public key exists
+      return true;
+    }
+    String? name = seed;
+    Uint8List? signature = fingerprint;
+    // check meta seed & signature
+    if (signature == null || signature.isEmpty ||
+        name == null || name.isEmpty) {
+      assert(false, 'meta error: $toMap()');
+      return false;
+    }
+    // verify fingerprint
+    Uint8List data = UTF8.encode(name);
+    return key.verify(data, signature);
+  }
 
 }

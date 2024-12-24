@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Core Helpers.
+
 ## 1.1.1
 
 - Protocols only.

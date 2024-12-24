@@ -31,11 +31,13 @@
 import 'dart:typed_data';
 
 import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
+import 'package:mkm/plugins.dart';
+import 'package:mkm/type.dart';
 
 class BaseDocument extends Dictionary implements Document {
-  BaseDocument(super.dict)
-      : _identifier = null, _json = null, _sig = null, _properties = null, _status = 0;
+  BaseDocument(super.dict);
 
   ID? _identifier;
 
@@ -94,8 +96,8 @@ class BaseDocument extends Dictionary implements Document {
   String? get type {
     String? docType = getProperty('type');  // deprecated
     if (docType == null) {
-      AccountFactoryManager man = AccountFactoryManager();
-      docType = man.generalFactory.getDocumentType(toMap(), null);
+      var holder = SharedAccountHolder();
+      docType = holder.helper!.getDocumentType(toMap(), null);
       // docType = getString('type', null);
     }
     return docType;

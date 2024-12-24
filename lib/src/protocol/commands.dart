@@ -32,7 +32,7 @@ import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
 import '../dkd/commands.dart';
-import '../dkd/factory.dart';
+import 'helpers.dart';
 
 ///  Command message: {
 ///      type : 0x88,
@@ -53,24 +53,24 @@ abstract interface class Command implements Content {
   ///  Get command name
   ///
   /// @return command name string
-  String get cmd;
+  String get commandName;
 
   //
   //  Factory method
   //
 
   static Command? parse(Object? content) {
-    CommandFactoryManager man = CommandFactoryManager();
-    return man.generalFactory.parseCommand(content);
+    var holder = CommandHolder();
+    return holder.commandHelper!.parseCommand(content);
   }
 
   static CommandFactory? getFactory(String cmd) {
-    CommandFactoryManager man = CommandFactoryManager();
-    return man.generalFactory.getCommandFactory(cmd);
+    var holder = CommandHolder();
+    return holder.commandHelper!.getCommandFactory(cmd);
   }
   static void setFactory(String cmd, CommandFactory factory) {
-    CommandFactoryManager man = CommandFactoryManager();
-    man.generalFactory.setCommandFactory(cmd, factory);
+    var holder = CommandHolder();
+    holder.commandHelper!.setCommandFactory(cmd, factory);
   }
 }
 
@@ -111,13 +111,13 @@ abstract interface class MetaCommand implements Command {
   /// @param identifier - entity ID
   /// @param meta - entity Meta
   static MetaCommand response(ID identifier, Meta meta) =>
-      BaseMetaCommand.from(identifier, meta: meta);
+      BaseMetaCommand.from(identifier, Command.META, meta);
 
   ///  Query Meta
   ///
   /// @param identifier - entity ID
   static MetaCommand query(ID identifier) =>
-      BaseMetaCommand.from(identifier);
+      BaseMetaCommand.from(identifier, Command.META, null);
 
 }
 
@@ -150,7 +150,7 @@ abstract interface class DocumentCommand implements MetaCommand {
   /// @param meta - entity Meta
   /// @param doc - entity Document
   static DocumentCommand response(ID identifier, Meta? meta, Document doc) =>
-      BaseDocumentCommand.from(identifier, meta: meta, document: doc);
+      BaseDocumentCommand.from(identifier, meta, doc);
 
   /// 1. Query Entity Document
   /// 2. Query Entity Document for updating with last time

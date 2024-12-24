@@ -52,7 +52,7 @@ import 'base.dart';
 ///      }
 ///  }
 class EncryptedMessage extends BaseMessage implements SecureMessage {
-  EncryptedMessage(super.dict) : _body = null, _encKey = null, _encKeys = null;
+  EncryptedMessage(super.dict);
 
   Uint8List? _body;
   TransportableData? _encKey;

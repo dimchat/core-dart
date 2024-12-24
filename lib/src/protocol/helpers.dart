@@ -1,13 +1,13 @@
 /* license: https://mit-license.org
  *
- *  Ming-Ke-Ming : Decentralized User Identity Authentication
+ *  DIMP : Decentralized Instant Messaging Protocol
  *
- *                                Written in 2023 by Moky <albert.moky@gmail.com>
+ *                                Written in 2024 by Moky <albert.moky@gmail.com>
  *
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2024 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,51 +28,28 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/crypto.dart';
-import 'package:mkm/format.dart';
-import 'package:mkm/mkm.dart';
+import 'commands.dart';
 
-///  User Document
-///  ~~~~~~~~~~~~~
-///  This interface is defined for authorizing other apps to login,
-///  which can generate a temporary asymmetric key pair for messaging.
-abstract interface class Visa implements Document {
+///  General Helper
+///  ~~~~~~~~~~~~~~
 
-  ///  Get public key to encrypt message for user
-  ///
-  /// @return public key as visa.key
-  EncryptKey? get publicKey;
+abstract interface class CommandHelper {
 
-  ///  Set public key for other user to encrypt message
-  ///
-  /// @param pKey - public key as visa.key
-  set publicKey(EncryptKey? pKey);
+  void setCommandFactory(String cmd, CommandFactory factory);
+  CommandFactory? getCommandFactory(String cmd);
 
-  ///  Get avatar URL
-  ///
-  /// @return PNF(URL)
-  PortableNetworkFile? get avatar;
+  Command? parseCommand(Object? content);
 
-  ///  Set avatar URL
-  ///
-  /// @param img - image URL
-  set avatar(PortableNetworkFile? img);
 }
 
-abstract interface class Bulletin implements Document {
+/// Command FactoryManager
+/// ~~~~~~~~~~~~~~~~~~~~~~
+// protected
+class CommandHolder {
+  factory CommandHolder() => _instance;
+  static final CommandHolder _instance = CommandHolder._internal();
+  CommandHolder._internal();
 
-  ///  Get group founder
-  ///
-  ///  @return user ID
-  ID? get founder;
+  CommandHelper? commandHelper;
 
-  ///  Get group assistants
-  ///
-  /// @return group bot ID list
-  List<ID>? get assistants;
-
-  ///  Set group assistants
-  ///
-  /// @param bots - group bot ID list
-  set assistants(List<ID>? bots);
 }
