@@ -38,7 +38,8 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
   //  CMD
   //
 
-  String? getCommandName(Map content, String? defaultValue);
+  /// Get command name
+  String? getCmd(Map content, String? defaultValue);
 
 }
 
@@ -50,11 +51,11 @@ class SharedCommandHolder {
   SharedCommandHolder._internal();
 
   /// Command
-  CommandHelper? get commandHelper =>
-      CommandHolder().commandHelper;
+  CommandHelper? get cmdHelper =>
+      CommandHolder().cmdHelper;
 
-  set commandHelper(CommandHelper? helper) =>
-      CommandHolder().commandHelper = helper;
+  set cmdHelper(CommandHelper? helper) =>
+      CommandHolder().cmdHelper = helper;
 
   /// General Helper
   GeneralCommandHelper? helper;

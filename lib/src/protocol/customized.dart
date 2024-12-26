@@ -57,6 +57,8 @@ abstract interface class CustomizedContent implements Content {
   //  Factory
   //
 
-  static CustomizedContent create({required String app, required String mod, required String act}) =>
-      AppCustomizedContent.from(app: app, mod: mod, act: act);
+  static CustomizedContent create({
+    required String app, required String mod, required String act
+  }) => AppCustomizedContent.from(app: app, mod: mod, act: act);
+
 }

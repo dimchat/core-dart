@@ -50,6 +50,6 @@ class CommandHolder {
   static final CommandHolder _instance = CommandHolder._internal();
   CommandHolder._internal();
 
-  CommandHelper? commandHelper;
+  CommandHelper? cmdHelper;
 
 }

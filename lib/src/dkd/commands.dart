@@ -49,9 +49,9 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
 
   @override
-  String get commandName {
+  String get cmd {
     var holder = SharedCommandHolder();
-    return holder.helper!.getCommandName(toMap(), '')!;
+    return holder.helper!.getCmd(toMap(), '')!;
     // return getString('command', '')!;
   }
 }

@@ -52,8 +52,8 @@ abstract interface class Command implements Content {
 
   ///  Get command name
   ///
-  /// @return command name string
-  String get commandName;
+  /// @return command/method/declaration
+  String get cmd;
 
   //
   //  Factory method
@@ -61,16 +61,16 @@ abstract interface class Command implements Content {
 
   static Command? parse(Object? content) {
     var holder = CommandHolder();
-    return holder.commandHelper!.parseCommand(content);
+    return holder.cmdHelper!.parseCommand(content);
   }
 
   static CommandFactory? getFactory(String cmd) {
     var holder = CommandHolder();
-    return holder.commandHelper!.getCommandFactory(cmd);
+    return holder.cmdHelper!.getCommandFactory(cmd);
   }
   static void setFactory(String cmd, CommandFactory factory) {
     var holder = CommandHolder();
-    holder.commandHelper!.setCommandFactory(cmd, factory);
+    holder.cmdHelper!.setCommandFactory(cmd, factory);
   }
 }
 

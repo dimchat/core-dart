@@ -38,22 +38,24 @@ import 'base.dart';
 class AppCustomizedContent extends BaseContent implements CustomizedContent {
   AppCustomizedContent(super.dict);
 
-  AppCustomizedContent.fromType(int msgType, {required String app, required String mod, required String act})
-      : super.fromType(msgType) {
+  AppCustomizedContent.fromType(int msgType, {
+    required String app, required String mod, required String act
+  }) : super.fromType(msgType) {
     this['app'] = app;
     this['mod'] = mod;
     this['act'] = act;
   }
-  AppCustomizedContent.from({required String app, required String mod, required String act})
-      : this.fromType(ContentType.CUSTOMIZED, app: app, mod: mod, act: act);
+  AppCustomizedContent.from({
+    required String app, required String mod, required String act
+  }) : this.fromType(ContentType.CUSTOMIZED, app: app, mod: mod, act: act);
 
   @override
-  String get application => getString('mod', '')!;
+  String get application => getString('app', '')!;
 
   @override
-  String get module => getString('act', '')!;
+  String get module => getString('mod', '')!;
 
   @override
-  String get action => getString('app', '')!;
+  String get action => getString('act', '')!;
 
 }
