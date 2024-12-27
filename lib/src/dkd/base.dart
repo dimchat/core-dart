@@ -58,8 +58,8 @@ class BaseContent extends Dictionary implements Content {
   @override
   int get type {
     if (_type == null) {
-      var holder = SharedMessageHolder();
-      _type = holder.helper!.getContentType(toMap(), 0);
+      var ext = SharedMessageExtensions();
+      _type = ext.helper!.getContentType(toMap(), 0);
       // _type = getInt('type', 0);
       assert(_type! >= 0, 'content type error: $toMap()');
     }

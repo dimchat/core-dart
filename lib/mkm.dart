@@ -4,8 +4,8 @@
 library dimp;
 
 
-// export 'package:mkm/type.dart';     // -> 'type.dart'
-// export 'package:mkm/format.dart';   // -> 'type.dart'
+// export 'package:mkm/type.dart';     // -> 'crypto.dart'
+// export 'package:mkm/format.dart';   // -> 'crypto.dart'
 // export 'package:mkm/crypto.dart';   // -> 'crypto.dart'
 // export 'package:mkm/digest.dart';   // -> 'crypto.dart'
 export 'package:mkm/mkm.dart';

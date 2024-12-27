@@ -96,8 +96,8 @@ class BaseDocument extends Dictionary implements Document {
   String? get type {
     String? docType = getProperty('type');  // deprecated
     if (docType == null) {
-      var holder = SharedAccountHolder();
-      docType = holder.helper!.getDocumentType(toMap(), null);
+      var ext = SharedAccountExtensions();
+      docType = ext.helper!.getDocumentType(toMap(), null);
       // docType = getString('type', null);
     }
     return docType;

@@ -115,7 +115,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   String get type {
-    _type ??= SharedAccountHolder().helper!.getMetaType(toMap(), '');
+    _type ??= SharedAccountExtensions().helper!.getMetaType(toMap(), '');
     // _type ??= getInt('type', 0);
     return _type!;
   }

@@ -50,8 +50,8 @@ class BaseCommand extends BaseContent implements Command  {
 
   @override
   String get cmd {
-    var holder = SharedCommandHolder();
-    return holder.helper!.getCmd(toMap(), '')!;
+    var ext = SharedCommandExtensions();
+    return ext.helper!.getCmd(toMap(), '')!;
     // return getString('command', '')!;
   }
 }

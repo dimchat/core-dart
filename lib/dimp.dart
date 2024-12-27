@@ -36,4 +36,3 @@ export 'src/dkd/group_admins.dart';
 export 'src/dkd/receipt.dart';
 export 'src/dkd/money.dart';
 export 'src/dkd/quote.dart';
-export 'src/dkd/customized.dart';

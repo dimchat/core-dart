@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Shared Extensions.
+
 ## 1.2.0
 
 - Core Helpers.

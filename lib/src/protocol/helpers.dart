@@ -45,10 +45,10 @@ abstract interface class CommandHelper {
 /// Command FactoryManager
 /// ~~~~~~~~~~~~~~~~~~~~~~
 // protected
-class CommandHolder {
-  factory CommandHolder() => _instance;
-  static final CommandHolder _instance = CommandHolder._internal();
-  CommandHolder._internal();
+class CommandExtensions {
+  factory CommandExtensions() => _instance;
+  static final CommandExtensions _instance = CommandExtensions._internal();
+  CommandExtensions._internal();
 
   CommandHelper? cmdHelper;
 

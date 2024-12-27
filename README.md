@@ -12,14 +12,16 @@
 [![Stars](https://img.shields.io/github/stars/dimchat/core-dart)](https://github.com/dimchat/core-dart/stargazers)
 [![Followers](https://img.shields.io/github/followers/dimchat)](https://github.com/orgs/dimchat/followers)
 
-### Dependencies
+## Dependencies
 
 | Name | Version | Description |
 |------|---------|-------------|
 | [Ming Ke Ming (名可名)](https://pub.dev/packages/mkm) | ![Version](https://img.shields.io/github/tag/dimchat/mkm-dart) | Decentralized User Identity Authentication |
 | [Dao Ke Dao (道可道)](https://pub.dev/packages/dkd) | ![Version](https://img.shields.io/github/tag/dimchat/dkd-dart) | Universal Message Module |
 
-### Example 1: extends Command
+## Examples
+
+### extends Command
 
 ```dart
 import 'package:dimp/dimp.dart';
@@ -103,7 +105,7 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
 }
 ```
 
-### Example 2: extends Content
+### extends Content
 
 ```dart
 import 'package:dimp/dimp.dart';
@@ -159,5 +161,11 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
 }
 ```
 
+### extends ID Address
+
+* from [dim_plugins](https://pub.dev/packages/dim_plugins)
+
+----
 
 Copyright &copy; 2023 Albert Moky
+[![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

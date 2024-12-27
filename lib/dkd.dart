@@ -17,7 +17,6 @@ export 'src/protocol/groups.dart';
 export 'src/protocol/receipt.dart';
 export 'src/protocol/money.dart';
 export 'src/protocol/quote.dart';
-export 'src/protocol/customized.dart';
 // export 'src/protocol/helpers.dart';  // -> "plugins.dart'
 
 // export 'src/dkd/base.dart';
