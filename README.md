@@ -4,8 +4,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/core-dart/pulls)
 [![Platform](https://img.shields.io/badge/Platform-Dart%203-brightgreen.svg)](https://github.com/dimchat/core-dart/wiki)
 [![Issues](https://img.shields.io/github/issues/dimchat/core-dart)](https://github.com/dimchat/core-dart/issues)
-[![Version](https://img.shields.io/github/tag/dimchat/core-dart)](https://github.com/dimchat/core-dart/tags)
 [![Repo Size](https://img.shields.io/github/repo-size/dimchat/core-dart)](https://github.com/dimchat/core-dart/archive/refs/heads/main.zip)
+[![Tags](https://img.shields.io/github/tag/dimchat/core-dart)](https://github.com/dimchat/core-dart/tags)
+[![Version](https://img.shields.io/pub/v/dimp)](https://pub.dev/packages/dimp)
 
 [![Watchers](https://img.shields.io/github/watchers/dimchat/core-dart)](https://github.com/dimchat/core-dart/watchers)
 [![Forks](https://img.shields.io/github/forks/dimchat/core-dart)](https://github.com/dimchat/core-dart/forks)
@@ -16,12 +17,18 @@
 
 | Name | Version | Description |
 |------|---------|-------------|
-| [Ming Ke Ming (名可名)](https://pub.dev/packages/mkm) | ![Version](https://img.shields.io/github/tag/dimchat/mkm-dart) | Decentralized User Identity Authentication |
-| [Dao Ke Dao (道可道)](https://pub.dev/packages/dkd) | ![Version](https://img.shields.io/github/tag/dimchat/dkd-dart) | Universal Message Module |
+| [Ming Ke Ming (名可名)](https://github.com/dimchat/mkm-dart) | [![Version](https://img.shields.io/pub/v/mkm)](https://pub.dev/packages/mkm) | Decentralized User Identity Authentication |
+| [Dao Ke Dao (道可道)](https://github.com/dimchat/dkd-dart) | [![Version](https://img.shields.io/pub/v/dkd)](https://pub.dev/packages/dkd) | Universal Message Module |
 
 ## Examples
 
 ### extends Command
+
+* _Handshake Command Protocol_
+  0. (C-S) handshake start
+  1. (S-C) handshake again with new session
+  2. (C-S) handshake restart with new session
+  3. (S-C) handshake success
 
 ```dart
 import 'package:dimp/dimp.dart';
@@ -163,7 +170,7 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
 
 ### extends ID Address
 
-* from [dim_plugins](https://pub.dev/packages/dim_plugins)
+* Examples in [dim_plugins](https://pub.dev/packages/dim_plugins)
 
 ----
 

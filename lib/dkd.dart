@@ -5,7 +5,6 @@ library dimp;
 
 
 export 'package:dkd/dkd.dart';
-// export 'package:dkd/msg.dart';       // -> 'msg.dart'
 // export 'package:dkd/plugins.dart';   // -> 'plugins.dart'
 
 
@@ -28,4 +27,3 @@ export 'src/protocol/quote.dart';
 // export 'src/dkd/receipt.dart';
 // export 'src/dkd/money.dart';
 // export 'src/dkd/quote.dart';
-// export 'src/dkd/customized.dart';

@@ -59,7 +59,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
     return GeneralCryptoHelper.matchAsymmetricKeys(sKey, pKey);
   }
 
-  static bool symmetricKeyEquals(SymmetricKey a, SymmetricKey b) {
+  static bool symmetricKeysEqual(SymmetricKey a, SymmetricKey b) {
     if (identical(a, b)) {
       // same object
       return true;
@@ -68,7 +68,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
     return matchEncryptKey(a, b);
   }
 
-  static bool privateKeyEquals(PrivateKey a, PrivateKey b) {
+  static bool privateKeysEqual(PrivateKey a, PrivateKey b) {
     if (identical(a, b)) {
       // same object
       return true;
@@ -88,7 +88,7 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
 
   @override
   bool operator ==(Object other) =>
-      other is SymmetricKey && BaseKey.symmetricKeyEquals(other, this);
+      other is SymmetricKey && BaseKey.symmetricKeysEqual(other, this);
 
   @override
   int get hashCode => toMap().hashCode;
@@ -118,7 +118,7 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
 
   @override
   bool operator ==(Object other) =>
-      other is PrivateKey && BaseKey.privateKeyEquals(other, this);
+      other is PrivateKey && BaseKey.privateKeysEqual(other, this);
 
   @override
   int get hashCode => toMap().hashCode;

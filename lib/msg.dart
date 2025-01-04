@@ -4,9 +4,6 @@
 library dimp;
 
 
-export 'package:dkd/msg.dart';
-
-
 export 'src/msg/base.dart';
 export 'src/msg/envelope.dart';
 export 'src/msg/instant.dart';

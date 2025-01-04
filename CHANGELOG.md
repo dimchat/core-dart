@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Message delegates moved to SDK.
+
 ## 1.2.1
 
 - Shared Extensions.

@@ -35,7 +35,7 @@ import 'protocol/helpers.dart';
 abstract interface class GeneralCommandHelper /*implements CommandHelper */{
 
   //
-  //  CMD
+  //  CMD - Command, Method, Declaration
   //
 
   /// Get command name
