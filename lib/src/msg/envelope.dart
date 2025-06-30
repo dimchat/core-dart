@@ -105,8 +105,8 @@ class MessageEnvelope extends Dictionary implements Envelope {
    *  to let the station do its job.
    */
   @override
-  int? get type => getInt('type', null);
+  String? get type => getString('type', null);
 
   @override
-  set type(int? msgType) => this['type'] = msgType;
+  set type(String? msgType) => this['type'] = msgType;
 }

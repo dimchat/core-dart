@@ -8,7 +8,9 @@ export 'package:dkd/dkd.dart';
 // export 'package:dkd/plugins.dart';   // -> 'plugins.dart'
 
 
+// export 'src/protocol/version.dart';  // -> 'mkm.dart'
 // export 'src/protocol/docs.dart';     // -> 'mkm.dart'
+export 'src/protocol/types.dart';
 export 'src/protocol/contents.dart';
 export 'src/protocol/files.dart';
 export 'src/protocol/commands.dart';

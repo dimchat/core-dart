@@ -12,6 +12,7 @@ export 'package:mkm/mkm.dart';
 // export 'package:mkm/plugins.dart';  // -> 'plugins.dart'
 
 
+export 'src/protocol/version.dart';
 export 'src/protocol/docs.dart';
 
 // export 'src/mkm/meta.dart';

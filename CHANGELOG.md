@@ -1,3 +1,7 @@
+## 2.0.0
+
+- Algorithm names.
+
 ## 1.2.2
 
 - Message delegates moved to SDK.

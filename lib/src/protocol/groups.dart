@@ -37,7 +37,7 @@ import 'commands.dart';
 
 
 ///  History command: {
-///      type : 0x89,
+///      type : i2s(0x89),
 ///      sn   : 123,
 ///
 ///      command : "...", // command name
@@ -56,7 +56,7 @@ abstract interface class HistoryCommand implements Command {
 
 
 ///  Group command: {
-///      type : 0x89,
+///      type : i2s(0x89),
 ///      sn   : 123,
 ///
 ///      command : "reset",   // "invite", "quit", "query", ...
@@ -141,7 +141,7 @@ abstract interface class QuitCommand implements GroupCommand {
 
 
 ///  History command: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 123,
 ///
 ///      command : "query",

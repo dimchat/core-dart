@@ -36,7 +36,7 @@ import '../dkd/contents.dart';
 
 
 ///  Text message: {
-///      type : 0x01,
+///      type : i2s(0x01),
 ///      sn   : 123,
 ///
 ///      text : "..."
@@ -56,7 +56,7 @@ abstract interface class TextContent implements Content {
 
 
 ///  Content Array message: {
-///      type : 0xCA,
+///      type : i2s(0xCA),
 ///      sn   : 123,
 ///
 ///      contents : [...]  // content array
@@ -72,32 +72,11 @@ abstract interface class ArrayContent implements Content {
   static ArrayContent create(List<Content> contents) =>
       ListContent.fromContents(contents);
 
-
-  static List<Content> convert(Iterable contents) {
-    List<Content> array = [];
-    Content? res;
-    for (var item in contents) {
-      res = Content.parse(item);
-      if (res != null) {
-        array.add(res);
-      }
-    }
-    return array;
-  }
-
-  static List<Map> revert(Iterable<Content> contents) {
-    List<Map> array = [];
-    for (Content item in contents) {
-      array.add(item.toMap());
-    }
-    return array;
-  }
-
 }
 
 
 ///  Top-Secret message: {
-///      type : 0xFF,
+///      type : i2s(0xFF),
 ///      sn   : 456,
 ///
 ///      forward : {...}  // reliable (secure + certified) message
@@ -125,32 +104,11 @@ abstract interface class ForwardContent implements Content {
     }
   }
 
-
-  static List<ReliableMessage> convert(Iterable messages) {
-    List<ReliableMessage> array = [];
-    ReliableMessage? msg;
-    for (var item in messages) {
-      msg = ReliableMessage.parse(item);
-      if (msg != null) {
-        array.add(msg);
-      }
-    }
-    return array;
-  }
-
-  static List<Map> revert(Iterable<ReliableMessage> messages) {
-    List<Map> array = [];
-    for (ReliableMessage msg in messages) {
-      array.add(msg.toMap());
-    }
-    return array;
-  }
-
 }
 
 
 ///  Web Page message: {
-///      type : 0x20,
+///      type : i2s(0x20),
 ///      sn   : 123,
 ///
 ///      title : "...",                // Web title
@@ -204,10 +162,10 @@ abstract interface class PageContent implements Content {
 
 
 ///  Name Card content: {
-///      type : 0x33,
+///      type : i2s(0x33),
 ///      sn   : 123,
 ///
-///      ID     : "{ID}",        // contact's ID
+///      did    : "{ID}",        // contact's ID
 ///      name   : "{nickname}}", // contact's name
 ///      avatar : "{URL}",       // avatar - PNF(URL)
 ///  }

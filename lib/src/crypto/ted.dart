@@ -28,6 +28,8 @@ import 'dart:typed_data';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
+import 'algorithms.dart';
+
 ///  Transportable Data Mixin: {
 ///
 ///     algorithm : "base64",
@@ -56,12 +58,12 @@ class BaseDataWrapper extends Dictionary {
 
   @override
   String toString() {
-    String encoded = getString('data', '')!;
+    String encoded = getString('data', null) ?? '';
     if (encoded.isEmpty) {
       return encoded;
     }
-    String alg = getString('algorithm', '')!;
-    if (alg == TransportableData.DEFAULT) {
+    String alg = getString('algorithm', null) ?? '';
+    if (alg == EncodeAlgorithms.DEFAULT) {
       alg = '';
     }
     if (alg.isEmpty) {
@@ -79,7 +81,7 @@ class BaseDataWrapper extends Dictionary {
   String encode(String mimeType) {
     assert(!mimeType.contains(' '), 'content-type error: $mimeType');
     // get encoded data
-    String encoded = getString('data', '')!;
+    String encoded = getString('data', null) ?? '';
     if (encoded.isEmpty) {
       return encoded;
     }
@@ -92,15 +94,15 @@ class BaseDataWrapper extends Dictionary {
   /// encode algorithm
   ///
   String get algorithm {
-    String alg = getString('algorithm', '')!;
+    String alg = getString('algorithm', null) ?? '';
     if (alg.isEmpty) {
-      alg = TransportableData.DEFAULT;
+      alg = EncodeAlgorithms.DEFAULT;
     }
     return alg;
   }
 
   set algorithm(String name) {
-    if (name.isEmpty/* || name == TransportableData.kDefault*/) {
+    if (name.isEmpty/* || name == EncodeAlgorithms.kDefault*/) {
       remove('algorithm');
     } else {
       this['algorithm'] = name;
@@ -113,14 +115,14 @@ class BaseDataWrapper extends Dictionary {
   Uint8List? get data {
     Uint8List? binary = _data;
     if (binary == null) {
-      String encoded = getString('data', '')!;
+      String encoded = getString('data', null) ?? '';
       if (encoded.isNotEmpty) {
         String alg = algorithm;
-        if (alg == TransportableData.BASE_64) {
+        if (alg == EncodeAlgorithms.BASE_64) {
           binary = Base64.decode(encoded);
-        } else if (alg == TransportableData.BASE_58) {
+        } else if (alg == EncodeAlgorithms.BASE_58) {
           binary = Base58.decode(encoded);
-        } else if (alg == TransportableData.HEX) {
+        } else if (alg == EncodeAlgorithms.HEX) {
           binary = Hex.decode(encoded);
         } else {
           assert(false, 'data algorithm not support: $alg');
@@ -137,11 +139,11 @@ class BaseDataWrapper extends Dictionary {
     } else {
       String encoded = '';
       String alg = algorithm;
-      if (alg == TransportableData.BASE_64) {
+      if (alg == EncodeAlgorithms.BASE_64) {
         encoded = Base64.encode(binary);
-      } else if (alg == TransportableData.BASE_58) {
+      } else if (alg == EncodeAlgorithms.BASE_58) {
         encoded = Base58.encode(binary);
-      } else if (alg == TransportableData.HEX) {
+      } else if (alg == EncodeAlgorithms.HEX) {
         encoded = Hex.encode(binary);
       } else {
         assert(false, 'data algorithm not support: $alg');

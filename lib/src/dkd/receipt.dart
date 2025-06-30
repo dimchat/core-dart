@@ -58,7 +58,7 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   }
 
   @override
-  String get text => getString('text', '')!;
+  String get text => getString('text', null) ?? '';
 
   // protected
   Map? get origin => this['origin'];

@@ -35,7 +35,7 @@ import '../dkd/quote.dart';
 
 
 ///  Quote message: {
-///      type : 0x37,
+///      type : i2s(0x37),
 ///      sn   : 456,
 ///
 ///      text    : "...",  // text message
@@ -87,7 +87,7 @@ abstract interface class QuoteContent implements Content {
 
 
 ///  Combine Forward message: {
-///      type : 0xCF,
+///      type : i2s(0xCF),
 ///      sn   : 123,
 ///
 ///      title    : "...",  // chat title

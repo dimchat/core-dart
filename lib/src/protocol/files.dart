@@ -35,10 +35,11 @@ import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
 import '../dkd/files.dart';
+import 'types.dart';
 
 
 ///  File message: {
-///      type : 0x10,
+///      type : i2s(0x10),
 ///      sn   : 123,
 ///
 ///      data     : "...",        // base64_encode(fileContent)
@@ -73,8 +74,10 @@ abstract interface class FileContent implements Content {
   //  Factories
   //
 
-  static FileContent create(int msgType, {TransportableData? data, String? filename,
-                                          Uri? url, DecryptKey? password}) {
+  static FileContent create(String msgType, {
+    TransportableData? data, String? filename,
+    Uri? url, DecryptKey? password
+  }) {
     if (msgType == ContentType.IMAGE) {
       return ImageFileContent.from(data, filename, url, password);
     } else if (msgType == ContentType.AUDIO) {
@@ -109,7 +112,7 @@ abstract interface class FileContent implements Content {
 
 
 ///  Image message: {
-///      type : 0x12,
+///      type : i2s(0x12),
 ///      sn   : 123,
 ///
 ///      data     : "...",        // base64_encode(fileContent)
@@ -135,7 +138,7 @@ abstract interface class ImageContent implements FileContent {
 
 
 ///  Audio message: {
-///      type : 0x14,
+///      type : i2s(0x14),
 ///      sn   : 123,
 ///
 ///      data     : "...",        // base64_encode(fileContent)
@@ -160,7 +163,7 @@ abstract interface class AudioContent implements FileContent {
 
 
 ///  Video message: {
-///      type : 0x16,
+///      type : i2s(0x16),
 ///      sn   : 123,
 ///
 ///      data     : "...",        // base64_encode(fileContent)

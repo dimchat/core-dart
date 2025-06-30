@@ -28,9 +28,9 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
+import '../protocol/types.dart';
 import '../protocol/groups.dart';
 import 'commands.dart';
 

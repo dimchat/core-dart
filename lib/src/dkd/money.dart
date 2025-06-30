@@ -28,10 +28,10 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 import 'package:mkm/type.dart';
 
+import '../protocol/types.dart';
 import '../protocol/money.dart';
 import 'base.dart';
 
@@ -40,7 +40,7 @@ import 'base.dart';
 class BaseMoneyContent extends BaseContent implements MoneyContent {
   BaseMoneyContent(super.dict);
 
-  BaseMoneyContent.fromType(int msgType, {required String currency, required num amount})
+  BaseMoneyContent.fromType(String msgType, {required String currency, required num amount})
       : super.fromType(msgType) {
     this['currency'] = currency;
     this['amount'] = amount;
@@ -49,7 +49,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
       : this.fromType(ContentType.MONEY, currency: currency, amount: amount);
 
   @override
-  String get currency => getString('currency', '')!;
+  String get currency => getString('currency', null) ?? '';
 
   @override
   num get amount {
@@ -57,7 +57,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
     if (val is num) {
       return val;
     }
-    return Converter.getDouble(val, 0)!;
+    return Converter.getDouble(val, null) ?? 0;
   }
 
   @override

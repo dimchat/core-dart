@@ -30,11 +30,11 @@
  */
 import 'dart:typed_data';
 
-import 'package:dkd/dkd.dart';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
 import '../crypto/pnf.dart';
+import '../protocol/types.dart';
 import '../protocol/files.dart';
 import 'base.dart';
 
@@ -49,7 +49,7 @@ class BaseFileContent extends BaseContent implements FileContent {
 
   late final BaseFileWrapper _wrapper;
 
-  BaseFileContent.from(int? msgType, TransportableData? data, String? filename,
+  BaseFileContent.from(String? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.FILE) {
     _wrapper = BaseFileWrapper(toMap());

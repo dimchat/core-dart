@@ -31,6 +31,7 @@
 import 'package:dkd/dkd.dart';
 import 'package:mkm/type.dart';
 
+import '../protocol/types.dart';
 import '../protocol/quote.dart';
 
 import 'base.dart';
@@ -52,7 +53,7 @@ class BaseQuoteContent extends BaseContent implements QuoteContent {
   }
 
   @override
-  String get text => getString('text', '')!;
+  String get text => getString('text', null) ?? '';
 
   // protected
   Map? get origin {
@@ -94,7 +95,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
   }
 
   @override
-  String get title => getString('title', '')!;
+  String get title => getString('title', null) ?? '';
 
   @override
   List<InstantMessage> get messages {

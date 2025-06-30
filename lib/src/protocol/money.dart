@@ -35,7 +35,7 @@ import '../dkd/money.dart';
 
 
 ///  Money message: {
-///      type : 0x40,
+///      type : i2s(0x40),
 ///      sn   : 123,
 ///
 ///      currency : "RMB", // USD, USDT, ...
@@ -52,7 +52,7 @@ abstract interface class MoneyContent implements Content {
   //  Factory
   //
 
-  static MoneyContent create(int? msgType, {required String currency, required num amount}) {
+  static MoneyContent create(String? msgType, {required String currency, required num amount}) {
     if (msgType == null) {
       return BaseMoneyContent.from(currency: currency, amount: amount);
     } else {
@@ -63,7 +63,7 @@ abstract interface class MoneyContent implements Content {
 
 
 ///  Transfer money message: {
-///      type : 0x41,
+///      type : i2s(0x41),
 ///      sn   : 123,
 ///
 ///      currency : "RMB",    // USD, USDT, ...

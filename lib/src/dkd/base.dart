@@ -37,7 +37,7 @@ class BaseContent extends Dictionary implements Content {
   BaseContent(super.dict);
 
   /// message type: text, image, ...
-  int? _type;
+  String? _type;
 
   /// serial number: random number to identify message content
   int? _sn;
@@ -45,7 +45,7 @@ class BaseContent extends Dictionary implements Content {
   /// message time
   DateTime? _time;
 
-  BaseContent.fromType(int msgType) : super(null) {
+  BaseContent.fromType(String msgType) : super(null) {
     DateTime now = DateTime.now();
     _type = msgType;
     _sn = InstantMessage.generateSerialNumber(msgType, now);
@@ -56,14 +56,13 @@ class BaseContent extends Dictionary implements Content {
   }
 
   @override
-  int get type {
+  String get type {
     if (_type == null) {
       var ext = SharedMessageExtensions();
-      _type = ext.helper!.getContentType(toMap(), 0);
+      _type = ext.helper!.getContentType(toMap(), '');
       // _type = getInt('type', 0);
-      assert(_type! >= 0, 'content type error: $toMap()');
     }
-    return _type ?? 0;
+    return _type ?? '';
   }
 
   @override

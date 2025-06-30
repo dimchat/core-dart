@@ -2,12 +2,12 @@
  *
  *  DIMP : Decentralized Instant Messaging Protocol
  *
- *                                Written in 2023 by Moky <albert.moky@gmail.com>
+ *                                Written in 2025 by Moky <albert.moky@gmail.com>
  *
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2025 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,56 +28,39 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
 
-import 'base.dart';
+// ignore_for_file: constant_identifier_names
 
-///  Instant Message
-///  ~~~~~~~~~~~~~~~
-///
-///  data format: {
-///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
-///      //-- content
-///      content  : {...}
-///  }
-class PlainMessage extends BaseMessage implements InstantMessage {
-  PlainMessage(super.dict);
 
-  /// message body
-  Content? _body;
+/// Algorithms for Asymmetric Key
+abstract interface class AsymmetricAlgorithms {
 
-  PlainMessage.from(Envelope head, Content body) : super.fromEnvelope(head) {
-    content = body;
-  }
+  static const RSA = 'RSA';  //-- "RSA/ECB/PKCS1Padding", "SHA256withRSA"
+  static const ECC = 'ECC';
 
-  @override
-  DateTime? get time => content.time ?? envelope.time;
+}
 
-  @override
-  ID? get group => content.group;
 
-  @override
-  String get type => content.type;
+/// Algorithms for Symmetric Key
+abstract interface class SymmetricAlgorithms {
 
-  @override
-  Content get content {
-    if (_body == null) {
-      var info = this['content'];
-      assert(info != null, 'message content not found: $toMap()');
-      _body ??= Content.parse(info);
-      assert(_body != null, 'message content error: $info');
-    }
-    return _body!;
-  }
+  static const AES = 'AES';  //-- "AES/CBC/PKCS7Padding"
+  static const DES = 'DES';
 
-  // @override
-  set content(Content body) {
-    setMap('content', body);
-    _body = body;
-  }
+  /// Symmetric key algorithm for broadcast message,
+  /// which will do nothing when en/decoding message data
+  static const PLAIN = 'PLAIN';
+
+}
+
+
+/// Algorithms for Encoding Data
+abstract interface class EncodeAlgorithms {
+
+  static const DEFAULT = 'base64';
+
+  static const BASE_64 = 'base64';
+  static const BASE_58 = 'base58';
+  static const HEX     = 'hex';
 
 }

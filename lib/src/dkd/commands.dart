@@ -28,11 +28,11 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
-import '../command_plugins.dart';
+import '../protocol/types.dart';
 import '../protocol/commands.dart';
+import '../command_plugins.dart';
 
 import 'base.dart';
 
@@ -43,7 +43,7 @@ import 'base.dart';
 class BaseCommand extends BaseContent implements Command  {
   BaseCommand(super.dict);
 
-  BaseCommand.fromType(int msgType, String cmd) : super.fromType(msgType) {
+  BaseCommand.fromType(String msgType, String cmd) : super.fromType(msgType) {
     this['command'] = cmd;
   }
   BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
@@ -51,7 +51,7 @@ class BaseCommand extends BaseContent implements Command  {
   @override
   String get cmd {
     var ext = SharedCommandExtensions();
-    return ext.helper!.getCmd(toMap(), '')!;
+    return ext.helper!.getCmd(toMap(), null) ?? '';
     // return getString('command', '')!;
   }
 }
@@ -69,7 +69,7 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
   BaseMetaCommand.from(ID identifier, String? cmd, Meta? meta)
       : super.fromName(cmd ?? Command.META) {
     // ID
-    this['ID'] = identifier.toString();
+    this['did'] = identifier.toString();
     _id = identifier;
     // meta
     if (meta != null) {
@@ -80,7 +80,7 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 
   @override
   ID get identifier {
-    _id ??= ID.parse(this['ID']);
+    _id ??= ID.parse(this['did']);
     return _id!;
   }
 
@@ -97,18 +97,18 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   BaseDocumentCommand(super.dict);
 
-  Document? _doc;
+  List<Document>? _docs;
 
-  BaseDocumentCommand.from(ID identifier, Meta? meta, Document? document)
-      : super.from(identifier, Command.DOCUMENT, meta) {
+  BaseDocumentCommand.from(ID identifier, Meta? meta, List<Document>? docs)
+      : super.from(identifier, Command.DOCUMENTS, meta) {
     // document
-    if (document != null) {
-      this['document'] = document.toMap();
+    if (docs != null) {
+      this['documents'] = Document.revert(docs);
     }
-    _doc = document;
+    _docs = docs;
   }
   BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
-      : super.from(identifier, Command.DOCUMENT, null) {
+      : super.from(identifier, Command.DOCUMENTS, null) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);
@@ -116,9 +116,14 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   }
 
   @override
-  Document? get document {
-    _doc ??= Document.parse(this['document']);
-    return _doc;
+  List<Document>? get documents {
+    if (_docs == null) {
+      var docs = this['documents'];
+      if (docs is List) {
+        _docs = Document.convert(docs);
+      }
+    }
+    return _docs;
   }
 
   @override

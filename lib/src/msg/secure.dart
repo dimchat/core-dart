@@ -56,7 +56,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
 
   Uint8List? _body;
   TransportableData? _encKey;
-  Map? _encKeys;  // String => String
+  Map<String, dynamic>? _encKeys;  // String => String
 
   @override
   Uint8List get data {
@@ -97,7 +97,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Map? get encryptedKeys {
+  Map<String, dynamic>? get encryptedKeys {
     _encKeys ??= this['keys'];
     return _encKeys;
   }

@@ -35,7 +35,7 @@ import '../dkd/commands.dart';
 import 'helpers.dart';
 
 ///  Command message: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 123,
 ///
 ///      command : "...", // command name
@@ -45,9 +45,9 @@ abstract interface class Command implements Content {
   // ignore_for_file: constant_identifier_names
 
   //-------- command names begin --------
-  static const String META     = 'meta';
-  static const String DOCUMENT = 'document';
-  static const String RECEIPT  = 'receipt';
+  static const String META      = 'meta';
+  static const String DOCUMENTS = 'documents';
+  static const String RECEIPT   = 'receipt';
   //-------- command names end --------
 
   ///  Get command name
@@ -87,11 +87,11 @@ abstract interface class CommandFactory {
 
 
 ///  Command message: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 123,
 ///
 ///      command : "meta", // command name
-///      ID      : "{ID}", // contact's ID
+///      did     : "{ID}", // contact's ID
 ///      meta    : {...}   // when meta is empty, means query meta for ID
 ///  }
 abstract interface class MetaCommand implements Command {
@@ -122,19 +122,19 @@ abstract interface class MetaCommand implements Command {
 }
 
 ///  Command message: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 123,
 ///
 ///      command   : "document", // command name
-///      ID        : "{ID}",     // entity ID
+///      did       : "{ID}",     // entity ID
 ///      meta      : {...},      // only for handshaking with new friend
-///      document  : {...},      // when document is empty, means query for ID
+///      documents : [...],      // when document is empty, means query for ID
 ///      last_time : 12345       // old document time for querying
 ///  }
 abstract interface class DocumentCommand implements MetaCommand {
 
   ///  Entity Document
-  Document? get document;
+  List<Document>? get documents;
 
   ///  Last document time for querying
   DateTime? get lastTime;
@@ -147,10 +147,10 @@ abstract interface class DocumentCommand implements MetaCommand {
   /// 2. Response Entity Document
   ///
   /// @param identifier - entity ID
-  /// @param meta - entity Meta
-  /// @param doc - entity Document
-  static DocumentCommand response(ID identifier, Meta? meta, Document doc) =>
-      BaseDocumentCommand.from(identifier, meta, doc);
+  /// @param meta       - entity Meta
+  /// @param docs       - entity Document
+  static DocumentCommand response(ID identifier, Meta? meta, List<Document> docs) =>
+      BaseDocumentCommand.from(identifier, meta, docs);
 
   /// 1. Query Entity Document
   /// 2. Query Entity Document for updating with last time

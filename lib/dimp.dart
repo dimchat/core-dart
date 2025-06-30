@@ -13,6 +13,7 @@ export 'msg.dart';
 
 /// Cryptography
 /// ~~~~~~~~~~~~
+export 'src/crypto/algorithms.dart';
 export 'src/crypto/keys.dart';
 export 'src/crypto/ted.dart';
 export 'src/crypto/pnf.dart';

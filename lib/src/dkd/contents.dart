@@ -32,6 +32,7 @@ import 'package:dkd/dkd.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
 
+import '../protocol/types.dart';
 import '../protocol/contents.dart';
 import 'base.dart';
 
@@ -46,7 +47,7 @@ class BaseTextContent extends BaseContent implements TextContent {
   }
 
   @override
-  String get text => getString('text', '')!;
+  String get text => getString('text', null) ?? '';
 }
 
 
@@ -59,7 +60,7 @@ class ListContent extends BaseContent implements ArrayContent {
   ListContent.fromContents(List<Content> contents)
       : super.fromType(ContentType.ARRAY) {
     // set contents
-    this['contents'] = ArrayContent.revert(contents);
+    this['contents'] = Content.revert(contents);
     _list = contents;
   }
 
@@ -69,7 +70,7 @@ class ListContent extends BaseContent implements ArrayContent {
     if (array == null) {
       var info = this['contents'];
       if (info is List) {
-        array = ArrayContent.convert(info);
+        array = Content.convert(info);
       } else {
         array = [];
       }
@@ -98,7 +99,7 @@ class SecretContent extends BaseContent implements ForwardContent {
       : super.fromType(ContentType.FORWARD) {
     _forward = null;
     _secrets = messages;
-    this['secrets'] = ForwardContent.revert(messages);
+    this['secrets'] = ReliableMessage.revert(messages);
   }
 
   @override
@@ -114,7 +115,7 @@ class SecretContent extends BaseContent implements ForwardContent {
       var info = this['secrets'];
       if (info is List) {
         // get from secrets
-        messages = ForwardContent.convert(info);
+        messages = ReliableMessage.convert(info);
       } else {
         assert(info == null, 'secret messages error: $info');
         // get from 'forward'
@@ -156,7 +157,7 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  String get title => getString('title', '')!;
+  String get title => getString('title', null) ?? '';
 
   @override
   set title(String string) => this['title'] = string;
@@ -201,8 +202,14 @@ class WebPageContent extends BaseContent implements PageContent {
 
   @override
   Uri? get url {
-    _url ??= Uri.parse(getString('URL', null)!);
-    return _url!;
+    var locator = _url;
+    if (locator == null) {
+      var str = getString('URL', null);
+      if (str != null) {
+        _url = locator = Uri.parse(str);
+      }
+    }
+    return locator;
   }
 
   @override
@@ -233,7 +240,7 @@ class NameCardContent extends BaseContent implements NameCard {
   NameCardContent.from(ID identifier, String name, PortableNetworkFile? avatar)
       : super.fromType(ContentType.NAME_CARD) {
     // ID
-    this['ID'] = identifier.toString();
+    this['did'] = identifier.toString();
     // name
     this['name'] = name;
     // avatar
@@ -245,10 +252,10 @@ class NameCardContent extends BaseContent implements NameCard {
   }
 
   @override
-  ID get identifier => ID.parse(this['ID'])!;
+  ID get identifier => ID.parse(this['did'])!;
 
   @override
-  String get name => getString('name', '')!;
+  String get name => getString('name', null) ?? '';
 
   @override
   PortableNetworkFile? get avatar {

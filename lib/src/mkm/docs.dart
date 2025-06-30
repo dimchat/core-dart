@@ -32,6 +32,7 @@ import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
 
+import '../protocol/version.dart';
 import '../protocol/docs.dart';
 
 import 'document.dart';
@@ -54,7 +55,7 @@ class BaseVisa extends BaseDocument implements Visa {
   PortableNetworkFile? _avatar;
 
   BaseVisa.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, Document.VISA, data: data, signature: signature);
+      : super.from(identifier, DocumentType.VISA, data: data, signature: signature);
 
   @override
   EncryptKey? get publicKey {
@@ -107,7 +108,7 @@ class BaseBulletin extends BaseDocument implements Bulletin {
   List<ID>? _bots;
 
   BaseBulletin.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, Document.BULLETIN, data: data, signature: signature);
+      : super.from(identifier, DocumentType.BULLETIN, data: data, signature: signature);
 
   @override
   ID? get founder => ID.parse(getProperty('founder'));

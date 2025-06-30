@@ -35,7 +35,7 @@ import '../dkd/receipt.dart';
 import 'commands.dart';
 
 ///  Command message: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 456,
 ///
 ///      command : "receipt",

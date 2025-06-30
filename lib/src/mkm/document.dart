@@ -33,8 +33,8 @@ import 'dart:typed_data';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
-import 'package:mkm/plugins.dart';
 import 'package:mkm/type.dart';
+
 
 class BaseDocument extends Dictionary implements Document {
   BaseDocument(super.dict);
@@ -44,7 +44,7 @@ class BaseDocument extends Dictionary implements Document {
   String? _json;            // JsON.encode(properties)
   TransportableData? _sig;  // LocalUser(identifier).sign(data)
 
-  Map? _properties;
+  Map<String, dynamic>? _properties;
   int _status = 0;          // 1 for valid, -1 for invalid
 
   ///  1. Create a new empty document
@@ -57,7 +57,7 @@ class BaseDocument extends Dictionary implements Document {
   BaseDocument.from(ID identifier, String docType, {String? data, TransportableData? signature})
       : super(null) {
     // ID
-    this['ID'] = identifier.toString();
+    this['did'] = identifier.toString();
     _identifier = identifier;
 
     // document type
@@ -93,19 +93,8 @@ class BaseDocument extends Dictionary implements Document {
   bool get isValid => _status > 0;
 
   @override
-  String? get type {
-    String? docType = getProperty('type');  // deprecated
-    if (docType == null) {
-      var ext = SharedAccountExtensions();
-      docType = ext.helper!.getDocumentType(toMap(), null);
-      // docType = getString('type', null);
-    }
-    return docType;
-  }
-
-  @override
   ID get identifier {
-    _identifier ??= ID.parse(this['ID']);
+    _identifier ??= ID.parse(this['did']);
     return _identifier!;
   }
 
@@ -130,7 +119,7 @@ class BaseDocument extends Dictionary implements Document {
   }
 
   @override
-  Map? get properties {
+  Map<String, dynamic>? get properties {
     if (_status < 0) {
       // invalid
       return null;
@@ -141,8 +130,12 @@ class BaseDocument extends Dictionary implements Document {
         // create new properties
         _properties = {};
       } else {
-        _properties = JSONMap.decode(data);
-        assert(_properties != null, 'document data error: $data');
+        var info = JSONMap.decode(data);
+        if (info is Map<String, dynamic>) {
+          _properties = info;
+        } else {
+          assert(false, 'document data error: $data');
+        }
       }
     }
     return _properties;
