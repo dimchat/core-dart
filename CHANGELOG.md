@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Simplify Map.
+
 ## 2.0.0
 
 - Algorithm names.

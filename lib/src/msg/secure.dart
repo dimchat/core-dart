@@ -56,7 +56,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
 
   Uint8List? _body;
   TransportableData? _encKey;
-  Map<String, dynamic>? _encKeys;  // String => String
+  Map? _encKeys;  // String => String
 
   @override
   Uint8List get data {
@@ -83,7 +83,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   Uint8List? get encryptedKey {
     TransportableData? ted = _encKey;
     if (ted == null) {
-      Object? base64 = this['key'];
+      var base64 = this['key'];
       if (base64 == null) {
         // check 'keys'
         Map? keys = encryptedKeys;
@@ -97,8 +97,15 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Map<String, dynamic>? get encryptedKeys {
-    _encKeys ??= this['keys'];
+  Map? get encryptedKeys {
+    if (_encKeys == null) {
+      var keys = this['keys'];
+      if (keys is Map) {
+        _encKeys = keys;
+      } else {
+        assert(keys == null, 'message keys error: $keys');
+      }
+    }
     return _encKeys;
   }
 

@@ -44,7 +44,7 @@ class BaseDocument extends Dictionary implements Document {
   String? _json;            // JsON.encode(properties)
   TransportableData? _sig;  // LocalUser(identifier).sign(data)
 
-  Map<String, dynamic>? _properties;
+  Map? _properties;
   int _status = 0;          // 1 for valid, -1 for invalid
 
   ///  1. Create a new empty document
@@ -119,7 +119,7 @@ class BaseDocument extends Dictionary implements Document {
   }
 
   @override
-  Map<String, dynamic>? get properties {
+  Map? get properties {
     if (_status < 0) {
       // invalid
       return null;
@@ -130,12 +130,8 @@ class BaseDocument extends Dictionary implements Document {
         // create new properties
         _properties = {};
       } else {
-        var info = JSONMap.decode(data);
-        if (info is Map<String, dynamic>) {
-          _properties = info;
-        } else {
-          assert(false, 'document data error: $data');
-        }
+        _properties = JSONMap.decode(data);
+        assert(_properties != null, 'document data error: $data');
       }
     }
     return _properties;
