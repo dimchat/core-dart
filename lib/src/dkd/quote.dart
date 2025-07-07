@@ -90,7 +90,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
     // chat name
     this['title'] = title;
     // chat history
-    this['messages'] = CombineContent.revert(messages);
+    this['messages'] = InstantMessage.revert(messages);
     _history = messages;
   }
 
@@ -103,8 +103,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
     if (array == null) {
       var info = this['messages'];
       if (info is List) {
-        // get from secrets
-        array = CombineContent.convert(info);
+        array = InstantMessage.convert(info);
       } else {
         assert(info == null, 'combined messages error: $info');
         array = [];

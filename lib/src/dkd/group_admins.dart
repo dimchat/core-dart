@@ -58,6 +58,7 @@ class HireGroupCommand extends BaseGroupCommand implements HireCommand {
       // convert all items to ID objects
       return ID.convert(array);
     }
+    assert(array == null, 'ID list error: $array');
     return null;
   }
 
@@ -77,6 +78,7 @@ class HireGroupCommand extends BaseGroupCommand implements HireCommand {
       // convert all items to ID objects
       return ID.convert(array);
     }
+    assert(array == null, 'ID list error: $array');
     return null;
   }
 
@@ -115,6 +117,7 @@ class FireGroupCommand extends BaseGroupCommand implements FireCommand {
       // convert all items to ID objects
       return ID.convert(array);
     }
+    assert(array == null, 'ID list error: $array');
     return null;
   }
 
@@ -134,6 +137,7 @@ class FireGroupCommand extends BaseGroupCommand implements FireCommand {
       // convert all items to ID objects
       return ID.convert(array);
     }
+    assert(array == null, 'ID list error: $array');
     return null;
   }
 

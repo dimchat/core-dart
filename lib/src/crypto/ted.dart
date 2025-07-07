@@ -58,20 +58,20 @@ class BaseDataWrapper extends Dictionary {
 
   @override
   String toString() {
-    String encoded = getString('data', null) ?? '';
-    if (encoded.isEmpty) {
-      return encoded;
+    String? text = getString('data', null);
+    if (text == null/* || text.isEmpty*/) {
+      return '';
     }
-    String alg = getString('algorithm', null) ?? '';
-    if (alg == EncodeAlgorithms.DEFAULT) {
+    String? alg = getString('algorithm', null);
+    if (alg == null || alg == EncodeAlgorithms.DEFAULT) {
       alg = '';
     }
     if (alg.isEmpty) {
       // 0. "{BASE64_ENCODE}"
-      return encoded;
+      return text;
     } else {
       // 1. "base64,{BASE64_ENCODE}"
-      return '$alg,$encoded';
+      return '$alg,$text';
     }
   }
 
@@ -81,21 +81,21 @@ class BaseDataWrapper extends Dictionary {
   String encode(String mimeType) {
     assert(!mimeType.contains(' '), 'content-type error: $mimeType');
     // get encoded data
-    String encoded = getString('data', null) ?? '';
-    if (encoded.isEmpty) {
-      return encoded;
+    String? text = getString('data', null);
+    if (text == null/* || text.isEmpty*/) {
+      return '';
     }
     String alg = algorithm;
     // 2. "data:image/png;base64,{BASE64_ENCODE}"
-    return 'data:$mimeType;$alg,$encoded';
+    return 'data:$mimeType;$alg,$text';
   }
 
   ///
   /// encode algorithm
   ///
   String get algorithm {
-    String alg = getString('algorithm', null) ?? '';
-    if (alg.isEmpty) {
+    String? alg = getString('algorithm', null);
+    if (alg == null || alg.isEmpty) {
       alg = EncodeAlgorithms.DEFAULT;
     }
     return alg;
@@ -115,17 +115,25 @@ class BaseDataWrapper extends Dictionary {
   Uint8List? get data {
     Uint8List? binary = _data;
     if (binary == null) {
-      String encoded = getString('data', null) ?? '';
-      if (encoded.isNotEmpty) {
+      String? text = getString('data', null);
+      if (text == null || text.isEmpty) {
+        assert(false, 'TED data empty: ${toMap()}');
+        return null;
+      } else {
         String alg = algorithm;
-        if (alg == EncodeAlgorithms.BASE_64) {
-          binary = Base64.decode(encoded);
-        } else if (alg == EncodeAlgorithms.BASE_58) {
-          binary = Base58.decode(encoded);
-        } else if (alg == EncodeAlgorithms.HEX) {
-          binary = Hex.decode(encoded);
-        } else {
-          assert(false, 'data algorithm not support: $alg');
+        switch (alg) {
+          case EncodeAlgorithms.BASE_64:
+            binary = Base64.decode(text);
+            break;
+          case EncodeAlgorithms.BASE_58:
+            binary = Base58.decode(text);
+            break;
+          case EncodeAlgorithms.HEX:
+            binary = Hex.decode(text);
+            break;
+          default:
+            assert(false, 'data algorithm not support: $alg');
+            break;
         }
       }
       _data = binary;
@@ -137,18 +145,23 @@ class BaseDataWrapper extends Dictionary {
     if (binary == null || binary.isEmpty) {
       remove('data');
     } else {
-      String encoded = '';
+      String text;
       String alg = algorithm;
-      if (alg == EncodeAlgorithms.BASE_64) {
-        encoded = Base64.encode(binary);
-      } else if (alg == EncodeAlgorithms.BASE_58) {
-        encoded = Base58.encode(binary);
-      } else if (alg == EncodeAlgorithms.HEX) {
-        encoded = Hex.encode(binary);
-      } else {
-        assert(false, 'data algorithm not support: $alg');
+      switch (alg) {
+        case EncodeAlgorithms.BASE_64:
+          text = Base64.encode(binary);
+          break;
+        case EncodeAlgorithms.BASE_58:
+          text = Base58.encode(binary);
+          break;
+        case EncodeAlgorithms.HEX:
+          text = Hex.encode(binary);
+          break;
+        default:
+          throw FormatException('data algorithm not support: $alg');
+          // assert(false, 'data algorithm not support: $alg');
       }
-      this['data'] = encoded;
+      this['data'] = text;
     }
     _data = binary;
   }

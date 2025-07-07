@@ -1,3 +1,7 @@
+## 2.0.2
+
+- Convert instant messages.
+
 ## 2.0.1
 
 - Simplify Map.

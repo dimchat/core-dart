@@ -106,25 +106,4 @@ abstract interface class CombineContent implements Content {
   static CombineContent create(String title, List<InstantMessage> messages) =>
       CombineForwardContent.from(title, messages);
 
-
-  static List<InstantMessage> convert(Iterable messages) {
-    List<InstantMessage> array = [];
-    InstantMessage? msg;
-    for (var item in messages) {
-      msg = InstantMessage.parse(item);
-      if (msg != null) {
-        array.add(msg);
-      }
-    }
-    return array;
-  }
-
-  static List<Map> revert(Iterable<InstantMessage> contents) {
-    List<Map> array = [];
-    for (InstantMessage item in contents) {
-      array.add(item.toMap());
-    }
-    return array;
-  }
-
 }
