@@ -48,7 +48,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   PlainMessage(super.dict);
 
   /// message body
-  Content? _body;
+  Content? _content;
 
   PlainMessage.from(Envelope head, Content body) : super.fromEnvelope(head) {
     content = body;
@@ -65,19 +65,20 @@ class PlainMessage extends BaseMessage implements InstantMessage {
 
   @override
   Content get content {
-    if (_body == null) {
+    Content? body = _content;
+    if (body == null) {
       var info = this['content'];
-      assert(info != null, 'message content not found: $toMap()');
-      _body ??= Content.parse(info);
-      assert(_body != null, 'message content error: $info');
+      body = Content.parse(info);
+      assert(body != null, 'message content error: $toMap()');
+      _content = body;
     }
-    return _body!;
+    return body!;
   }
 
   // @override
   set content(Content body) {
     setMap('content', body);
-    _body = body;
+    _content = body;
   }
 
 }

@@ -209,15 +209,9 @@ class BaseDocument extends Dictionary implements Document {
       return null;
     }
     String data = JSONMap.encode(dict);
-    if (data.isEmpty) {
-      assert(false, 'should not happen: $dict');
-      return null;
-    }
+    assert(data.isNotEmpty, 'should not happen: $dict');
     signature = privateKey.sign(UTF8.encode(data));
-    if (signature.isEmpty) {
-      assert(false, 'should not happen');
-      return null;
-    }
+    assert(signature.isNotEmpty, 'should not happen: $dict');
     TransportableData ted = TransportableData.create(signature);
     // 3. update 'data' & 'signature' fields
     this['data'] = data;                 // JSON string

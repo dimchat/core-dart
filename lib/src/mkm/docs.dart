@@ -59,17 +59,19 @@ class BaseVisa extends BaseDocument implements Visa {
 
   @override
   EncryptKey? get publicKey {
-    if (_key == null) {
+    EncryptKey? visaKey = _key;
+    if (visaKey == null) {
       Object? info = getProperty('key');
       // assert(info != null, 'visa key not found: ${toMap()}');
       PublicKey? pKey = PublicKey.parse(info);
       if (pKey is EncryptKey) {
-        _key = pKey as EncryptKey;
+        visaKey = pKey as EncryptKey;
+        _key = visaKey;
       } else {
         assert(info == null, 'visa key error: $info');
       }
     }
-    return _key;
+    return visaKey;
   }
 
   @override
@@ -83,8 +85,12 @@ class BaseVisa extends BaseDocument implements Visa {
     PortableNetworkFile? img = _avatar;
     if (img == null) {
       var url = getProperty('avatar');
-      img = PortableNetworkFile.parse(url);
-      _avatar = img;
+      if (url is String && url.isEmpty) {
+        // ignore empty URL
+      } else {
+        img = PortableNetworkFile.parse(url);
+        _avatar = img;
+      }
     }
     return img;
   }

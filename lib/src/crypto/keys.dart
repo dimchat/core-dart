@@ -87,8 +87,19 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
   BaseSymmetricKey(super.dict);
 
   @override
-  bool operator ==(Object other) =>
-      other is SymmetricKey && BaseKey.symmetricKeysEqual(other, this);
+  bool operator ==(Object other) {
+    if (other is Mapper) {
+      if (identical(this, other)) {
+        // same object
+        return true;
+      } else if (other is SymmetricKey) {
+        return BaseKey.symmetricKeysEqual(other, this);
+      }
+      // compare with inner map
+      other = other.toMap();
+    }
+    return other is Map && Comparator.mapEquals(other, toMap());
+  }
 
   @override
   int get hashCode => toMap().hashCode;
@@ -117,8 +128,19 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
   BasePrivateKey(super.dict);
 
   @override
-  bool operator ==(Object other) =>
-      other is PrivateKey && BaseKey.privateKeysEqual(other, this);
+  bool operator ==(Object other) {
+    if (other is Mapper) {
+      if (identical(this, other)) {
+        // same object
+        return true;
+      } else if (other is PrivateKey) {
+        return BaseKey.privateKeysEqual(other, this);
+      }
+      // compare with inner map
+      other = other.toMap();
+    }
+    return other is Map && Comparator.mapEquals(other, toMap());
+  }
 
   @override
   int get hashCode => toMap().hashCode;

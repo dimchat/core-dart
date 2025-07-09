@@ -47,14 +47,23 @@ class BaseDataWrapper extends Dictionary {
   /// binary data
   Uint8List? _data;
 
-  @override
-  bool get isEmpty {
-    if (super.isEmpty) {
-      return true;
-    }
-    Uint8List? binary = data;
-    return binary == null || binary.isEmpty;
-  }
+  // @override
+  // bool get isEmpty {
+  //   if (super.isEmpty) {
+  //     return true;
+  //   }
+  //   Uint8List? binary = data;
+  //   return binary == null || binary.isEmpty;
+  // }
+  //
+  // @override
+  // bool get isNotEmpty {
+  //   if (super.isNotEmpty) {} else {
+  //     return false;
+  //   }
+  //   Uint8List? binary = data;
+  //   return binary != null && binary.isNotEmpty;
+  // }
 
   @override
   String toString() {
@@ -133,7 +142,7 @@ class BaseDataWrapper extends Dictionary {
             break;
           default:
             assert(false, 'data algorithm not support: $alg');
-            break;
+            return null;
         }
       }
       _data = binary;

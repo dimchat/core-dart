@@ -206,11 +206,13 @@ class WebPageContent extends BaseContent implements PageContent {
     if (locator == null) {
       var str = getString('URL', null);
       if (str != null) {
-        _url = locator = Uri.parse(str);
+        _url = locator = createURL(str);
       }
     }
     return locator;
   }
+  // protected
+  Uri? createURL(String str) => Uri.parse(str);
 
   @override
   set url(Uri? locator) {

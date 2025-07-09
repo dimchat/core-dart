@@ -63,18 +63,24 @@ class MessageEnvelope extends Dictionary implements Envelope {
 
   @override
   ID get sender {
-    _sender ??= ID.parse(this['sender']);
-    assert(_sender != null, 'message sender not found: $this');
-    return _sender!;
+    ID? did = _sender;
+    if (did == null) {
+      did = ID.parse(this['sender']);
+      assert(did != null, 'message sender error: ${toMap()}');
+      _sender = did;
+    }
+    return did!;
   }
 
   @override
   ID get receiver {
-    if (_receiver == null) {
-      _receiver = ID.parse(this['receiver']);
-      _receiver ??= ID.ANYONE;
+    ID? did = _receiver;
+    if (did == null) {
+      did = ID.parse(this['receiver']);
+      did ??= ID.ANYONE;
+      _receiver = did;
     }
-    return _receiver!;
+    return did;
   }
 
   @override

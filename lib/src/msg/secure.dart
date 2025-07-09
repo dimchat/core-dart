@@ -54,29 +54,31 @@ import 'base.dart';
 class EncryptedMessage extends BaseMessage implements SecureMessage {
   EncryptedMessage(super.dict);
 
-  Uint8List? _body;
+  Uint8List? _data;
   TransportableData? _encKey;
   Map? _encKeys;  // String => String
 
   @override
   Uint8List get data {
-    if (_body == null) {
+    Uint8List? binary = _data;
+    if (binary == null) {
       Object? text = this['data'];
       if (text == null) {
-        assert(false, 'message data cannot be empty: ${toMap()}');
+        assert(false, 'message data not found: ${toMap()}');
       } else if (!BaseMessage.isBroadcast(this)) {
         // message content had been encrypted by a symmetric key,
         // so the data should be encoded here (with algorithm 'base64' as default).
-        _body = TransportableData.decode(text);
+        binary = TransportableData.decode(text);
       } else if (text is String) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
-        _body = UTF8.encode(text);  // JsON
+        binary = UTF8.encode(text);  // JsON
       } else {
         assert(false, 'content data error: $text');
       }
+      _data = binary;
     }
-    return _body!;
+    return binary!;
   }
 
   @override
