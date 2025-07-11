@@ -49,7 +49,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
       : this.fromType(ContentType.MONEY, currency: currency, amount: amount);
 
   @override
-  String get currency => getString('currency', null) ?? '';
+  String get currency => getString('currency') ?? '';
 
   @override
   num get amount {
@@ -57,7 +57,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
     if (val is num) {
       return val;
     }
-    return Converter.getDouble(val, null) ?? 0;
+    return Converter.getDouble(val) ?? 0;
   }
 
   @override

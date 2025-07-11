@@ -58,7 +58,7 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   }
 
   @override
-  String get text => getString('text', null) ?? '';
+  String get text => getString('text') ?? '';
 
   // protected
   Map? get origin => this['origin'];
@@ -71,11 +71,9 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   }
 
   @override
-  int? get originalSerialNumber =>
-      Converter.getInt(origin?['sn'], null);
+  int? get originalSerialNumber => Converter.getInt(origin?['sn']);
 
   @override
-  String? get originalSignature =>
-      Converter.getString(origin?['signature'], null);
+  String? get originalSignature => Converter.getString(origin?['signature']);
 
 }

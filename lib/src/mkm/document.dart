@@ -102,7 +102,7 @@ class BaseDocument extends Dictionary implements Document {
   ///
   /// @return JsON string
   String? _getData() {
-    _json ??= getString('data', null);
+    _json ??= getString('data');
     return _json;
   }
 
@@ -226,10 +226,10 @@ class BaseDocument extends Dictionary implements Document {
   //---- properties getter/setter
 
   @override
-  DateTime? get time => Converter.getDateTime(getProperty('time'), null);
+  DateTime? get time => Converter.getDateTime(getProperty('time'));
 
   @override
-  String? get name => Converter.getString(getProperty('name'), null);
+  String? get name => Converter.getString(getProperty('name'));
 
   @override
   set name(String? value) => setProperty('name', value);

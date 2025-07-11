@@ -93,7 +93,7 @@ class BaseFileWrapper extends Dictionary {
   ///
   /// file name
   ///
-  String? get filename => getString('filename', null);
+  String? get filename => getString('filename');
 
   set filename(String? name) {
     if (name == null/* || name.isEmpty*/) {
@@ -109,7 +109,7 @@ class BaseFileWrapper extends Dictionary {
   Uri? get url {
     Uri? remote = _remoteURL;
     if (remote == null) {
-      String? locator = getString('URL', null);
+      String? locator = getString('URL');
       if (locator != null && locator.isNotEmpty) {
         _remoteURL = remote = Uri.parse(locator);
       }

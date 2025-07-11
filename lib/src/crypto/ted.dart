@@ -67,11 +67,11 @@ class BaseDataWrapper extends Dictionary {
 
   @override
   String toString() {
-    String? text = getString('data', null);
+    String? text = getString('data');
     if (text == null/* || text.isEmpty*/) {
       return '';
     }
-    String? alg = getString('algorithm', null);
+    String? alg = getString('algorithm');
     if (alg == null || alg == EncodeAlgorithms.DEFAULT) {
       alg = '';
     }
@@ -90,7 +90,7 @@ class BaseDataWrapper extends Dictionary {
   String encode(String mimeType) {
     assert(!mimeType.contains(' '), 'content-type error: $mimeType');
     // get encoded data
-    String? text = getString('data', null);
+    String? text = getString('data');
     if (text == null/* || text.isEmpty*/) {
       return '';
     }
@@ -103,7 +103,7 @@ class BaseDataWrapper extends Dictionary {
   /// encode algorithm
   ///
   String get algorithm {
-    String? alg = getString('algorithm', null);
+    String? alg = getString('algorithm');
     if (alg == null || alg.isEmpty) {
       alg = EncodeAlgorithms.DEFAULT;
     }
@@ -124,7 +124,7 @@ class BaseDataWrapper extends Dictionary {
   Uint8List? get data {
     Uint8List? binary = _data;
     if (binary == null) {
-      String? text = getString('data', null);
+      String? text = getString('data');
       if (text == null || text.isEmpty) {
         assert(false, 'TED data empty: ${toMap()}');
         return null;

@@ -123,7 +123,7 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   PortableNetworkFile? get thumbnail {
     PortableNetworkFile? img = _thumbnail;
     if (img == null) {
-      var base64 = getString('thumbnail', null);
+      var base64 = getString('thumbnail');
       img = _thumbnail = PortableNetworkFile.parse(base64);
     }
     return img;
@@ -153,7 +153,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
       : super.from(ContentType.AUDIO, data, filename, url, password);
 
   @override
-  String? get text => getString('text', null);
+  String? get text => getString('text');
 
   @override
   set text(String? asr) => this['text'] = asr;
@@ -178,7 +178,7 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   PortableNetworkFile? get snapshot {
     PortableNetworkFile? img = _snapshot;
     if (img == null) {
-      var base64 = getString('snapshot', null);
+      var base64 = getString('snapshot');
       img = _snapshot = PortableNetworkFile.parse(base64);
     }
     return img;

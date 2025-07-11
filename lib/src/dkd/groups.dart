@@ -145,7 +145,7 @@ class QueryGroupCommand extends BaseGroupCommand implements QueryCommand {
   QueryGroupCommand(super.dict);
 
   @override
-  DateTime? get lastTime => getDateTime('last_time', null);
+  DateTime? get lastTime => getDateTime('last_time');
 
   QueryGroupCommand.from(ID group, DateTime? lastTime)
       : super.from(GroupCommand.QUERY, group) {

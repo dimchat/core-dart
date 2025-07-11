@@ -51,8 +51,8 @@ class BaseCommand extends BaseContent implements Command  {
   @override
   String get cmd {
     var ext = SharedCommandExtensions();
-    return ext.helper!.getCmd(toMap(), null) ?? '';
-    // return getString('command', '')!;
+    return ext.helper!.getCmd(toMap()) ?? '';
+    // return getString('command') ?? '';
   }
 }
 
@@ -127,6 +127,6 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   }
 
   @override
-  DateTime? get lastTime => getDateTime('last_time', null);
+  DateTime? get lastTime => getDateTime('last_time');
 
 }

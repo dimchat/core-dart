@@ -115,9 +115,14 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   String get type {
-    _type ??= SharedAccountExtensions().helper!.getMetaType(toMap(), '');
-    // _type ??= getInt('type', 0);
-    return _type ?? '';
+    String? version = _type;
+    if (version == null) {
+      version = SharedAccountExtensions().helper!.getMetaType(toMap());
+      version ??= '';
+      _type = version;
+      // _type ??= getInt('type', 0);
+    }
+    return version;
   }
 
   @override
@@ -136,11 +141,13 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   @override
   String? get seed {
-    if (_seed == null && hasSeed) {
-      _seed = getString('seed', '');
-      assert(_seed!.isNotEmpty, 'meta.seed empty: $this');
+    String? name = _seed;
+    if (name == null && hasSeed) {
+      name = getString('seed');
+      assert(name != null && name.isNotEmpty, 'meta.seed empty: $this');
+      _seed = name;
     }
-    return _seed;
+    return name;
   }
 
   @override

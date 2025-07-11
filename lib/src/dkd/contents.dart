@@ -47,7 +47,7 @@ class BaseTextContent extends BaseContent implements TextContent {
   }
 
   @override
-  String get text => getString('text', null) ?? '';
+  String get text => getString('text') ?? '';
 }
 
 
@@ -157,7 +157,7 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  String get title => getString('title', null) ?? '';
+  String get title => getString('title') ?? '';
 
   @override
   set title(String string) => this['title'] = string;
@@ -170,7 +170,7 @@ class WebPageContent extends BaseContent implements PageContent {
   PortableNetworkFile? get icon {
     PortableNetworkFile? img = _icon;
     if (img == null) {
-      var base64 = getString('icon', null);
+      var base64 = getString('icon');
       img = _icon = PortableNetworkFile.parse(base64);
     }
     return img;
@@ -191,7 +191,7 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  String? get desc => getString('desc', null);
+  String? get desc => getString('desc');
 
   @override
   set desc(String? string) => this['desc'] = string;
@@ -204,7 +204,7 @@ class WebPageContent extends BaseContent implements PageContent {
   Uri? get url {
     var locator = _url;
     if (locator == null) {
-      var str = getString('URL', null);
+      var str = getString('URL');
       if (str != null) {
         _url = locator = createURL(str);
       }
@@ -225,7 +225,7 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  String? get html => getString('html', null);
+  String? get html => getString('html');
 
   @override
   set html(String? content) => this['html'] = content;
@@ -257,7 +257,7 @@ class NameCardContent extends BaseContent implements NameCard {
   ID get identifier => ID.parse(this['did'])!;
 
   @override
-  String get name => getString('name', null) ?? '';
+  String get name => getString('name') ?? '';
 
   @override
   PortableNetworkFile? get avatar {

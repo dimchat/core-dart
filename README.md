@@ -101,10 +101,10 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
   }
 
   @override
-  String get title => getString('title', '')!;
+  String get title => getString('title') ?? '';
 
   @override
-  String? get sessionKey => getString('session', null);
+  String? get sessionKey => getString('session');
 
   @override
   int get state => HandshakeState.checkState(title, sessionKey);
@@ -157,13 +157,13 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
   }
 
   @override
-  String get application => getString('app', '')!;
+  String get application => getString('app') ?? '';
 
   @override
-  String get module => getString('mod', '')!;
+  String get module => getString('mod') ?? '';
 
   @override
-  String get action => getString('act', '')!;
+  String get action => getString('act') ?? '';
 
 }
 ```

@@ -85,7 +85,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
 
   @override
   DateTime? get time {
-    _time ??= getDateTime('time', null);
+    _time ??= getDateTime('time');
     return _time;
   }
 
@@ -111,7 +111,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
    *  to let the station do its job.
    */
   @override
-  String? get type => getString('type', null);
+  String? get type => getString('type');
 
   @override
   set type(String? msgType) => this['type'] = msgType;

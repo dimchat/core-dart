@@ -59,8 +59,9 @@ class BaseContent extends Dictionary implements Content {
   String get type {
     if (_type == null) {
       var ext = SharedMessageExtensions();
-      _type = ext.helper!.getContentType(toMap(), '');
+      _type = ext.helper!.getContentType(toMap()) ?? '';
       // _type = getInt('type', 0);
+      assert(_type != null, 'message type error: ${toMap()}');
     }
     return _type ?? '';
   }
@@ -74,7 +75,7 @@ class BaseContent extends Dictionary implements Content {
 
   @override
   DateTime? get time {
-    _time ??= getDateTime('time', null);
+    _time ??= getDateTime('time');
     return _time;
   }
 

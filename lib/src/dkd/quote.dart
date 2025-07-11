@@ -53,7 +53,7 @@ class BaseQuoteContent extends BaseContent implements QuoteContent {
   }
 
   @override
-  String get text => getString('text', null) ?? '';
+  String get text => getString('text') ?? '';
 
   // protected
   Map? get origin {
@@ -74,7 +74,7 @@ class BaseQuoteContent extends BaseContent implements QuoteContent {
 
   @override
   int? get originalSerialNumber =>
-      Converter.getInt(origin?['sn'], null);
+      Converter.getInt(origin?['sn']);
 
 }
 
@@ -95,7 +95,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
   }
 
   @override
-  String get title => getString('title', null) ?? '';
+  String get title => getString('title') ?? '';
 
   @override
   List<InstantMessage> get messages {

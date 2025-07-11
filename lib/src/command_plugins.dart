@@ -39,7 +39,7 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
   //
 
   /// Get command name
-  String? getCmd(Map content, String? defaultValue);
+  String? getCmd(Map content, [String? defaultValue]);
 
 }
 
