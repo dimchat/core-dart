@@ -30,31 +30,10 @@
  */
 import 'package:mkm/mkm.dart';
 
-import '../protocol/types.dart';
+import '../protocol/base.dart';
 import '../protocol/commands.dart';
-import '../command_plugins.dart';
 
 import 'base.dart';
-
-
-///
-/// Command
-///
-class BaseCommand extends BaseContent implements Command  {
-  BaseCommand(super.dict);
-
-  BaseCommand.fromType(String msgType, String cmd) : super.fromType(msgType) {
-    this['command'] = cmd;
-  }
-  BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
-
-  @override
-  String get cmd {
-    var ext = SharedCommandExtensions();
-    return ext.helper!.getCmd(toMap()) ?? '';
-    // return getString('command') ?? '';
-  }
-}
 
 
 ///

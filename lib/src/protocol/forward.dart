@@ -29,71 +29,80 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
 
-import '../dkd/receipt.dart';
+import '../dkd/forward.dart';
 
-import 'base.dart';
 
-///  Command message: {
-///      type : i2s(0x88),
+///  Top-Secret message: {
+///      type : i2s(0xFF),
 ///      sn   : 456,
 ///
-///      command : "receipt",
-///      text    : "...",  // text message
-///      origin  : {       // original message envelope
-///          sender    : "...",
-///          receiver  : "...",
-///          time      : 0,
-///
-///          sn        : 123,
-///          signature : "..."
-///      }
+///      forward : {...}  // reliable (secure + certified) message
+///      secrets : [...]  // reliable (secure + certified) messages
 ///  }
-abstract interface class ReceiptCommand implements Command {
+abstract interface class ForwardContent implements Content {
 
-  String get text;
+  /// forward message
+  ReliableMessage? get forward;
 
-  Envelope? get originalEnvelope;
-  int? get originalSerialNumber;
-  String? get originalSignature;
+  /// secret messages
+  List<ReliableMessage> get secrets;
 
   //
-  //  Factory method
+  //  Factory
   //
 
-  /// Create base receipt command with text & original message info
-  static ReceiptCommand create(String text, Envelope? head, Content? body) {
-    Map? info;
-    if (head == null) {
-      info = null;
-    } else if (body == null) {
-      info = purify(head);
+  static ForwardContent create({ReliableMessage? forward, List<ReliableMessage>? secrets}) {
+    if (forward != null) {
+      assert(secrets == null, 'parameters error');
+      return SecretContent.fromMessage(forward);
     } else {
-      info = purify(head);
-      info['sn'] = body.sn;
+      assert(secrets != null, 'parameters error');
+      return SecretContent.fromMessages(secrets!);
     }
-    var command = BaseReceiptCommand.from(text, info);
-    if (body != null) {
-      // check group
-      ID? group = body.group;
-      if (group != null) {
-        command.group = group;
-      }
-    }
-    return command;
   }
 
-  static Map purify(Envelope envelope) {
-    Map info = envelope.copyMap(false);
-    if (info.containsKey('data')) {
-      info.remove('data');
-      info.remove('key');
-      info.remove('keys');
-      info.remove('meta');
-      info.remove('visa');
-    }
-    return info;
-  }
+}
+
+
+///  Combine Forward message: {
+///      type : i2s(0xCF),
+///      sn   : 123,
+///
+///      title    : "...",  // chat title
+///      messages : [...]   // chat history
+///  }
+abstract interface class CombineContent implements Content {
+
+  String get title;
+
+  List<InstantMessage> get messages;
+
+  //
+  //  Factory
+  //
+
+  static CombineContent create(String title, List<InstantMessage> messages) =>
+      CombineForwardContent.from(title, messages);
+
+}
+
+
+///  Content Array message: {
+///      type : i2s(0xCA),
+///      sn   : 123,
+///
+///      contents : [...]  // content array
+///  }
+abstract interface class ArrayContent implements Content {
+
+  List<Content> get contents;
+
+  //
+  //  Factory
+  //
+
+  static ArrayContent create(List<Content> contents) =>
+      ListContent.fromContents(contents);
 
 }

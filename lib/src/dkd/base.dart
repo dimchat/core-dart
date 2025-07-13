@@ -33,6 +33,11 @@ import 'package:dkd/plugins.dart';
 import 'package:mkm/mkm.dart';
 import 'package:mkm/type.dart';
 
+import '../protocol/types.dart';
+import '../protocol/base.dart';
+import '../command_plugins.dart';
+
+
 class BaseContent extends Dictionary implements Content {
   BaseContent(super.dict);
 
@@ -84,4 +89,24 @@ class BaseContent extends Dictionary implements Content {
 
   @override
   set group(ID? identifier) => setString('group', identifier);
+}
+
+
+///
+/// Command
+///
+class BaseCommand extends BaseContent implements Command  {
+  BaseCommand(super.dict);
+
+  BaseCommand.fromType(String msgType, String cmd) : super.fromType(msgType) {
+    this['command'] = cmd;
+  }
+  BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
+
+  @override
+  String get cmd {
+    var ext = SharedCommandExtensions();
+    return ext.helper!.getCmd(toMap()) ?? '';
+    // return getString('command') ?? '';
+  }
 }

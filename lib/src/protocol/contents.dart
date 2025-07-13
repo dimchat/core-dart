@@ -55,58 +55,6 @@ abstract interface class TextContent implements Content {
 }
 
 
-///  Content Array message: {
-///      type : i2s(0xCA),
-///      sn   : 123,
-///
-///      contents : [...]  // content array
-///  }
-abstract interface class ArrayContent implements Content {
-
-  List<Content> get contents;
-
-  //
-  //  Factory
-  //
-
-  static ArrayContent create(List<Content> contents) =>
-      ListContent.fromContents(contents);
-
-}
-
-
-///  Top-Secret message: {
-///      type : i2s(0xFF),
-///      sn   : 456,
-///
-///      forward : {...}  // reliable (secure + certified) message
-///      secrets : [...]  // reliable (secure + certified) messages
-///  }
-abstract interface class ForwardContent implements Content {
-
-  /// forward message
-  ReliableMessage? get forward;
-
-  /// secret messages
-  List<ReliableMessage> get secrets;
-
-  //
-  //  Factory
-  //
-
-  static ForwardContent create({ReliableMessage? forward, List<ReliableMessage>? secrets}) {
-    if (forward != null) {
-      assert(secrets == null, 'parameters error');
-      return SecretContent.fromMessage(forward);
-    } else {
-      assert(secrets != null, 'parameters error');
-      return SecretContent.fromMessages(secrets!);
-    }
-  }
-
-}
-
-
 ///  Web Page message: {
 ///      type : i2s(0x20),
 ///      sn   : 123,

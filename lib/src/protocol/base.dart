@@ -29,53 +29,56 @@
  * ==============================================================================
  */
 import 'package:dkd/dkd.dart';
-import 'package:mkm/type.dart';
 
-import '../protocol/base.dart';
-import '../protocol/receipt.dart';
+import 'helpers.dart';
 
-import 'base.dart';
+///  Command message: {
+///      type : i2s(0x88),
+///      sn   : 123,
+///
+///      command : "...", // command name
+///      extra   : info   // command parameters
+///  }
+abstract interface class Command implements Content {
+  // ignore_for_file: constant_identifier_names
 
+  //-------- command names begin --------
+  static const String META      = 'meta';
+  static const String DOCUMENTS = 'documents';
+  static const String RECEIPT   = 'receipt';
+  //-------- command names end --------
 
-class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
-  BaseReceiptCommand(super.dict);
+  ///  Get command name
+  ///
+  /// @return command/method/declaration
+  String get cmd;
 
-  /// original message envelope
-  Envelope? _env;
+  //
+  //  Factory method
+  //
 
-  BaseReceiptCommand.from(String text, Map? origin) : super.fromName(Command.RECEIPT) {
-    // text message
-    this['text'] = text;
-    // original envelope of message responding to,
-    // includes 'sn' and 'signature'
-    if (origin != null) {
-      assert(!(origin.isEmpty ||
-          origin.containsKey('data') ||
-          origin.containsKey('key') ||
-          origin.containsKey('keys') ||
-          origin.containsKey('meta') ||
-          origin.containsKey('visa')), 'impure envelope: $origin');
-      this['origin'] = origin;
-    }
+  static Command? parse(Object? content) {
+    var ext = CommandExtensions();
+    return ext.cmdHelper!.parseCommand(content);
   }
 
-  @override
-  String get text => getString('text') ?? '';
-
-  // protected
-  Map? get origin => this['origin'];
-
-  @override
-  Envelope? get originalEnvelope {
-    // origin: { sender: "...", receiver: "...", time: 0 }
-    _env ??= Envelope.parse(origin);
-    return _env;
+  static CommandFactory? getFactory(String cmd) {
+    var ext = CommandExtensions();
+    return ext.cmdHelper!.getCommandFactory(cmd);
   }
+  static void setFactory(String cmd, CommandFactory factory) {
+    var ext = CommandExtensions();
+    ext.cmdHelper!.setCommandFactory(cmd, factory);
+  }
+}
 
-  @override
-  int? get originalSerialNumber => Converter.getInt(origin?['sn']);
+///  Command Factory
+///  ~~~~~~~~~~~~~~~
+abstract interface class CommandFactory {
 
-  @override
-  String? get originalSignature => Converter.getString(origin?['signature']);
-
+  ///  Parse map object to command
+  ///
+  /// @param content - command content
+  /// @return Command
+  Command? parseCommand(Map content);
 }

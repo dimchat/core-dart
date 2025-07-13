@@ -28,62 +28,14 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
 import '../dkd/commands.dart';
-import 'helpers.dart';
 
-///  Command message: {
-///      type : i2s(0x88),
-///      sn   : 123,
-///
-///      command : "...", // command name
-///      extra   : info   // command parameters
-///  }
-abstract interface class Command implements Content {
-  // ignore_for_file: constant_identifier_names
+import 'base.dart';
 
-  //-------- command names begin --------
-  static const String META      = 'meta';
-  static const String DOCUMENTS = 'documents';
-  static const String RECEIPT   = 'receipt';
-  //-------- command names end --------
 
-  ///  Get command name
-  ///
-  /// @return command/method/declaration
-  String get cmd;
-
-  //
-  //  Factory method
-  //
-
-  static Command? parse(Object? content) {
-    var ext = CommandExtensions();
-    return ext.cmdHelper!.parseCommand(content);
-  }
-
-  static CommandFactory? getFactory(String cmd) {
-    var ext = CommandExtensions();
-    return ext.cmdHelper!.getCommandFactory(cmd);
-  }
-  static void setFactory(String cmd, CommandFactory factory) {
-    var ext = CommandExtensions();
-    ext.cmdHelper!.setCommandFactory(cmd, factory);
-  }
-}
-
-///  Command Factory
-///  ~~~~~~~~~~~~~~~
-abstract interface class CommandFactory {
-
-  ///  Parse map object to command
-  ///
-  /// @param content - command content
-  /// @return Command
-  Command? parseCommand(Map content);
-}
+//--------  Core Commands
 
 
 ///  Command message: {

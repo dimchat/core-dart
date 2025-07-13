@@ -84,26 +84,3 @@ abstract interface class QuoteContent implements Content {
   }
 
 }
-
-
-///  Combine Forward message: {
-///      type : i2s(0xCF),
-///      sn   : 123,
-///
-///      title    : "...",  // chat title
-///      messages : [...]   // chat history
-///  }
-abstract interface class CombineContent implements Content {
-
-  String get title;
-
-  List<InstantMessage> get messages;
-
-  //
-  //  Factory
-  //
-
-  static CombineContent create(String title, List<InstantMessage> messages) =>
-      CombineForwardContent.from(title, messages);
-
-}

@@ -32,7 +32,8 @@ import 'package:mkm/mkm.dart';
 
 import '../protocol/types.dart';
 import '../protocol/groups.dart';
-import 'commands.dart';
+
+import 'base.dart';
 
 
 ///

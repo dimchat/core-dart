@@ -28,12 +28,12 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/mkm.dart';
 
 import '../protocol/types.dart';
 import '../protocol/contents.dart';
+
 import 'base.dart';
 
 
@@ -48,85 +48,6 @@ class BaseTextContent extends BaseContent implements TextContent {
 
   @override
   String get text => getString('text') ?? '';
-}
-
-
-/// ArrayContent
-class ListContent extends BaseContent implements ArrayContent {
-  ListContent(super.dict);
-
-  List<Content>? _list;
-
-  ListContent.fromContents(List<Content> contents)
-      : super.fromType(ContentType.ARRAY) {
-    // set contents
-    this['contents'] = Content.revert(contents);
-    _list = contents;
-  }
-
-  @override
-  List<Content> get contents {
-    var array = _list;
-    if (array == null) {
-      var info = this['contents'];
-      if (info is List) {
-        array = Content.convert(info);
-      } else {
-        array = [];
-      }
-      _list = array;
-    }
-    return array;
-  }
-
-}
-
-
-/// ForwardContent
-class SecretContent extends BaseContent implements ForwardContent {
-  SecretContent(super.dict);
-
-  ReliableMessage? _forward;
-  List<ReliableMessage>? _secrets;
-
-  SecretContent.fromMessage(ReliableMessage msg)
-      : super.fromType(ContentType.FORWARD) {
-    _forward = msg;
-    _secrets = null;
-    this['forward'] = msg.toMap();
-  }
-  SecretContent.fromMessages(List<ReliableMessage> messages)
-      : super.fromType(ContentType.FORWARD) {
-    _forward = null;
-    _secrets = messages;
-    this['secrets'] = ReliableMessage.revert(messages);
-  }
-
-  @override
-  ReliableMessage? get forward {
-    _forward ??= ReliableMessage.parse(this['forward']);
-    return _forward;
-  }
-
-  @override
-  List<ReliableMessage> get secrets {
-    List<ReliableMessage>? messages = _secrets;
-    if (messages == null) {
-      var info = this['secrets'];
-      if (info is List) {
-        // get from secrets
-        messages = ReliableMessage.convert(info);
-      } else {
-        assert(info == null, 'secret messages error: $info');
-        // get from 'forward'
-        ReliableMessage? msg = forward;
-        messages = msg == null ? [] : [msg];
-      }
-      _secrets = messages;
-    }
-    return messages;
-  }
-
 }
 
 
