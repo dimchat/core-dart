@@ -109,7 +109,7 @@ abstract interface class DocumentCommand implements MetaCommand {
   ///
   /// @param identifier - entity ID
   /// @param lastTime   - last document time
-  static DocumentCommand query(ID identifier, DateTime? lastTime) =>
+  static DocumentCommand query(ID identifier, [DateTime? lastTime]) =>
       BaseDocumentCommand.query(identifier, lastTime);
 
 }

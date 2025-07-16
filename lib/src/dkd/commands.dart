@@ -40,7 +40,7 @@ import 'base.dart';
 /// MetaCommand
 ///
 class BaseMetaCommand extends BaseCommand implements MetaCommand {
-  BaseMetaCommand(super.dict);
+  BaseMetaCommand([super.dict]);
 
   ID? _id;
   Meta? _meta;
@@ -74,7 +74,7 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 /// DocumentCommand
 ///
 class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
-  BaseDocumentCommand(super.dict);
+  BaseDocumentCommand([super.dict]);
 
   List<Document>? _docs;
 
@@ -86,7 +86,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
     }
     _docs = docs;
   }
-  BaseDocumentCommand.query(ID identifier, DateTime? lastTime)
+  BaseDocumentCommand.query(ID identifier, [DateTime? lastTime])
       : super.from(identifier, Command.DOCUMENTS, null) {
     // query with last document time
     if (lastTime != null) {

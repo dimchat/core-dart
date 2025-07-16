@@ -53,7 +53,7 @@ import 'package:mkm/type.dart';
 ///  abstract method:
 ///      - Address generateAddress(int? network);
 abstract class BaseMeta extends Dictionary implements Meta {
-  BaseMeta(super.dict);
+  BaseMeta([super.dict]);
 
   ///  Meta algorithm version
   ///
@@ -81,8 +81,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   int _status = 0;  // 1 for valid, -1 for invalid
 
-  BaseMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint})
-      : super(null) {
+  BaseMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint}) {
     //
     //  meta type
     //

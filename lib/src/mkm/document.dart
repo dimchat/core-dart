@@ -37,7 +37,7 @@ import 'package:mkm/type.dart';
 
 
 class BaseDocument extends Dictionary implements Document {
-  BaseDocument(super.dict);
+  BaseDocument([super.dict]);
 
   ID? _identifier;
 
@@ -54,8 +54,7 @@ class BaseDocument extends Dictionary implements Document {
   /// @param docType    - document type
   /// @param data       - document data in JsON format
   /// @param signature  - signature of document data in Base64 format
-  BaseDocument.from(ID identifier, String docType, {String? data, TransportableData? signature})
-      : super(null) {
+  BaseDocument.from(ID identifier, String docType, {String? data, TransportableData? signature}) {
     // ID
     this['did'] = identifier.toString();
     _identifier = identifier;

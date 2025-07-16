@@ -38,7 +38,7 @@ import 'base.dart';
 
 /// ForwardContent
 class SecretContent extends BaseContent implements ForwardContent {
-  SecretContent(super.dict);
+  SecretContent([super.dict]);
 
   ReliableMessage? _forward;
   List<ReliableMessage>? _secrets;
@@ -86,7 +86,7 @@ class SecretContent extends BaseContent implements ForwardContent {
 
 /// CombineContent
 class CombineForwardContent extends BaseContent implements CombineContent {
-  CombineForwardContent(super.dict);
+  CombineForwardContent([super.dict]);
 
   List<InstantMessage>? _history;
 
@@ -123,7 +123,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
 
 /// ArrayContent
 class ListContent extends BaseContent implements ArrayContent {
-  ListContent(super.dict);
+  ListContent([super.dict]);
 
   List<Content>? _list;
 

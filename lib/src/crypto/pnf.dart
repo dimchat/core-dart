@@ -44,7 +44,7 @@ import 'package:mkm/type.dart';
 ///      }
 ///  }
 class BaseFileWrapper extends Dictionary {
-  BaseFileWrapper(super.dict);
+  BaseFileWrapper([super.dict]);
 
   /// file data (not encrypted)
   TransportableData? _attachment;

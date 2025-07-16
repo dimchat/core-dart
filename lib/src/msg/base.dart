@@ -67,7 +67,7 @@ import 'package:mkm/type.dart';
 ///      ...
 ///  }
 abstract class BaseMessage extends Dictionary implements Message {
-  BaseMessage(super.dict);
+  BaseMessage([super.dict]);
 
   Envelope? _envelope;
 

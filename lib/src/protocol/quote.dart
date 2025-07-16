@@ -60,15 +60,15 @@ abstract interface class QuoteContent implements Content {
 
   /// Create quote content with text & original message info
   static QuoteContent create(String text, Envelope head, Content body) {
-    Map info = purify(head);
-    info['type'] = body.type;
-    info['sn'] = body.sn;
+    Map origin = purify(head);
+    origin['type'] = body.type;
+    origin['sn'] = body.sn;
     // update: receiver -> group
     ID? group = body.group;
     if (group != null) {
-      info['receiver'] = group.toString();
+      origin['receiver'] = group.toString();
     }
-    return BaseQuoteContent.from(text, info);
+    return BaseQuoteContent.from(text, origin);
   }
 
   static Map purify(Envelope envelope) {
@@ -76,11 +76,11 @@ abstract interface class QuoteContent implements Content {
     ID? to = envelope.group;
     to ??= envelope.receiver;
     // build origin info
-    Map info = {
+    Map origin = {
       'sender': from.toString(),
       'receiver': to.toString(),
     };
-    return info;
+    return origin;
   }
 
 }

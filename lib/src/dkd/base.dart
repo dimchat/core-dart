@@ -39,7 +39,7 @@ import '../command_plugins.dart';
 
 
 class BaseContent extends Dictionary implements Content {
-  BaseContent(super.dict);
+  BaseContent([super.dict]);
 
   /// message type: text, image, ...
   String? _type;
@@ -50,7 +50,7 @@ class BaseContent extends Dictionary implements Content {
   /// message time
   DateTime? _time;
 
-  BaseContent.fromType(String msgType) : super(null) {
+  BaseContent.fromType(String msgType) {
     DateTime now = DateTime.now();
     _type = msgType;
     _sn = InstantMessage.generateSerialNumber(msgType, now);
@@ -96,7 +96,7 @@ class BaseContent extends Dictionary implements Content {
 /// Command
 ///
 class BaseCommand extends BaseContent implements Command  {
-  BaseCommand(super.dict);
+  BaseCommand([super.dict]);
 
   BaseCommand.fromType(String msgType, String cmd) : super.fromType(msgType) {
     this['command'] = cmd;

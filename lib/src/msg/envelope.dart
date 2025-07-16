@@ -43,14 +43,13 @@ import 'package:mkm/type.dart';
 ///      time     : 123
 ///  }
 class MessageEnvelope extends Dictionary implements Envelope {
-  MessageEnvelope(super.dict);
+  MessageEnvelope([super.dict]);
 
   ID? _sender;
   ID? _receiver;
   DateTime? _time;
 
-  MessageEnvelope.from({required ID sender, required ID? receiver, DateTime? time})
-      : super(null) {
+  MessageEnvelope.from({required ID sender, required ID? receiver, DateTime? time}) {
     receiver ??= ID.ANYONE;
     time ??= DateTime.now();
     _sender = sender;

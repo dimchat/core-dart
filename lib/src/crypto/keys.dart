@@ -37,7 +37,7 @@ import 'package:mkm/type.dart';
 ///
 
 abstract class BaseKey extends Dictionary implements CryptographyKey {
-  BaseKey(super.dict);
+  BaseKey([super.dict]);
 
   @override
   String get algorithm => getKeyAlgorithm(toMap());
@@ -84,7 +84,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
 ///
 
 abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
-  BaseSymmetricKey(super.dict);
+  BaseSymmetricKey([super.dict]);
 
   @override
   bool operator ==(Object other) {
@@ -117,7 +117,7 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
 ///
 
 abstract class BaseAsymmetricKey extends Dictionary implements AsymmetricKey {
-  BaseAsymmetricKey(super.dict);
+  BaseAsymmetricKey([super.dict]);
 
   @override
   String get algorithm => BaseKey.getKeyAlgorithm(toMap());
@@ -125,7 +125,7 @@ abstract class BaseAsymmetricKey extends Dictionary implements AsymmetricKey {
 
 
 abstract class BasePrivateKey extends Dictionary implements PrivateKey {
-  BasePrivateKey(super.dict);
+  BasePrivateKey([super.dict]);
 
   @override
   bool operator ==(Object other) {
@@ -151,7 +151,7 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
 
 
 abstract class BasePublicKey extends Dictionary implements PublicKey {
-  BasePublicKey(super.dict);
+  BasePublicKey([super.dict]);
 
   @override
   String get algorithm => BaseKey.getKeyAlgorithm(toMap());

@@ -38,7 +38,7 @@ import 'base.dart';
 
 /// MoneyContent
 class BaseMoneyContent extends BaseContent implements MoneyContent {
-  BaseMoneyContent(super.dict);
+  BaseMoneyContent([super.dict]);
 
   BaseMoneyContent.fromType(String msgType, {required String currency, required num amount})
       : super.fromType(msgType) {
@@ -67,7 +67,7 @@ class BaseMoneyContent extends BaseContent implements MoneyContent {
 
 /// TransferContent
 class TransferMoneyContent extends BaseMoneyContent implements TransferContent {
-  TransferMoneyContent(super.dict);
+  TransferMoneyContent([super.dict]);
 
   TransferMoneyContent.from({required String currency, required num amount})
       : super.fromType(ContentType.TRANSFER, currency: currency, amount: amount);

@@ -38,7 +38,7 @@ import 'base.dart';
 
 
 class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
-  BaseReceiptCommand(super.dict);
+  BaseReceiptCommand([super.dict]);
 
   /// original message envelope
   Envelope? _env;

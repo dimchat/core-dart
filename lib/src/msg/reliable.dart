@@ -55,7 +55,7 @@ import 'secure.dart';
 ///      signature: "..."   // base64_encode(asymmetric_sign(data))
 ///  }
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
-  NetworkMessage(super.dict);
+  NetworkMessage([super.dict]);
 
   TransportableData? _signature;
 

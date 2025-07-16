@@ -108,7 +108,7 @@ abstract interface class GroupCommand implements HistoryCommand {
   static JoinCommand join(ID group) => JoinGroupCommand.from(group);
   static QuitCommand quit(ID group) => QuitGroupCommand.from(group);
 
-  static QueryCommand query(ID group, DateTime? lastTime) =>
+  static QueryCommand query(ID group, [DateTime? lastTime]) =>
       QueryGroupCommand.from(group, lastTime);
   static ResetCommand reset(ID group, {required List<ID> members}) =>
       ResetGroupCommand.from(group, members: members);

@@ -43,7 +43,7 @@ import 'document.dart';
 /// ~~~~~~~~~~~~~~~~~~~~~~
 ///
 class BaseVisa extends BaseDocument implements Visa {
-  BaseVisa(super.dict);
+  BaseVisa([super.dict]);
 
   /// Public Key for encryption
   /// ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,7 +108,7 @@ class BaseVisa extends BaseDocument implements Visa {
 /// ~~~~~~~~~~~~~~~~~~~~~~~
 ///
 class BaseBulletin extends BaseDocument implements Bulletin {
-  BaseBulletin(super.dict);
+  BaseBulletin([super.dict]);
 
   /// Group bots for split and distribute group messages
   List<ID>? _bots;

@@ -42,7 +42,7 @@ import 'algorithms.dart';
 ///     1. "base64,{BASE64_ENCODE}"
 ///     2. "data:image/png;base64,{BASE64_ENCODE}"
 class BaseDataWrapper extends Dictionary {
-  BaseDataWrapper(super.dict);
+  BaseDataWrapper([super.dict]);
 
   /// binary data
   Uint8List? _data;

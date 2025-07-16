@@ -64,16 +64,16 @@ abstract interface class ReceiptCommand implements Command {
 
   /// Create base receipt command with text & original message info
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
-    Map? info;
+    Map? origin;
     if (head == null) {
-      info = null;
+      origin = null;
     } else if (body == null) {
-      info = purify(head);
+      origin = purify(head);
     } else {
-      info = purify(head);
-      info['sn'] = body.sn;
+      origin = purify(head);
+      origin['sn'] = body.sn;
     }
-    var command = BaseReceiptCommand.from(text, info);
+    var command = BaseReceiptCommand.from(text, origin);
     if (body != null) {
       // check group
       ID? group = body.group;
@@ -85,15 +85,15 @@ abstract interface class ReceiptCommand implements Command {
   }
 
   static Map purify(Envelope envelope) {
-    Map info = envelope.copyMap(false);
-    if (info.containsKey('data')) {
-      info.remove('data');
-      info.remove('key');
-      info.remove('keys');
-      info.remove('meta');
-      info.remove('visa');
+    Map origin = envelope.copyMap();
+    if (origin.containsKey('data')) {
+      origin.remove('data');
+      origin.remove('key');
+      origin.remove('keys');
+      origin.remove('meta');
+      origin.remove('visa');
     }
-    return info;
+    return origin;
   }
 
 }

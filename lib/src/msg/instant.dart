@@ -45,7 +45,7 @@ import 'base.dart';
 ///      content  : {...}
 ///  }
 class PlainMessage extends BaseMessage implements InstantMessage {
-  PlainMessage(super.dict);
+  PlainMessage([super.dict]);
 
   /// message body
   Content? _content;

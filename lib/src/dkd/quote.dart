@@ -39,7 +39,7 @@ import 'base.dart';
 
 /// QuoteContent
 class BaseQuoteContent extends BaseContent implements QuoteContent {
-  BaseQuoteContent(super.dict);
+  BaseQuoteContent([super.dict]);
 
   /// original message envelope
   Envelope? _env;

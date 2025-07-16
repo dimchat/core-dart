@@ -39,7 +39,7 @@ import 'base.dart';
 
 /// TextContent
 class BaseTextContent extends BaseContent implements TextContent {
-  BaseTextContent(super.dict);
+  BaseTextContent([super.dict]);
 
   BaseTextContent.fromText(String message)
       : super.fromType(ContentType.TEXT) {
@@ -53,7 +53,7 @@ class BaseTextContent extends BaseContent implements TextContent {
 
 /// PageContent
 class WebPageContent extends BaseContent implements PageContent {
-  WebPageContent(super.dict);
+  WebPageContent([super.dict]);
 
   /// web URL
   Uri? _url;
@@ -156,7 +156,7 @@ class WebPageContent extends BaseContent implements PageContent {
 
 /// NameCard
 class NameCardContent extends BaseContent implements NameCard {
-  NameCardContent(super.dict);
+  NameCardContent([super.dict]);
 
   PortableNetworkFile? _image;
 

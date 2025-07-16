@@ -43,7 +43,7 @@ import 'base.dart';
 /// File Content
 ///
 class BaseFileContent extends BaseContent implements FileContent {
-  BaseFileContent(super.dict) {
+  BaseFileContent([super.dict]) {
     _wrapper = BaseFileWrapper(toMap());
   }
 
@@ -110,7 +110,7 @@ class BaseFileContent extends BaseContent implements FileContent {
 /// ImageContent
 ///
 class ImageFileContent extends BaseFileContent implements ImageContent {
-  ImageFileContent(super.dict);
+  ImageFileContent([super.dict]);
 
   /// small image
   PortableNetworkFile? _thumbnail;
@@ -146,7 +146,7 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
 /// AudioContent
 ///
 class AudioFileContent extends BaseFileContent implements AudioContent {
-  AudioFileContent(super.dict);
+  AudioFileContent([super.dict]);
 
   AudioFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
@@ -165,7 +165,7 @@ class AudioFileContent extends BaseFileContent implements AudioContent {
 /// VideoContent
 ///
 class VideoFileContent extends BaseFileContent implements VideoContent {
-  VideoFileContent(super.dict);
+  VideoFileContent([super.dict]);
 
   /// small image
   PortableNetworkFile? _snapshot;

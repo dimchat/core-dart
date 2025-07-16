@@ -39,7 +39,7 @@ import 'groups.dart';
 /// HireCommand
 ///
 class HireGroupCommand extends BaseGroupCommand implements HireCommand {
-  HireGroupCommand(super.dict);
+  HireGroupCommand([super.dict]);
 
   HireGroupCommand.from(ID group, {List<ID>? administrators, List<ID>? assistants})
       : super.from(GroupCommand.HIRE, group) {
@@ -98,7 +98,7 @@ class HireGroupCommand extends BaseGroupCommand implements HireCommand {
 /// FireCommand
 ///
 class FireGroupCommand extends BaseGroupCommand implements FireCommand {
-  FireGroupCommand(super.dict);
+  FireGroupCommand([super.dict]);
 
   FireGroupCommand.from(ID group, {List<ID>? administrators, List<ID>? assistants})
       : super.from(GroupCommand.FIRE, group) {
@@ -157,7 +157,7 @@ class FireGroupCommand extends BaseGroupCommand implements FireCommand {
 /// ResignCommand
 ///
 class ResignGroupCommand extends BaseGroupCommand implements ResignCommand {
-  ResignGroupCommand(super.dict);
+  ResignGroupCommand([super.dict]);
 
   ResignGroupCommand.from(ID group) : super.from(GroupCommand.RESIGN, group);
 }
