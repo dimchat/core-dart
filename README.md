@@ -22,7 +22,7 @@
 
 ## Examples
 
-### extends Command
+### Extends Command
 
 * _Handshake Command Protocol_
   0. (C-S) handshake start
@@ -112,14 +112,14 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
 }
 ```
 
-### extends Content
+### Extends Content
 
 ```dart
 import 'package:dimp/dimp.dart';
 
 
 ///  Application Customized message: {
-///      type : 0xCC,
+///      type : 0xA0,
 ///      sn   : 123,
 ///
 ///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
@@ -127,7 +127,7 @@ import 'package:dimp/dimp.dart';
 ///      act   : "{ACTION}",  // action name (3.g.: "throw")
 ///      extra : info         // action parameters
 ///  }
-abstract interface class CustomizedContent implements Content {
+abstract interface class AppContent implements Content {
 
   /// get App ID
   String get application;
@@ -138,19 +138,19 @@ abstract interface class CustomizedContent implements Content {
   /// get Action name
   String get action;
 
-  static CustomizedContent create({
+  static AppContent create({
     required String app, required String mod, required String act
-  }) => AppCustomizedContent.from(app: app, mod: mod, act: act);
+  }) => ApplicationContent(app: app, mod: mod, act: act);
 
 }
 
 
-class AppCustomizedContent extends BaseContent implements CustomizedContent {
-  AppCustomizedContent(super.dict);
+class ApplicationContent extends BaseContent implements AppContent {
+  ApplicationContent(super.dict);
 
-  AppCustomizedContent.from({
+  ApplicationContent({
     required String app, required String mod, required String act
-  }) : super.fromType(ContentType.CUSTOMIZED) {
+  }) : super.fromType(ContentType.APPLICATION) {
     this['app'] = app;
     this['mod'] = mod;
     this['act'] = act;
@@ -168,7 +168,7 @@ class AppCustomizedContent extends BaseContent implements CustomizedContent {
 }
 ```
 
-### extends ID Address
+### Extends ID Address
 
 * Examples in [dim_plugins](https://pub.dev/packages/dim_plugins)
 

@@ -161,7 +161,7 @@ abstract interface class QueryCommand implements GroupCommand {
 
 
 ///  History command: {
-///      type : 0x89,
+///      type : i2s(0x89),
 ///      sn   : 123,
 ///
 ///      command : "reset",

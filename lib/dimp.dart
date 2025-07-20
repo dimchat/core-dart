@@ -32,6 +32,7 @@ export 'src/dkd/base.dart';
 export 'src/dkd/contents.dart';
 export 'src/dkd/files.dart';
 export 'src/dkd/forward.dart';
+export 'src/dkd/customized.dart';
 export 'src/dkd/commands.dart';
 export 'src/dkd/groups.dart';
 export 'src/dkd/group_admins.dart';
