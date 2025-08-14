@@ -1,3 +1,7 @@
+## 2.1.2
+
+- Deprecate 'query' group command.
+
 ## 2.1.1
 
 - Positional Arguments.

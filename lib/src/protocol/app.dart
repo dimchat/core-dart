@@ -28,34 +28,53 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import '../protocol/types.dart';
-import '../protocol/customized.dart';
+import 'package:dkd/dkd.dart';
 
-import 'base.dart';
+import '../dkd/app.dart';
 
 
-/// CustomizedContent
-class AppCustomizedContent extends BaseContent implements CustomizedContent {
-  AppCustomizedContent(super.dict);
+///  Content for Application 0nly: {
+///      type : i2s(0xA0),
+///      sn   : 123,
+///
+///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+///      act   : "{ACTION}",  // action name (3.g.: "throw")
+///      extra : info         // action parameters
+///  }
+abstract interface class ApplicationContent implements Content {
 
-  AppCustomizedContent.fromType(String msgType, {
+  /// get App ID
+  String get application;
+
+  /// get Module name
+  String get module;
+
+  /// get Action name
+  String get action;
+
+}
+
+
+///  Application Customized message: {
+///      type : i2s(0xCC),
+///      sn   : 123,
+///
+///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+///      act   : "{ACTION}",  // action name (3.g.: "throw")
+///      extra : info         // action parameters
+///  }
+abstract interface class CustomizedContent implements ApplicationContent {
+
+  //
+  //  Factory
+  //
+
+  static CustomizedContent create({String? type,
     required String app, required String mod, required String act
-  }) : super.fromType(msgType) {
-    this['app'] = app;
-    this['mod'] = mod;
-    this['act'] = act;
-  }
-  AppCustomizedContent.from({
-    required String app, required String mod, required String act
-  }) : this.fromType(ContentType.CUSTOMIZED, app: app, mod: mod, act: act);
-
-  @override
-  String get application => getString('app') ?? '';
-
-  @override
-  String get module => getString('mod') ?? '';
-
-  @override
-  String get action => getString('act') ?? '';
+  }) => type == null
+      ? AppCustomizedContent.from(app: app, mod: mod, act: act)
+      : AppCustomizedContent.fromType(type, app: app, mod: mod, act: act);
 
 }

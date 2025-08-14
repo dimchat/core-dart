@@ -31,7 +31,7 @@
 import 'package:dkd/dkd.dart';
 import 'package:mkm/mkm.dart';
 
-import '../dkd/money.dart';
+import '../dkd/assets.dart';
 
 
 ///  Money message: {

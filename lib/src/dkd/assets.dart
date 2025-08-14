@@ -32,7 +32,7 @@ import 'package:mkm/mkm.dart';
 import 'package:mkm/type.dart';
 
 import '../protocol/types.dart';
-import '../protocol/money.dart';
+import '../protocol/assets.dart';
 import 'base.dart';
 
 

@@ -77,7 +77,7 @@ abstract interface class GroupCommand implements HistoryCommand {
   static const String EXPEL    = "expel";  // Deprecated (use 'reset' instead)
   static const String JOIN     = "join";
   static const String QUIT     = "quit";
-  static const String QUERY    = "query";
+  //static const String QUERY  = "query";  // Deprecated
   static const String RESET    = "reset";
   // administrator/assistant
   static const String HIRE     = "hire";
@@ -108,8 +108,6 @@ abstract interface class GroupCommand implements HistoryCommand {
   static JoinCommand join(ID group) => JoinGroupCommand.from(group);
   static QuitCommand quit(ID group) => QuitGroupCommand.from(group);
 
-  static QueryCommand query(ID group, [DateTime? lastTime]) =>
-      QueryGroupCommand.from(group, lastTime);
   static ResetCommand reset(ID group, {required List<ID> members}) =>
       ResetGroupCommand.from(group, members: members);
 
@@ -137,26 +135,6 @@ abstract interface class JoinCommand implements GroupCommand {
 
 
 abstract interface class QuitCommand implements GroupCommand {
-}
-
-
-///  History command: {
-///      type : i2s(0x88),
-///      sn   : 123,
-///
-///      command : "query",
-///      time    : 123.456,
-///
-///      group     : "{GROUP_ID}",
-///      last_time : 0
-///  }
-abstract interface class QueryCommand implements GroupCommand {
-  // NOTICE:
-  //     This command is just for querying group info,
-  //     should not be saved in group history
-
-  /// Last group history time for querying
-  DateTime? get lastTime;
 }
 
 

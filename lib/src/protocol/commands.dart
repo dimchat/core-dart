@@ -85,7 +85,7 @@ abstract interface class MetaCommand implements Command {
 ///  }
 abstract interface class DocumentCommand implements MetaCommand {
 
-  ///  Entity Document
+  ///  Entity documents
   List<Document>? get documents;
 
   ///  Last document time for querying
