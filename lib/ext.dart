@@ -4,8 +4,8 @@
 library dimp;
 
 
-export 'package:mkm/plugins.dart';
-export 'package:dkd/plugins.dart';
+export 'package:mkm/ext.dart';
+export 'package:dkd/ext.dart';
 
 
 export 'src/protocol/helpers.dart';

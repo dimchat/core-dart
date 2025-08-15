@@ -28,7 +28,7 @@ import 'dart:typed_data';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
-import 'algorithms.dart';
+import '../protocol/algorithms.dart';
 
 ///  Transportable Data Mixin: {
 ///

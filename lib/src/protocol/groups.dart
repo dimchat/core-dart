@@ -28,7 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/mkm.dart';
+import 'package:mkm/protocol.dart';
 
 import '../dkd/group_admins.dart';
 import '../dkd/groups.dart';

@@ -28,8 +28,8 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
-import 'package:mkm/mkm.dart';
+import 'package:dkd/protocol.dart';
+import 'package:mkm/protocol.dart';
 
 import '../dkd/assets.dart';
 

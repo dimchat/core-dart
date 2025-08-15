@@ -28,7 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/dkd.dart';
+import 'package:dkd/protocol.dart';
 
 import '../dkd/app.dart';
 
@@ -38,20 +38,12 @@ import '../dkd/app.dart';
 ///      sn   : 123,
 ///
 ///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
-///      act   : "{ACTION}",  // action name (3.g.: "throw")
-///      extra : info         // action parameters
+///      extra : info         // others
 ///  }
-abstract interface class ApplicationContent implements Content {
+abstract interface class AppContent implements Content {
 
   /// get App ID
   String get application;
-
-  /// get Module name
-  String get module;
-
-  /// get Action name
-  String get action;
 
 }
 
@@ -65,7 +57,13 @@ abstract interface class ApplicationContent implements Content {
 ///      act   : "{ACTION}",  // action name (3.g.: "throw")
 ///      extra : info         // action parameters
 ///  }
-abstract interface class CustomizedContent implements ApplicationContent {
+abstract interface class CustomizedContent implements AppContent {
+
+  /// get Module name
+  String get module;
+
+  /// get Action name
+  String get action;
 
   //
   //  Factory

@@ -30,7 +30,7 @@
  */
 import 'dart:typed_data';
 
-import 'package:dkd/dkd.dart';
+import 'package:dkd/protocol.dart';
 import 'package:mkm/format.dart';
 
 import 'base.dart';

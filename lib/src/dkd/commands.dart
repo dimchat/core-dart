@@ -28,7 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/mkm.dart';
+import 'package:mkm/protocol.dart';
 
 import '../protocol/base.dart';
 import '../protocol/commands.dart';

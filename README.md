@@ -31,7 +31,7 @@
   3. (S-C) handshake success
 
 ```dart
-import 'package:dimp/dimp.dart';
+import 'package:dimp/protocol.dart';
 
 
 class HandshakeState {
@@ -56,7 +56,7 @@ class HandshakeState {
 
 
 ///  Handshake command: {
-///      type : 0x88,
+///      type : i2s(0x88),
 ///      sn   : 123,
 ///
 ///      command : "handshake",    // command name
@@ -115,55 +115,25 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
 ### Extends Content
 
 ```dart
-import 'package:dimp/dimp.dart';
+import 'package:dimp/protocol.dart';
 
 
 ///  Application Customized message: {
-///      type : 0xA0,
+///      type : i2s(0xA0),
 ///      sn   : 123,
 ///
 ///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
-///      act   : "{ACTION}",  // action name (3.g.: "throw")
-///      extra : info         // action parameters
+///      extra : info         // others
 ///  }
-abstract interface class AppContent implements Content {
-
-  /// get App ID
-  String get application;
-
-  /// get Module name
-  String get module;
-
-  /// get Action name
-  String get action;
-
-  static AppContent create({
-    required String app, required String mod, required String act
-  }) => ApplicationContent(app: app, mod: mod, act: act);
-
-}
-
-
 class ApplicationContent extends BaseContent implements AppContent {
   ApplicationContent(super.dict);
 
-  ApplicationContent({
-    required String app, required String mod, required String act
-  }) : super.fromType(ContentType.APPLICATION) {
+  ApplicationContent({required String app}) : super.fromType(ContentType.APPLICATION) {
     this['app'] = app;
-    this['mod'] = mod;
-    this['act'] = act;
   }
 
   @override
   String get application => getString('app') ?? '';
-
-  @override
-  String get module => getString('mod') ?? '';
-
-  @override
-  String get action => getString('act') ?? '';
 
 }
 ```
