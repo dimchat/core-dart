@@ -1,3 +1,7 @@
+## 2.2.0
+
+- Message Digest.
+
 ## 2.1.2
 
 - Deprecate 'query' group command.
