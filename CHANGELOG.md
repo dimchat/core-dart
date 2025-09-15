@@ -1,3 +1,7 @@
+## 2.2.1
+
+- Mapper forEach.
+
 ## 2.2.0
 
 - Message Digest.

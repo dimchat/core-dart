@@ -1,6 +1,6 @@
 # Decentralized Instant Messaging Protocol (Dart)
 
-[![License](https://img.shields.io/github/license/dimchat/core-dart)](https://github.com/dimchat/core-dart/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/dimchat/core-dart)](https://github.com/dimchat/core-dart/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/core-dart/pulls)
 [![Platform](https://img.shields.io/badge/Platform-Dart%203-brightgreen.svg)](https://github.com/dimchat/core-dart/wiki)
 [![Issues](https://img.shields.io/github/issues/dimchat/core-dart)](https://github.com/dimchat/core-dart/issues)
@@ -144,5 +144,5 @@ class ApplicationContent extends BaseContent implements AppContent {
 
 ----
 
-Copyright &copy; 2023 Albert Moky
+Copyright &copy; 2023-2025 Albert Moky
 [![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)
