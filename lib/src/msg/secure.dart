@@ -41,21 +41,21 @@ import 'base.dart';
 ///
 ///  data format: {
 ///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
+///      "sender"   : "moki@xxx",
+///      "receiver" : "hulk@yyy",
+///      "time"     : 123,
+///
 ///      //-- content data and key/keys
-///      data     : "...",  // base64_encode( symmetric_encrypt(content))
-///      key      : "...",  // base64_encode(asymmetric_encrypt(password))
-///      keys     : {
-///          "ID1": "key1", // base64_encode(asymmetric_encrypt(password))
+///      "data"     : "...",  // base64_encode( symmetric_encrypt(content))
+///      "keys"     : {
+///          "{ID}"   : "...",  // base64_encode(asymmetric_encrypt(pwd))
+///          "digest" : "..."   // hash(pwd.data)
 ///      }
 ///  }
 class EncryptedMessage extends BaseMessage implements SecureMessage {
   EncryptedMessage([super.dict]);
 
   Uint8List? _data;
-  TransportableData? _encKey;
   Map? _encKeys;  // String => String
 
   @override
@@ -82,23 +82,6 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   }
 
   @override
-  Uint8List? get encryptedKey {
-    TransportableData? ted = _encKey;
-    if (ted == null) {
-      var base64 = this['key'];
-      if (base64 == null) {
-        // check 'keys'
-        Map? keys = encryptedKeys;
-        if (keys != null) {
-          base64 = keys[receiver.toString()];
-        }
-      }
-      _encKey = ted = TransportableData.parse(base64);
-    }
-    return ted?.data;
-  }
-
-  @override
   Map? get encryptedKeys {
     if (_encKeys == null) {
       var keys = this['keys'];
@@ -106,6 +89,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
         _encKeys = keys;
       } else {
         assert(keys == null, 'message keys error: $keys');
+        // TODO: get from 'key'
       }
     }
     return _encKeys;

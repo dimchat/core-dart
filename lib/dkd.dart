@@ -30,5 +30,4 @@ export 'src/dkd/assets.dart';
 export 'src/dkd/app.dart';
 export 'src/dkd/commands.dart';
 export 'src/dkd/groups.dart';
-export 'src/dkd/group_admins.dart';
 export 'src/dkd/receipt.dart';

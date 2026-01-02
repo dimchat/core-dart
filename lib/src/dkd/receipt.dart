@@ -43,7 +43,7 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   /// original message envelope
   Envelope? _env;
 
-  BaseReceiptCommand.from(String text, Map? origin) : super.fromName(Command.RECEIPT) {
+  BaseReceiptCommand.from(String text, Map? origin) : super.fromCmd(Command.RECEIPT) {
     // text message
     this['text'] = text;
     // original envelope of message responding to,
@@ -63,7 +63,14 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   String get text => getString('text') ?? '';
 
   // protected
-  Map? get origin => this['origin'];
+  Map? get origin {
+    var info = this['origin'];
+    if (info is Map) {
+      return info;
+    }
+    assert(info == null, 'origin error: $info');
+    return null;
+  }
 
   @override
   Envelope? get originalEnvelope {

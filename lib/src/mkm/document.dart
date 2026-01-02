@@ -38,8 +38,6 @@ import 'package:mkm/type.dart';
 class BaseDocument extends Dictionary implements Document {
   BaseDocument([super.dict]);
 
-  ID? _identifier;
-
   String? _json;            // JsON.encode(properties)
   TransportableData? _sig;  // LocalUser(identifier).sign(data)
 
@@ -49,14 +47,10 @@ class BaseDocument extends Dictionary implements Document {
   ///  1. Create a new empty document
   ///  2. Create entity document with data and signature loaded from local storage
   ///
-  /// @param identifier - entity ID
-  /// @param docType    - document type
-  /// @param data       - document data in JsON format
-  /// @param signature  - signature of document data in Base64 format
-  BaseDocument.from(ID identifier, String docType, {String? data, TransportableData? signature}) {
-    // ID
-    this['did'] = identifier.toString();
-    _identifier = identifier;
+  /// @param docType   - document type
+  /// @param data      - document data in JsON format
+  /// @param signature - signature of document data in Base64 format
+  BaseDocument.fromType(String docType, {String? data, TransportableData? signature}) {
 
     // document type
     assert(docType.isNotEmpty && docType != '*', 'document type error: $docType');
@@ -89,12 +83,6 @@ class BaseDocument extends Dictionary implements Document {
 
   @override
   bool get isValid => _status > 0;
-
-  @override
-  ID get identifier {
-    _identifier ??= ID.parse(this['did']);
-    return _identifier!;
-  }
 
   ///  Get serialized properties
   ///
@@ -161,10 +149,10 @@ class BaseDocument extends Dictionary implements Document {
 
   @override
   bool verify(VerifyKey publicKey) {
-    if (_status > 0) {
-      // already verify OK
-      return true;
-    }
+    // if (_status > 0) {
+    //   // already verify OK
+    //   return true;
+    // }
     String? data = _getData();
     Uint8List? signature = _getSignature();
     if (data == null) {
@@ -182,6 +170,10 @@ class BaseDocument extends Dictionary implements Document {
     } else if (publicKey.verify(UTF8.encode(data), signature)) {
       // signature matched
       _status = 1;
+    } else {
+      // public key not matched,
+      // no need to affect the status here
+      return false;
     }
     // NOTICE: if status is 0, it doesn't mean the entity document is invalid,
     //         try another key
@@ -191,13 +183,13 @@ class BaseDocument extends Dictionary implements Document {
   @override
   Uint8List? sign(SignKey privateKey) {
     Uint8List? signature;
-    if (_status > 0) {
-      // already signed/verified
-      assert(_json != null, 'document data error: $this');
-      signature = _getSignature();
-      assert(signature != null, 'document signature error: $this');
-      return signature;
-    }
+    // if (_status > 0) {
+    //   // already signed/verified
+    //   assert(_json != null, 'document data error: $this');
+    //   signature = _getSignature();
+    //   assert(signature != null, 'document signature error: $this');
+    //   return signature;
+    // }
     // 1. update sign time
     setProperty('time', DateTime.now().millisecondsSinceEpoch / 1000.0);
     // 2. encode & sign
@@ -226,9 +218,4 @@ class BaseDocument extends Dictionary implements Document {
   @override
   DateTime? get time => Converter.getDateTime(getProperty('time'));
 
-  @override
-  String? get name => Converter.getString(getProperty('name'));
-
-  @override
-  set name(String? value) => setProperty('name', value);
 }

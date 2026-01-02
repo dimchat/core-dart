@@ -30,7 +30,6 @@
  */
 import 'package:mkm/protocol.dart';
 
-import '../dkd/group_admins.dart';
 import '../dkd/groups.dart';
 
 import 'base.dart';
@@ -56,15 +55,14 @@ abstract interface class HistoryCommand implements Command {
 
 
 ///  Group command: {
-///      type : i2s(0x89),
-///      sn   : 123,
+///      "type" : i2s(0x89),
+///      "sn"   : 123,
 ///
-///      command : "reset",   // "invite", "quit", "query", ...
-///      time    : 123.456,   // command timestamp
+///      "command" : "reset",   // "invite", "quit", "query", ...
+///      "time"    : 123.456,   // command timestamp
 ///
-///      group   : "{GROUP_ID}",
-///      member  : "{MEMBER_ID}",
-///      members : ["{MEMBER_ID}",]
+///      "group"   : "{GROUP_ID}",
+///      "members" : ["{MEMBER_ID}",]
 ///  }
 abstract interface class GroupCommand implements HistoryCommand {
 
@@ -85,10 +83,6 @@ abstract interface class GroupCommand implements HistoryCommand {
   static const String RESIGN   = "resign";
   //-------- group command names end --------
 
-
-  ID? get member;
-  set member(ID? user);
-
   List<ID>? get members;
   set members(List<ID>? users);
 
@@ -96,14 +90,14 @@ abstract interface class GroupCommand implements HistoryCommand {
   //  Factories
   //
 
-  static GroupCommand create(String cmd, ID group, {ID? member, List<ID>? members}) =>
-      BaseGroupCommand.from(cmd, group, member: member, members: members);
+  static GroupCommand create(String cmd, ID group, {List<ID>? members}) =>
+      BaseGroupCommand.fromCmd(cmd, group, members: members);
 
-  static InviteCommand invite(ID group, {ID? member, List<ID>? members}) =>
-      InviteGroupCommand.from(group, member: member, members: members);
+  static InviteCommand invite(ID group, {List<ID>? members}) =>
+      InviteGroupCommand.from(group, members: members);
   /// Deprecated (use 'reset' instead)
-  static ExpelCommand expel(ID group, {ID? member, List<ID>? members}) =>
-      ExpelGroupCommand.from(group, member: member, members: members);
+  static ExpelCommand expel(ID group, {List<ID>? members}) =>
+      ExpelGroupCommand.from(group, members: members);
 
   static JoinCommand join(ID group) => JoinGroupCommand.from(group);
   static QuitCommand quit(ID group) => QuitGroupCommand.from(group);
@@ -111,13 +105,6 @@ abstract interface class GroupCommand implements HistoryCommand {
   static ResetCommand reset(ID group, {required List<ID> members}) =>
       ResetGroupCommand.from(group, members: members);
 
-  ///  Administrators, Assistants
-
-  static HireCommand hire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
-      HireGroupCommand.from(group, administrators: administrators, assistants: assistants);
-  static FireCommand fire(ID group, {List<ID>? administrators, List<ID>? assistants}) =>
-      FireGroupCommand.from(group, administrators: administrators, assistants: assistants);
-  static ResignCommand resign(ID group) => ResignGroupCommand.from(group);
 }
 
 
@@ -149,37 +136,4 @@ abstract interface class QuitCommand implements GroupCommand {
 ///      members : []
 ///  }
 abstract interface class ResetCommand implements GroupCommand {
-}
-
-
-//  Administrators, Assistants
-
-
-abstract interface class HireCommand implements GroupCommand {
-
-  /// Administrators
-  List<ID>? get administrators;
-  set administrators(List<ID>? members);
-
-  /// Assistants (Bots)
-  List<ID>? get assistants;
-  set assistants(List<ID>? bots);
-
-}
-
-
-abstract interface class FireCommand implements GroupCommand {
-
-  /// Administrators
-  List<ID>? get administrators;
-  set administrators(List<ID>? members);
-
-  /// Assistants (Bots)
-  List<ID>? get assistants;
-  set assistants(List<ID>? bots);
-
-}
-
-
-abstract interface class ResignCommand implements GroupCommand {
 }

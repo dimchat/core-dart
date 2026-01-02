@@ -42,14 +42,12 @@ import 'base.dart';
 class BaseMetaCommand extends BaseCommand implements MetaCommand {
   BaseMetaCommand([super.dict]);
 
-  ID? _id;
   Meta? _meta;
 
-  BaseMetaCommand.from(ID identifier, String? cmd, Meta? meta)
-      : super.fromName(cmd ?? Command.META) {
+  BaseMetaCommand.fromCmd(String? cmd, ID identifier, Meta? meta)
+      : super.fromCmd(cmd ?? Command.META) {
     // ID
     this['did'] = identifier.toString();
-    _id = identifier;
     // meta
     if (meta != null) {
       this['meta'] = meta.toMap();
@@ -59,8 +57,7 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 
   @override
   ID get identifier {
-    _id ??= ID.parse(this['did']);
-    return _id!;
+    return ID.parse(this['did'])!;
   }
 
   @override
@@ -79,7 +76,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
   List<Document>? _docs;
 
   BaseDocumentCommand.from(ID identifier, Meta? meta, List<Document>? docs)
-      : super.from(identifier, Command.DOCUMENTS, meta) {
+      : super.fromCmd(Command.DOCUMENTS, identifier, meta) {
     // document
     if (docs != null) {
       this['documents'] = Document.revert(docs);
@@ -87,7 +84,7 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
     _docs = docs;
   }
   BaseDocumentCommand.query(ID identifier, [DateTime? lastTime])
-      : super.from(identifier, Command.DOCUMENTS, null) {
+      : super.fromCmd(Command.DOCUMENTS, identifier, null) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);

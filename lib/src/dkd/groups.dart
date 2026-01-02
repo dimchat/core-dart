@@ -42,7 +42,7 @@ import 'base.dart';
 class BaseHistoryCommand extends BaseCommand implements HistoryCommand {
   BaseHistoryCommand([super.dict]);
 
-  BaseHistoryCommand.fromName(String cmd)
+  BaseHistoryCommand.fromCmd(String cmd)
       : super.fromType(ContentType.HISTORY, cmd);
 }
 
@@ -53,24 +53,12 @@ class BaseHistoryCommand extends BaseCommand implements HistoryCommand {
 class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
   BaseGroupCommand([super.dict]);
 
-  BaseGroupCommand.from(String cmd, ID group, {ID? member, List<ID>? members})
-      : super.fromName(cmd) {
+  BaseGroupCommand.fromCmd(String cmd, ID group, {List<ID>? members})
+      : super.fromCmd(cmd) {
     this.group = group;
-    if (member != null) {
-      assert(members == null, 'parameters error');
-      this.member == member;
-    } else if (members != null) {
+    if (members != null) {
       this.members = members;
     }
-  }
-
-  @override
-  ID? get member => ID.parse(this['member']);
-
-  @override
-  set member(ID? user) {
-    setString('member', user);
-    remove('members');
   }
 
   @override
@@ -81,7 +69,8 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
       return ID.convert(array);
     }
     // get from 'member'
-    ID? single = member;
+    ID? single = ID.parse(this['member']);
+    assert(single != null, 'failed to get group members');
     return single == null ? [] : [single];
   }
 
@@ -94,6 +83,7 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
     }
     remove('member');
   }
+
 }
 
 
@@ -103,8 +93,8 @@ class BaseGroupCommand extends BaseHistoryCommand implements GroupCommand {
 class InviteGroupCommand extends BaseGroupCommand implements InviteCommand {
   InviteGroupCommand([super.dict]);
 
-  InviteGroupCommand.from(ID group, {ID? member, List<ID>? members})
-      : super.from(GroupCommand.INVITE, group, member: member, members: members);
+  InviteGroupCommand.from(ID group, {List<ID>? members})
+      : super.fromCmd(GroupCommand.INVITE, group, members: members);
 }
 
 
@@ -114,8 +104,8 @@ class InviteGroupCommand extends BaseGroupCommand implements InviteCommand {
 class ExpelGroupCommand extends BaseGroupCommand implements ExpelCommand {
   ExpelGroupCommand([super.dict]);
 
-  ExpelGroupCommand.from(ID group, {ID? member, List<ID>? members})
-      : super.from(GroupCommand.EXPEL, group, member: member, members: members);
+  ExpelGroupCommand.from(ID group, {List<ID>? members})
+      : super.fromCmd(GroupCommand.EXPEL, group, members: members);
 }
 
 
@@ -125,7 +115,7 @@ class ExpelGroupCommand extends BaseGroupCommand implements ExpelCommand {
 class JoinGroupCommand extends BaseGroupCommand implements JoinCommand {
   JoinGroupCommand([super.dict]);
 
-  JoinGroupCommand.from(ID group) : super.from(GroupCommand.JOIN, group);
+  JoinGroupCommand.from(ID group) : super.fromCmd(GroupCommand.JOIN, group);
 }
 
 
@@ -135,7 +125,7 @@ class JoinGroupCommand extends BaseGroupCommand implements JoinCommand {
 class QuitGroupCommand extends BaseGroupCommand implements QuitCommand {
   QuitGroupCommand([super.dict]);
 
-  QuitGroupCommand.from(ID group) : super.from(GroupCommand.QUIT, group);
+  QuitGroupCommand.from(ID group) : super.fromCmd(GroupCommand.QUIT, group);
 }
 
 
@@ -146,5 +136,5 @@ class ResetGroupCommand extends BaseGroupCommand implements ResetCommand {
   ResetGroupCommand([super.dict]);
 
   ResetGroupCommand.from(ID group, {required List<ID> members})
-      : super.from(GroupCommand.RESET, group, members: members);
+      : super.fromCmd(GroupCommand.RESET, group, members: members);
 }

@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
 
 import '../protocol/version.dart';
@@ -52,8 +53,27 @@ class BaseVisa extends BaseDocument implements Visa {
   /// Avatar URL
   PortableNetworkFile? _avatar;
 
-  BaseVisa.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, DocumentType.VISA, data: data, signature: signature);
+  BaseVisa.fromData({String? data, TransportableData? signature})
+      : super.fromType(DocumentType.VISA, data: data, signature: signature);
+
+  ID? get identifier => ID.parse(this['did']);
+
+  @override
+  String? get terminal {
+    String? device = getString('terminal');
+    if (device == null) {
+      ID? did = identifier;
+      // assert(did != null, 'visa ID not found: $this');
+      device = did?.terminal;
+    }
+    return device;
+  }
+
+  @override
+  String? get name => Converter.getString(getProperty('name'));
+
+  @override
+  set name(String? nickname) => setProperty('name', nickname);
 
   @override
   EncryptKey? get publicKey {
@@ -98,6 +118,7 @@ class BaseVisa extends BaseDocument implements Visa {
     setProperty('avatar', img?.toObject());
     _avatar = img;
   }
+
 }
 
 
@@ -108,35 +129,16 @@ class BaseVisa extends BaseDocument implements Visa {
 class BaseBulletin extends BaseDocument implements Bulletin {
   BaseBulletin([super.dict]);
 
-  /// Group bots for split and distribute group messages
-  List<ID>? _bots;
+  BaseBulletin.fromData({String? data, TransportableData? signature})
+      : super.fromType(DocumentType.BULLETIN, data: data, signature: signature);
 
-  BaseBulletin.from(ID identifier, {String? data, TransportableData? signature})
-      : super.from(identifier, DocumentType.BULLETIN, data: data, signature: signature);
+  @override
+  String? get name => Converter.getString(getProperty('name'));
+
+  @override
+  set name(String? title) => setProperty('name', title);
 
   @override
   ID? get founder => ID.parse(getProperty('founder'));
-
-  @override
-  List<ID>? get assistants {
-    if (_bots == null) {
-      Object? bots = getProperty('assistants');
-      if (bots is List) {
-        _bots = ID.convert(bots);
-      } else {
-        // get from 'assistant'
-        ID? single = ID.parse(getProperty('assistant'));
-        _bots = single == null ? [] : [single];
-      }
-    }
-    return _bots;
-  }
-
-  @override
-  set assistants(List<ID>? bots) {
-    setProperty('assistants', bots == null ? null : ID.revert(bots));
-    setProperty('assistant', null);
-    _bots = bots;
-  }
 
 }

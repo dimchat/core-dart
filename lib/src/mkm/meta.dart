@@ -37,13 +37,13 @@ import 'package:mkm/type.dart';
 
 ///  User/Group Meta data
 ///  ~~~~~~~~~~~~~~~~~~~~
-///  This class is used to generate entity ID
+///  This class is used to generate entity meta
 ///
 ///      data format: {
-///          type        : 1,              // algorithm version
-///          key         : "{public key}", // PK = secp256k1(SK);
-///          seed        : "moKy",         // user/group name
-///          fingerprint : "..."           // CT = sign(seed, SK);
+///          "type"        : i2s(1),         // algorithm version
+///          "key"         : "{public key}", // PK = secp256k1(SK);
+///          "seed"        : "moKy",         // user/group name
+///          "fingerprint" : "..."           // CT = sign(seed, SK);
 ///      }
 ///
 ///      algorithm:
@@ -80,7 +80,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
 
   int _status = 0;  // 1 for valid, -1 for invalid
 
-  BaseMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint}) {
+  BaseMeta.fromType(String type, VerifyKey key, {String? seed, TransportableData? fingerprint}) {
     //
     //  meta type
     //

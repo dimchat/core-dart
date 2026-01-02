@@ -36,6 +36,21 @@ import 'package:mkm/protocol.dart';
 ///  which can generate a temporary asymmetric key pair for messaging.
 abstract interface class Visa implements Document {
 
+  ///  Get terminal of ID
+  ///
+  /// @return login point
+  String? get terminal;
+
+  ///  Get nickname
+  ///
+  /// @return user name
+  String? get name;
+
+  ///  Set nickname
+  ///
+  /// @param nickname - user name
+  set name(String? nickname);
+
   ///  Get public key to encrypt message for user
   ///
   /// @return public key as visa.key
@@ -55,22 +70,24 @@ abstract interface class Visa implements Document {
   ///
   /// @param img - image URL
   set avatar(PortableNetworkFile? img);
+
 }
 
 abstract interface class Bulletin implements Document {
+
+  ///  Get title
+  ///
+  /// @return group name
+  String? get name;
+
+  ///  Set title
+  ///
+  /// @param title - group name
+  set name(String? title);
 
   ///  Get group founder
   ///
   ///  @return user ID
   ID? get founder;
 
-  ///  Get group assistants
-  ///
-  /// @return group bot ID list
-  List<ID>? get assistants;
-
-  ///  Set group assistants
-  ///
-  /// @param bots - group bot ID list
-  set assistants(List<ID>? bots);
 }

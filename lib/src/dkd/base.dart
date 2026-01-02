@@ -101,7 +101,7 @@ class BaseCommand extends BaseContent implements Command  {
   BaseCommand.fromType(String msgType, String cmd) : super.fromType(msgType) {
     this['command'] = cmd;
   }
-  BaseCommand.fromName(String cmd) : this.fromType(ContentType.COMMAND, cmd);
+  BaseCommand.fromCmd(String cmd) : this.fromType(ContentType.COMMAND, cmd);
 
   @override
   String get cmd {

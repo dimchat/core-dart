@@ -39,12 +39,12 @@ import 'base.dart';
 
 
 ///  Command message: {
-///      type : i2s(0x88),
-///      sn   : 123,
+///      "type" : i2s(0x88),
+///      "sn"   : 123,
 ///
-///      command : "meta", // command name
-///      did     : "{ID}", // contact's ID
-///      meta    : {...}   // when meta is empty, means query meta for ID
+///      "command" : "meta", // command name
+///      "did"     : "{ID}", // contact's ID
+///      "meta"    : {...}   // when meta is empty, means query meta for ID
 ///  }
 abstract interface class MetaCommand implements Command {
 
@@ -63,25 +63,25 @@ abstract interface class MetaCommand implements Command {
   /// @param identifier - entity ID
   /// @param meta - entity Meta
   static MetaCommand response(ID identifier, Meta meta) =>
-      BaseMetaCommand.from(identifier, Command.META, meta);
+      BaseMetaCommand.fromCmd(Command.META, identifier, meta);
 
   ///  Query Meta
   ///
   /// @param identifier - entity ID
   static MetaCommand query(ID identifier) =>
-      BaseMetaCommand.from(identifier, Command.META, null);
+      BaseMetaCommand.fromCmd(Command.META, identifier, null);
 
 }
 
 ///  Command message: {
-///      type : i2s(0x88),
-///      sn   : 123,
+///      "type" : i2s(0x88),
+///      "sn"   : 123,
 ///
-///      command   : "documents", // command name
-///      did       : "{ID}",      // entity ID
-///      meta      : {...},       // only for handshaking with new friend
-///      documents : [...],       // when this is null, means to query
-///      last_time : 12345        // old document time for querying
+///      "command"   : "documents", // command name
+///      "did"       : "{ID}",      // entity ID
+///      "meta"      : {...},       // only for handshaking with new friend
+///      "documents" : [...],       // when this is null, means to query
+///      "last_time" : 12345        // old document time for querying
 ///  }
 abstract interface class DocumentCommand implements MetaCommand {
 
