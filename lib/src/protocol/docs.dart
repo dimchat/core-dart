@@ -36,11 +36,6 @@ import 'package:mkm/protocol.dart';
 ///  which can generate a temporary asymmetric key pair for messaging.
 abstract interface class Visa implements Document {
 
-  ///  Get terminal of ID
-  ///
-  /// @return login point
-  String? get terminal;
-
   ///  Get nickname
   ///
   /// @return user name

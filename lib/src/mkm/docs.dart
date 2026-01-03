@@ -56,19 +56,6 @@ class BaseVisa extends BaseDocument implements Visa {
   BaseVisa.fromData({String? data, TransportableData? signature})
       : super.fromType(DocumentType.VISA, data: data, signature: signature);
 
-  ID? get identifier => ID.parse(this['did']);
-
-  @override
-  String? get terminal {
-    String? device = getString('terminal');
-    if (device == null) {
-      ID? did = identifier;
-      // assert(did != null, 'visa ID not found: $this');
-      device = did?.terminal;
-    }
-    return device;
-  }
-
   @override
   String? get name => Converter.getString(getProperty('name'));
 
