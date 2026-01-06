@@ -33,7 +33,8 @@ import 'dart:typed_data';
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
-import '../crypto/pnf.dart';
+import '../crypto/wrapper.dart';
+import '../crypto/wrapper_factory.dart';
 import '../protocol/types.dart';
 import '../protocol/files.dart';
 import 'base.dart';
@@ -44,15 +45,15 @@ import 'base.dart';
 ///
 class BaseFileContent extends BaseContent implements FileContent {
   BaseFileContent([super.dict]) {
-    _wrapper = BaseFileWrapper(toMap());
+    _wrapper = createWrapper();
   }
 
-  late final BaseFileWrapper _wrapper;
+  late final PortableNetworkFileWrapper _wrapper;
 
   BaseFileContent.from(String? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.FILE) {
-    _wrapper = BaseFileWrapper(toMap());
+    _wrapper = createWrapper();
     // file data
     if (data != null) {
       _wrapper.data = data;
@@ -71,13 +72,21 @@ class BaseFileContent extends BaseContent implements FileContent {
     }
   }
 
+  // protected
+  PortableNetworkFileWrapper createWrapper() {
+    var access = SharedNetworkFormatAccess();
+    var factory = access.pnfWrapperFactory;
+    Map content = toMap();
+    return factory.createPortableNetworkFileWrapper(content);
+  }
+
   /// file data
 
   @override
   Uint8List? get data => _wrapper.data?.data;
 
   @override
-  set data(Uint8List? binary) => _wrapper.setDate(binary);
+  set data(Uint8List? binary) => _wrapper.setBinary(binary);
 
   /// file name
 

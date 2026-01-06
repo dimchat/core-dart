@@ -26,9 +26,9 @@
 import 'dart:typed_data';
 
 import 'package:mkm/format.dart';
-import 'package:mkm/type.dart';
 
 import '../protocol/algorithms.dart';
+import 'wrapper.dart';
 
 ///  Transportable Data Mixin: {
 ///
@@ -41,33 +41,36 @@ import '../protocol/algorithms.dart';
 ///     0. "{BASE64_ENCODE}"
 ///     1. "base64,{BASE64_ENCODE}"
 ///     2. "data:image/png;base64,{BASE64_ENCODE}"
-class BaseDataWrapper extends Dictionary {
-  BaseDataWrapper([super.dict]);
+class BaseDataWrapper extends BaseNetworkFormatWrapper implements TransportableDataWrapper {
+  BaseDataWrapper(super.dict);
 
   /// binary data
   Uint8List? _data;
 
-  // @override
-  // bool get isEmpty {
-  //   if (super.isEmpty) {
-  //     return true;
-  //   }
-  //   Uint8List? binary = data;
-  //   return binary == null || binary.isEmpty;
-  // }
-  //
-  // @override
-  // bool get isNotEmpty {
-  //   if (super.isNotEmpty) {} else {
-  //     return false;
-  //   }
-  //   Uint8List? binary = data;
-  //   return binary != null && binary.isNotEmpty;
-  // }
+  @override
+  bool get isEmpty {
+    Uint8List? binary = data;
+    if (binary != null && binary.isNotEmpty) {
+      return false;
+    }
+    String? text = getString('data');
+    return text == null || text.isEmpty;
+  }
+
+  @override
+  bool get isNotEmpty {
+    Uint8List? binary = data;
+    if (binary != null && binary.isNotEmpty) {
+      return true;
+    }
+    String? text = getString('data');
+    return text != null && text.isNotEmpty;
+  }
 
   @override
   String toString() {
-    String? text = getString('data');
+    // get encoded data
+    String? text = encodedData;
     if (text == null/* || text.isEmpty*/) {
       return '';
     }
@@ -78,19 +81,22 @@ class BaseDataWrapper extends Dictionary {
     if (alg.isEmpty) {
       // 0. "{BASE64_ENCODE}"
       return text;
-    } else {
+    }
+    String? mimeType = getString('mime-type');
+    if (mimeType == null || mimeType.isEmpty) {
       // 1. "base64,{BASE64_ENCODE}"
       return '$alg,$text';
+    } else {
+      // 2. "data:image/png;base64,{BASE64_ENCODE}"
+      return 'data:$mimeType;$alg,$text';
     }
   }
 
-  /// Encode with 'Content-Type'
-  /// ~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /// toString(mimeType)
+  @override
   String encode(String mimeType) {
     assert(!mimeType.contains(' '), 'content-type error: $mimeType');
     // get encoded data
-    String? text = getString('data');
+    String? text = encodedData;
     if (text == null/* || text.isEmpty*/) {
       return '';
     }
@@ -99,9 +105,7 @@ class BaseDataWrapper extends Dictionary {
     return 'data:$mimeType;$alg,$text';
   }
 
-  ///
-  /// encode algorithm
-  ///
+  @override
   String get algorithm {
     String? alg = getString('algorithm');
     if (alg == null || alg.isEmpty) {
@@ -110,6 +114,7 @@ class BaseDataWrapper extends Dictionary {
     return alg;
   }
 
+  @override
   set algorithm(String name) {
     if (name.isEmpty/* || name == EncodeAlgorithms.kDefault*/) {
       remove('algorithm');
@@ -118,9 +123,7 @@ class BaseDataWrapper extends Dictionary {
     }
   }
 
-  ///
-  /// binary data
-  ///
+  @override
   Uint8List? get data {
     Uint8List? binary = _data;
     if (binary == null) {
@@ -128,51 +131,78 @@ class BaseDataWrapper extends Dictionary {
       if (text == null || text.isEmpty) {
         assert(false, 'TED data empty: ${toMap()}');
         return null;
-      } else {
-        String alg = algorithm;
-        switch (alg) {
-          case EncodeAlgorithms.BASE_64:
-            binary = Base64.decode(text);
-            break;
-          case EncodeAlgorithms.BASE_58:
-            binary = Base58.decode(text);
-            break;
-          case EncodeAlgorithms.HEX:
-            binary = Hex.decode(text);
-            break;
-          default:
-            assert(false, 'data algorithm not support: $alg');
-            return null;
-        }
       }
+      binary = decodeData(text, algorithm);
       _data = binary;
     }
     return binary;
   }
 
+  @override
   set data(Uint8List? binary) {
-    if (binary == null || binary.isEmpty) {
-      remove('data');
-    } else {
-      String text;
-      String alg = algorithm;
-      switch (alg) {
-        case EncodeAlgorithms.BASE_64:
-          text = Base64.encode(binary);
-          break;
-        case EncodeAlgorithms.BASE_58:
-          text = Base58.encode(binary);
-          break;
-        case EncodeAlgorithms.HEX:
-          text = Hex.encode(binary);
-          break;
-        default:
-          throw FormatException('data algorithm not support: $alg');
-          // assert(false, 'data algorithm not support: $alg');
+    remove('data');
+    // if (binary != null && binary.isNotEmpty) {
+    //   String text = encodeData(binary, algorithm);
+    //   this['data'] = text;
+    // }
+    _data = binary;
+  }
+
+  //
+  //  Encoding
+  //
+
+  // protected
+  String? get encodedData {
+    String? text = getString('data');
+    if (text == null || text.isEmpty) {
+      Uint8List? binary = _data;
+      if (binary == null || binary.isEmpty) {
+        return null;
       }
+      text = encodeData(binary, algorithm);
+      assert(text.isNotEmpty, 'failed to encode data: ${binary.length}');
       this['data'] = text;
     }
-    _data = binary;
+    return text;
+  }
+
+  // protected
+  String encodeData(Uint8List binary, String? alg) {
+    switch (alg) {
+
+      case EncodeAlgorithms.BASE_64:
+        return Base64.encode(binary);
+
+      case EncodeAlgorithms.BASE_58:
+        return Base58.encode(binary);
+
+      case EncodeAlgorithms.HEX:
+        return Hex.encode(binary);
+
+      default:
+        throw FormatException('data algorithm not support: $alg');
+        // assert(false, 'data algorithm not support: $alg');
+    }
+  }
+
+  // protected
+  Uint8List? decodeData(String text, String alg) {
+    switch (alg) {
+
+      case EncodeAlgorithms.BASE_64:
+        return Base64.decode(text);
+
+      case EncodeAlgorithms.BASE_58:
+        return Base58.decode(text);
+
+      case EncodeAlgorithms.HEX:
+        return Hex.decode(text);
+
+      default:
+        assert(false, 'data algorithm not support: $alg');
+        return null;
+    }
   }
 
 }

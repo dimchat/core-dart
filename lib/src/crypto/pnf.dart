@@ -27,7 +27,8 @@ import 'dart:typed_data';
 
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
-import 'package:mkm/type.dart';
+
+import 'wrapper.dart';
 
 ///  File Content MixIn: {
 ///
@@ -43,8 +44,8 @@ import 'package:mkm/type.dart';
 ///          ...
 ///      }
 ///  }
-class BaseFileWrapper extends Dictionary {
-  BaseFileWrapper([super.dict]);
+class BaseFileWrapper extends BaseNetworkFormatWrapper implements PortableNetworkFileWrapper {
+  BaseFileWrapper(super.dict);
 
   /// file data (not encrypted)
   TransportableData? _attachment;
@@ -55,11 +56,19 @@ class BaseFileWrapper extends Dictionary {
   /// key to decrypt data downloaded from CDN
   DecryptKey? _password;
 
+  @override
+  Map toMap() {
+    Object? base64 = this['data'];
+    TransportableData? ted = _attachment;
+    if (base64 == null && ted != null) {
+      this['data'] = ted.toObject();
+    }
+    return super.toMap();
+  }
+
   //-------- getters/setters --------
 
-  ///
-  /// file data
-  ///
+  @override
   TransportableData? get data {
     TransportableData? ted = _attachment;
     if (ted == null) {
@@ -69,32 +78,29 @@ class BaseFileWrapper extends Dictionary {
     return ted;
   }
 
+  @override
   set data(TransportableData? ted) {
-    if (ted == null) {
-      remove('data');
-    } else {
-      this['data'] = ted.toObject();
-    }
-    _attachment = ted;
-  }
-  /// set binary data
-  void setDate(Uint8List? binary) {
-    TransportableData? ted;
-    if (binary == null || binary.isEmpty) {
-      ted = null;
-      remove('data');
-    } else {
-      ted = TransportableData.create(binary);
-      this['data'] = ted.toObject();
-    }
+    remove('data');
+    // if (ted != null) {
+    //   this['data'] = ted.toObject();
+    // }
     _attachment = ted;
   }
 
-  ///
-  /// file name
-  ///
+  @override
+  void setBinary(Uint8List? binary) {
+    remove('data');
+    if (binary == null || binary.isEmpty) {
+      _attachment = null;
+    } else {
+      _attachment = TransportableData.create(binary);
+    }
+  }
+
+  @override
   String? get filename => getString('filename');
 
+  @override
   set filename(String? name) {
     if (name == null/* || name.isEmpty*/) {
       remove('filename');
@@ -103,9 +109,7 @@ class BaseFileWrapper extends Dictionary {
     }
   }
 
-  ///
-  /// download URL
-  ///
+  @override
   Uri? get url {
     Uri? remote = _remoteURL;
     if (remote == null) {
@@ -117,6 +121,7 @@ class BaseFileWrapper extends Dictionary {
     return remote;
   }
 
+  @override
   set url(Uri? remote) {
     if (remote == null) {
       remove('URL');
@@ -126,9 +131,7 @@ class BaseFileWrapper extends Dictionary {
     _remoteURL = remote;
   }
 
-  ///
-  /// decrypt key
-  ///
+  @override
   DecryptKey? get password {
     DecryptKey? key = _password;
     if (key == null) {
@@ -138,6 +141,7 @@ class BaseFileWrapper extends Dictionary {
     return key;
   }
 
+  @override
   set password(DecryptKey? key) {
     setMap('key', key);
     _password = key;
