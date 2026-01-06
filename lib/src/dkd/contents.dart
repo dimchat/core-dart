@@ -90,15 +90,16 @@ class WebPageContent extends BaseContent implements PageContent {
   PortableNetworkFile? get icon {
     PortableNetworkFile? img = _icon;
     if (img == null) {
-      var base64 = getString('icon');
-      img = _icon = PortableNetworkFile.parse(base64);
+      var uri = getString('icon');
+      img = PortableNetworkFile.parse(uri);
+      _icon = img;
     }
     return img;
   }
 
   @override
   set icon(PortableNetworkFile? img) {
-    if (img == null) {
+    if (img == null || img.isEmpty) {
       remove('icon');
     } else {
       this['icon'] = img.toObject();
@@ -183,8 +184,8 @@ class NameCardContent extends BaseContent implements NameCard {
   PortableNetworkFile? get avatar {
     PortableNetworkFile? img = _image;
     if (img == null) {
-      var url = this['avatar'];
-      img = PortableNetworkFile.parse(url);
+      var uri = this['avatar'];
+      img = PortableNetworkFile.parse(uri);
       _image = img;
     }
     return img;

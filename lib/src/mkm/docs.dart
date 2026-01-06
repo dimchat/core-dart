@@ -51,7 +51,7 @@ class BaseVisa extends BaseDocument implements Visa {
   EncryptKey? _key;
 
   /// Avatar URL
-  PortableNetworkFile? _avatar;
+  PortableNetworkFile? _image;
 
   BaseVisa.fromData({String? data, TransportableData? signature})
       : super.fromType(DocumentType.VISA, data: data, signature: signature);
@@ -87,23 +87,23 @@ class BaseVisa extends BaseDocument implements Visa {
 
   @override
   PortableNetworkFile? get avatar {
-    PortableNetworkFile? img = _avatar;
+    PortableNetworkFile? img = _image;
     if (img == null) {
-      var url = getProperty('avatar');
-      if (url is String && url.isEmpty) {
-        // ignore empty URL
-      } else {
-        img = PortableNetworkFile.parse(url);
-        _avatar = img;
-      }
+      var uri = getProperty('avatar');
+      img = PortableNetworkFile.parse(uri);
+      _image = img;
     }
     return img;
   }
 
   @override
   set avatar(PortableNetworkFile? img) {
-    setProperty('avatar', img?.toObject());
-    _avatar = img;
+    if (img == null || img.isEmpty) {
+      setProperty('avatar', null);
+    } else {
+      setProperty('avatar', img.toObject());
+    }
+    _image = img;
   }
 
 }

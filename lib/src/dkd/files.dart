@@ -123,15 +123,15 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   PortableNetworkFile? get thumbnail {
     PortableNetworkFile? img = _thumbnail;
     if (img == null) {
-      var base64 = getString('thumbnail');
-      img = _thumbnail = PortableNetworkFile.parse(base64);
+      var uri = getString('thumbnail');
+      img = _thumbnail = PortableNetworkFile.parse(uri);
     }
     return img;
   }
 
   @override
   set thumbnail(PortableNetworkFile? img) {
-    if (img == null) {
+    if (img == null || img.isEmpty) {
       remove('thumbnail');
     } else {
       this['thumbnail'] = img.toObject();
@@ -178,15 +178,15 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   PortableNetworkFile? get snapshot {
     PortableNetworkFile? img = _snapshot;
     if (img == null) {
-      var base64 = getString('snapshot');
-      img = _snapshot = PortableNetworkFile.parse(base64);
+      var uri = getString('snapshot');
+      img = _snapshot = PortableNetworkFile.parse(uri);
     }
     return img;
   }
 
   @override
   set snapshot(PortableNetworkFile? img) {
-    if (img == null) {
+    if (img == null || img.isEmpty) {
       remove('snapshot');
     } else {
       this['snapshot'] = img.toObject();
