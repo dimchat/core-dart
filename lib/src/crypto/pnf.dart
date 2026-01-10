@@ -32,15 +32,15 @@ import 'wrapper.dart';
 
 ///  File Content MixIn: {
 ///
-///      data     : "...",        // base64_encode(fileContent)
-///      filename : "photo.png",
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "photo.png",
 ///
-///      URL      : "http://...", // download from CDN
+///      "URL"      : "http://...", // download from CDN
 ///      // before fileContent uploaded to a public CDN,
 ///      // it should be encrypted by a symmetric key
-///      key      : {             // symmetric key to decrypt file content
-///          algorithm : "AES",   // "DES", ...
-///          data      : "{BASE64_ENCODE}",
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
 ///          ...
 ///      }
 ///  }
@@ -73,7 +73,8 @@ class BaseFileWrapper extends BaseNetworkFormatWrapper implements PortableNetwor
     TransportableData? ted = _attachment;
     if (ted == null) {
       Object? base64 = this['data'];
-      _attachment = ted = TransportableData.parse(base64);
+      ted = TransportableData.parse(base64);
+      _attachment = ted;
     }
     return ted;
   }

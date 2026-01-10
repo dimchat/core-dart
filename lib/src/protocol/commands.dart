@@ -44,7 +44,7 @@ import 'base.dart';
 ///
 ///      "command" : "meta", // command name
 ///      "did"     : "{ID}", // contact's ID
-///      "meta"    : {...}   // when meta is empty, means query meta for ID
+///      "meta"    : {...}   // when meta is null, means query meta for ID
 ///  }
 abstract interface class MetaCommand implements Command {
 
@@ -60,16 +60,16 @@ abstract interface class MetaCommand implements Command {
 
   ///  Response Meta
   ///
-  /// @param identifier - entity ID
+  /// @param did  - entity ID
   /// @param meta - entity Meta
-  static MetaCommand response(ID identifier, Meta meta) =>
-      BaseMetaCommand.fromCmd(Command.META, identifier, meta);
+  static MetaCommand response(ID did, Meta meta) =>
+      BaseMetaCommand.fromCmd(Command.META, did, meta);
 
   ///  Query Meta
   ///
-  /// @param identifier - entity ID
-  static MetaCommand query(ID identifier) =>
-      BaseMetaCommand.fromCmd(Command.META, identifier, null);
+  /// @param did - entity ID
+  static MetaCommand query(ID did) =>
+      BaseMetaCommand.fromCmd(Command.META, did, null);
 
 }
 
@@ -98,18 +98,18 @@ abstract interface class DocumentCommand implements MetaCommand {
   /// 1. Send Meta and Document to new friend
   /// 2. Response Entity Document
   ///
-  /// @param identifier - entity ID
-  /// @param meta       - entity Meta
-  /// @param docs       - entity Document
-  static DocumentCommand response(ID identifier, Meta? meta, List<Document> docs) =>
-      BaseDocumentCommand.from(identifier, meta, docs);
+  /// @param did  - entity ID
+  /// @param meta - entity Meta
+  /// @param docs - entity Document
+  static DocumentCommand response(ID did, Meta? meta, List<Document> docs) =>
+      BaseDocumentCommand.from(did, meta, docs);
 
   /// 1. Query Entity Document
   /// 2. Query Entity Document for updating with last time
   ///
-  /// @param identifier - entity ID
-  /// @param lastTime   - last document time
-  static DocumentCommand query(ID identifier, [DateTime? lastTime]) =>
-      BaseDocumentCommand.query(identifier, lastTime);
+  /// @param did      - entity ID
+  /// @param lastTime - last document time
+  static DocumentCommand query(ID did, [DateTime? lastTime]) =>
+      BaseDocumentCommand.query(did, lastTime);
 
 }

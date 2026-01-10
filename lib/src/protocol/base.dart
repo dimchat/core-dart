@@ -33,11 +33,11 @@ import 'package:dkd/protocol.dart';
 import 'helpers.dart';
 
 ///  Command message: {
-///      type : i2s(0x88),
-///      sn   : 123,
+///      "type" : i2s(0x88),
+///      "sn"   : 123,
 ///
-///      command : "...", // command name
-///      extra   : info   // command parameters
+///      "command" : "...", // command name
+///      "extra"   : info   // command parameters
 ///  }
 abstract interface class Command implements Content {
   // ignore_for_file: constant_identifier_names

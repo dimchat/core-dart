@@ -34,11 +34,11 @@ import '../dkd/forward.dart';
 
 
 ///  Top-Secret message: {
-///      type : i2s(0xFF),
-///      sn   : 456,
+///      "type" : i2s(0xFF),
+///      "sn"   : 456,
 ///
-///      forward : {...}  // reliable (secure + certified) message
-///      secrets : [...]  // reliable (secure + certified) messages
+///      "forward" : {...}  // reliable (secure + certified) message
+///      "secrets" : [...]  // reliable (secure + certified) messages
 ///  }
 abstract interface class ForwardContent implements Content {
 
@@ -66,11 +66,11 @@ abstract interface class ForwardContent implements Content {
 
 
 ///  Combine Forward message: {
-///      type : i2s(0xCF),
-///      sn   : 123,
+///      "type" : i2s(0xCF),
+///      "sn"   : 123,
 ///
-///      title    : "...",  // chat title
-///      messages : [...]   // chat history
+///      "title"    : "...",  // chat title
+///      "messages" : [...]   // chat history
 ///  }
 abstract interface class CombineContent implements Content {
 
@@ -89,10 +89,10 @@ abstract interface class CombineContent implements Content {
 
 
 ///  Content Array message: {
-///      type : i2s(0xCA),
-///      sn   : 123,
+///      "type" : i2s(0xCA),
+///      "sn"   : 123,
 ///
-///      contents : [...]  // content array
+///      "contents" : [...]  // content array
 ///  }
 abstract interface class ArrayContent implements Content {
 

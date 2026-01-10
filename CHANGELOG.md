@@ -1,3 +1,7 @@
+## 2.2.2
+
+- Remove group admin commands.
+
 ## 2.2.1
 
 - Mapper forEach.

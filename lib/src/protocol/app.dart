@@ -34,11 +34,11 @@ import '../dkd/app.dart';
 
 
 ///  Content for Application 0nly: {
-///      type : i2s(0xA0),
-///      sn   : 123,
+///      "type" : i2s(0xA0),
+///      "sn"   : 123,
 ///
-///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      extra : info         // others
+///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      "extra" : info         // others
 ///  }
 abstract interface class AppContent implements Content {
 
@@ -49,13 +49,13 @@ abstract interface class AppContent implements Content {
 
 
 ///  Application Customized message: {
-///      type : i2s(0xCC),
-///      sn   : 123,
+///      "type" : i2s(0xCC),
+///      "sn"   : 123,
 ///
-///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
-///      act   : "{ACTION}",  // action name (3.g.: "throw")
-///      extra : info         // action parameters
+///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      "mod"   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+///      "act"   : "{ACTION}",  // action name (3.g.: "throw")
+///      "extra" : info         // action parameters
 ///  }
 abstract interface class CustomizedContent implements AppContent {
 

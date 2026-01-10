@@ -36,18 +36,18 @@ import '../dkd/receipt.dart';
 import 'base.dart';
 
 ///  Command message: {
-///      type : i2s(0x88),
-///      sn   : 456,
+///      "type" : i2s(0x88),
+///      "sn"   : 456,
 ///
-///      command : "receipt",
-///      text    : "...",  // text message
-///      origin  : {       // original message envelope
-///          sender    : "...",
-///          receiver  : "...",
-///          time      : 0,
+///      "command" : "receipt",
+///      "text"    : "...",  // text message
+///      "origin"  : {       // original message envelope
+///          "sender"    : "...",
+///          "receiver"  : "...",
+///          "time"      : 0,
 ///
-///          sn        : 123,
-///          signature : "..."
+///          "sn"        : 123,
+///          "signature" : "..."
 ///      }
 ///  }
 abstract interface class ReceiptCommand implements Command {

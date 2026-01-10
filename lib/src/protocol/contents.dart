@@ -35,10 +35,10 @@ import '../dkd/contents.dart';
 
 
 ///  Text message: {
-///      type : i2s(0x01),
-///      sn   : 123,
+///      "type" : i2s(0x01),
+///      "sn"   : 123,
 ///
-///      text : "..."
+///      "text" : "..."
 ///  }
 abstract interface class TextContent implements Content {
 
@@ -55,19 +55,19 @@ abstract interface class TextContent implements Content {
 
 
 ///  Web Page message: {
-///      type : i2s(0x20),
-///      sn   : 123,
+///      "type" : i2s(0x20),
+///      "sn"   : 123,
 ///
-///      title : "...",                // Web title
-///      desc  : "...",
-///      icon  : "data:image/x-icon;base64,...",
+///      "title" : "...",                // Web title
+///      "desc"  : "...",
+///      "icon"  : "data:image/x-icon;base64,...",
 ///
-///      URL   : "https://github.com/moky/dimp",
+///      "URL"   : "https://github.com/moky/dimp",
 ///
-///      HTML      : "...",            // Web content
-///      mime_type : "text/html",      // Content-Type
-///      encoding  : "utf8",
-///      base      : "about:blank"     // Base URL
+///      "HTML"      : "...",            // Web content
+///      "mime_type" : "text/html",      // Content-Type
+///      "encoding"  : "utf8",
+///      "base"      : "about:blank"     // Base URL
 ///
 ///  }
 abstract interface class PageContent implements Content {
@@ -109,12 +109,12 @@ abstract interface class PageContent implements Content {
 
 
 ///  Name Card content: {
-///      type : i2s(0x33),
-///      sn   : 123,
+///      "type" : i2s(0x33),
+///      "sn"   : 123,
 ///
-///      did    : "{ID}",        // contact's ID
-///      name   : "{nickname}}", // contact's name
-///      avatar : "{URL}",       // avatar - PNF(URL)
+///      "did"    : "{ID}",        // contact's ID
+///      "name"   : "{nickname}}", // contact's name
+///      "avatar" : "{URL}",       // avatar - PNF(URL)
 ///  }
 abstract interface class NameCard implements Content {
 
@@ -128,7 +128,7 @@ abstract interface class NameCard implements Content {
   //  Factory
   //
 
-  static NameCard create(ID identifier, String name, PortableNetworkFile? avatar) =>
-      NameCardContent.from(identifier, name, avatar);
+  static NameCard create(ID did, String name, PortableNetworkFile? avatar) =>
+      NameCardContent.from(did, name, avatar);
 
 }

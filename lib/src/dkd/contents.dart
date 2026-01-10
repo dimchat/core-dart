@@ -160,10 +160,10 @@ class NameCardContent extends BaseContent implements NameCard {
 
   PortableNetworkFile? _image;
 
-  NameCardContent.from(ID identifier, String name, PortableNetworkFile? avatar)
+  NameCardContent.from(ID did, String name, PortableNetworkFile? avatar)
       : super.fromType(ContentType.NAME_CARD) {
     // ID
-    this['did'] = identifier.toString();
+    this['did'] = did.toString();
     // name
     this['name'] = name;
     // avatar

@@ -38,18 +38,18 @@ import 'types.dart';
 
 
 ///  File message: {
-///      type : i2s(0x10),
-///      sn   : 123,
+///      "type" : i2s(0x10),
+///      "sn"   : 123,
 ///
-///      data     : "...",        // base64_encode(fileContent)
-///      filename : "photo.png",
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "photo.png",
 ///
-///      URL      : "http://...", // download from CDN
+///      "URL"      : "http://...", // download from CDN
 ///      // before fileContent uploaded to a public CDN,
 ///      // it should be encrypted by a symmetric key
-///      key      : {             // symmetric key to decrypt file content
-///          algorithm : "AES",   // "DES", ...
-///          data      : "{BASE64_ENCODE}",
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
 ///          ...
 ///      }
 ///  }
@@ -111,21 +111,21 @@ abstract interface class FileContent implements Content {
 
 
 ///  Image message: {
-///      type : i2s(0x12),
-///      sn   : 123,
+///      "type" : i2s(0x12),
+///      "sn"   : 123,
 ///
-///      data     : "...",        // base64_encode(fileContent)
-///      filename : "photo.png",
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "photo.png",
 ///
-///      URL      : "http://...", // download from CDN
+///      "URL"      : "http://...", // download from CDN
 ///      // before fileContent uploaded to a public CDN,
 ///      // it should be encrypted by a symmetric key
-///      key      : {             // symmetric key to decrypt file content
-///          algorithm : "AES",   // "DES", ...
-///          data      : "{BASE64_ENCODE}",
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
 ///          ...
 ///      },
-///      thumbnail : "data:image/jpeg;base64,..."
+///      "thumbnail" : "data:image/jpeg;base64,..."
 ///  }
 abstract interface class ImageContent implements FileContent {
 
@@ -137,21 +137,21 @@ abstract interface class ImageContent implements FileContent {
 
 
 ///  Audio message: {
-///      type : i2s(0x14),
-///      sn   : 123,
+///      "type" : i2s(0x14),
+///      "sn"   : 123,
 ///
-///      data     : "...",        // base64_encode(fileContent)
-///      filename : "voice.mp4",
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "voice.mp4",
 ///
-///      URL      : "http://...", // download from CDN
+///      "URL"      : "http://...", // download from CDN
 ///      // before fileContent uploaded to a public CDN,
 ///      // it should be encrypted by a symmetric key
-///      key      : {             // symmetric key to decrypt file content
-///          algorithm : "AES",   // "DES", ...
-///          data      : "{BASE64_ENCODE}",
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
 ///          ...
 ///      },
-///      text     : "..."         // Automatic Speech Recognition
+///      "text"     : "..."         // Automatic Speech Recognition
 ///  }
 abstract interface class AudioContent implements FileContent {
 
@@ -162,21 +162,21 @@ abstract interface class AudioContent implements FileContent {
 
 
 ///  Video message: {
-///      type : i2s(0x16),
-///      sn   : 123,
+///      "type" : i2s(0x16),
+///      "sn"   : 123,
 ///
-///      data     : "...",        // base64_encode(fileContent)
-///      filename : "movie.mp4",
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "movie.mp4",
 ///
-///      URL      : "http://...", // download from CDN
+///      "URL"      : "http://...", // download from CDN
 ///      // before fileContent uploaded to a public CDN,
 ///      // it should be encrypted by a symmetric key
-///      key      : {             // symmetric key to decrypt file content
-///          algorithm : "AES",   // "DES", ...
-///          data      : "{BASE64_ENCODE}",
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
 ///          ...
 ///      },
-///      snapshot : "data:image/jpeg;base64,..."
+///      "snapshot" : "data:image/jpeg;base64,..."
 ///  }
 abstract interface class VideoContent implements FileContent {
 

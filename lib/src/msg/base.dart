@@ -60,9 +60,10 @@ import 'package:mkm/type.dart';
 ///
 ///  data format: {
 ///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
+///      "sender"   : "moki@xxx",
+///      "receiver" : "hulk@yyy",
+///      "time"     : 123,
+///
 ///      //-- body
 ///      ...
 ///  }

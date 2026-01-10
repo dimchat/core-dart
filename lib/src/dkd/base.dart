@@ -88,7 +88,7 @@ class BaseContent extends Dictionary implements Content {
   ID? get group => ID.parse(this['group']);
 
   @override
-  set group(ID? identifier) => setString('group', identifier);
+  set group(ID? gid) => setString('group', gid);
 }
 
 

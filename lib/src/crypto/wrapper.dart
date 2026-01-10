@@ -98,7 +98,8 @@ abstract class BaseNetworkFormatWrapper {
 
   final Map _map;
 
-  BaseNetworkFormatWrapper(Map dict) : _map = dict;
+  BaseNetworkFormatWrapper(Map dict)
+      : _map = dict is Mapper ? dict.toMap() : dict;
 
   Map toMap() => _map;
 

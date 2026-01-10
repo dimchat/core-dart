@@ -44,10 +44,10 @@ class BaseMetaCommand extends BaseCommand implements MetaCommand {
 
   Meta? _meta;
 
-  BaseMetaCommand.fromCmd(String? cmd, ID identifier, Meta? meta)
+  BaseMetaCommand.fromCmd(String? cmd, ID did, Meta? meta)
       : super.fromCmd(cmd ?? Command.META) {
     // ID
-    this['did'] = identifier.toString();
+    this['did'] = did.toString();
     // meta
     if (meta != null) {
       this['meta'] = meta.toMap();
@@ -75,16 +75,16 @@ class BaseDocumentCommand extends BaseMetaCommand implements DocumentCommand {
 
   List<Document>? _docs;
 
-  BaseDocumentCommand.from(ID identifier, Meta? meta, List<Document>? docs)
-      : super.fromCmd(Command.DOCUMENTS, identifier, meta) {
+  BaseDocumentCommand.from(ID did, Meta? meta, List<Document>? docs)
+      : super.fromCmd(Command.DOCUMENTS, did, meta) {
     // document
     if (docs != null) {
       this['documents'] = Document.revert(docs);
     }
     _docs = docs;
   }
-  BaseDocumentCommand.query(ID identifier, [DateTime? lastTime])
-      : super.fromCmd(Command.DOCUMENTS, identifier, null) {
+  BaseDocumentCommand.query(ID did, [DateTime? lastTime])
+      : super.fromCmd(Command.DOCUMENTS, did, null) {
     // query with last document time
     if (lastTime != null) {
       setDateTime('last_time', lastTime);

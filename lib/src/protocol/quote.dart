@@ -35,16 +35,16 @@ import '../dkd/quote.dart';
 
 
 ///  Quote message: {
-///      type : i2s(0x37),
-///      sn   : 456,
+///      "type" : i2s(0x37),
+///      "sn"   : 456,
 ///
-///      text    : "...",  // text message
-///      origin  : {       // original message envelope
-///          sender    : "...",
-///          receiver  : "...",
+///      "text"    : "...",  // text message
+///      "origin"  : {       // original message envelope
+///          "sender"    : "...",
+///          "receiver"  : "...",
 ///
-///          type      : 0x01,
-///          sn        : 123,
+///          "type"      : i2s(0x01),
+///          "sn"        : 123,
 ///      }
 ///  }
 abstract interface class QuoteContent implements Content {

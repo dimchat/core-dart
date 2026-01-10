@@ -15,6 +15,8 @@
 
 ## Dependencies
 
+* Latest Versions
+
 | Name | Version | Description |
 |------|---------|-------------|
 | [Ming Ke Ming (名可名)](https://github.com/dimchat/mkm-dart) | [![Version](https://img.shields.io/pub/v/mkm)](https://pub.dev/packages/mkm) | Decentralized User Identity Authentication |
@@ -36,7 +38,7 @@ import 'package:dimp/protocol.dart';
 
 class HandshakeState {
 
-  static const int START   = 0;  // C -> S, without session key(or session expired)
+  static const int START   = 0;  // C -> S, without session key (or session expired)
   static const int AGAIN   = 1;  // S -> C, with new session key
   static const int RESTART = 2;  // C -> S, with new session key
   static const int SUCCESS = 3;  // S -> C, handshake accepted
@@ -56,12 +58,12 @@ class HandshakeState {
 
 
 ///  Handshake command: {
-///      type : i2s(0x88),
-///      sn   : 123,
+///      "type" : i2s(0x88),
+///      "sn"   : 123,
 ///
-///      command : "handshake",    // command name
-///      title   : "Hello world!", // "DIM?", "DIM!"
-///      session : "{SESSION_KEY}" // session key
+///      "command" : "handshake",    // command name
+///      "title"   : "Hello world!", // "DIM?", "DIM!"
+///      "session" : "{SESSION_KEY}" // session key
 ///  }
 abstract interface class HandshakeCommand implements Command {
 
@@ -91,7 +93,7 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
   BaseHandshakeCommand(super.dict);
 
   BaseHandshakeCommand.from(String title, {String? sessionKey})
-      : super.fromName(HandshakeCommand.HANDSHAKE) {
+      : super.fromCmd(HandshakeCommand.HANDSHAKE) {
     // text message
     this['title'] = title;
     // session key
@@ -119,11 +121,11 @@ import 'package:dimp/protocol.dart';
 
 
 ///  Application Customized message: {
-///      type : i2s(0xA0),
-///      sn   : 123,
+///      "type" : i2s(0xA0),
+///      "sn"   : 123,
 ///
-///      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
-///      extra : info         // others
+///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      "extra" : info         // others
 ///  }
 class ApplicationContent extends BaseContent implements AppContent {
   ApplicationContent(super.dict);
@@ -144,5 +146,5 @@ class ApplicationContent extends BaseContent implements AppContent {
 
 ----
 
-Copyright &copy; 2023-2025 Albert Moky
+Copyright &copy; 2023-2026 Albert Moky
 [![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

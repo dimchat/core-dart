@@ -35,11 +35,11 @@ import '../dkd/assets.dart';
 
 
 ///  Money message: {
-///      type : i2s(0x40),
-///      sn   : 123,
+///      "type" : i2s(0x40),
+///      "sn"   : 123,
 ///
-///      currency : "RMB", // USD, USDT, ...
-///      amount   : 100.00
+///      "currency" : "RMB", // USD, USDT, ...
+///      "amount"   : 100.00
 ///  }
 abstract interface class MoneyContent implements Content {
 
@@ -63,13 +63,13 @@ abstract interface class MoneyContent implements Content {
 
 
 ///  Transfer money message: {
-///      type : i2s(0x41),
-///      sn   : 123,
+///      "type" : i2s(0x41),
+///      "sn"   : 123,
 ///
-///      currency : "RMB",    // USD, USDT, ...
-///      amount   : 100.00,
-///      remitter : "{FROM}", // sender ID
-///      remittee : "{TO}"    // receiver ID
+///      "currency" : "RMB",    // USD, USDT, ...
+///      "amount"   : 100.00,
+///      "remitter" : "{FROM}", // sender ID
+///      "remittee" : "{TO}"    // receiver ID
 ///  }
 abstract interface class TransferContent implements MoneyContent {
 

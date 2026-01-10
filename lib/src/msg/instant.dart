@@ -38,11 +38,12 @@ import 'base.dart';
 ///
 ///  data format: {
 ///      //-- envelope
-///      sender   : "moki@xxx",
-///      receiver : "hulk@yyy",
-///      time     : 123,
+///      "sender"   : "moki@xxx",
+///      "receiver" : "hulk@yyy",
+///      "time"     : 123,
+///
 ///      //-- content
-///      content  : {...}
+///      "content"  : {...}
 ///  }
 class PlainMessage extends BaseMessage implements InstantMessage {
   PlainMessage([super.dict]);
