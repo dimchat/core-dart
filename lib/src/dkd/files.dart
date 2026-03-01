@@ -28,13 +28,10 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
 import '../crypto/wrapper.dart';
-import '../crypto/wrapper_factory.dart';
 import '../protocol/types.dart';
 import '../protocol/files.dart';
 import 'base.dart';
@@ -45,15 +42,15 @@ import 'base.dart';
 ///
 class BaseFileContent extends BaseContent implements FileContent {
   BaseFileContent([super.dict]) {
-    _wrapper = createWrapper();
+    _wrapper = TransportableFileWrapper.create(super.toMap());
   }
 
-  late final PortableNetworkFileWrapper _wrapper;
+  late final TransportableFileWrapper _wrapper;
 
   BaseFileContent.from(String? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.FILE) {
-    _wrapper = createWrapper();
+    _wrapper = TransportableFileWrapper.create(super.toMap());
     // file data
     if (data != null) {
       _wrapper.data = data;
@@ -72,21 +69,19 @@ class BaseFileContent extends BaseContent implements FileContent {
     }
   }
 
-  // protected
-  PortableNetworkFileWrapper createWrapper() {
-    var access = SharedNetworkFormatAccess();
-    var factory = access.pnfWrapperFactory;
-    Map content = toMap();
-    return factory.createPortableNetworkFileWrapper(content);
+  @override
+  Map toMap() {
+    // call wrapper to serialize 'data' & 'key"
+    return _wrapper.toMap();
   }
 
   /// file data
 
   @override
-  Uint8List? get data => _wrapper.data?.data;
+  TransportableData? get data => _wrapper.data;
 
   @override
-  set data(Uint8List? binary) => _wrapper.setBinary(binary);
+  set data(TransportableData? binary) => _wrapper.data = data;
 
   /// file name
 
@@ -122,28 +117,28 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
   ImageFileContent([super.dict]);
 
   /// small image
-  PortableNetworkFile? _thumbnail;
+  TransportableFile? _thumbnail;
 
   ImageFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.IMAGE, data, filename, url, password);
 
   @override
-  PortableNetworkFile? get thumbnail {
-    PortableNetworkFile? img = _thumbnail;
+  TransportableFile? get thumbnail {
+    TransportableFile? img = _thumbnail;
     if (img == null) {
       var uri = getString('thumbnail');
-      img = _thumbnail = PortableNetworkFile.parse(uri);
+      img = _thumbnail = TransportableFile.parse(uri);
     }
     return img;
   }
 
   @override
-  set thumbnail(PortableNetworkFile? img) {
+  set thumbnail(TransportableFile? img) {
     if (img == null || img.isEmpty) {
       remove('thumbnail');
     } else {
-      this['thumbnail'] = img.toObject();
+      this['thumbnail'] = img.serialize();
     }
     _thumbnail = img;
   }
@@ -177,28 +172,28 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
   VideoFileContent([super.dict]);
 
   /// small image
-  PortableNetworkFile? _snapshot;
+  TransportableFile? _snapshot;
 
   VideoFileContent.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.from(ContentType.VIDEO, data, filename, url, password);
 
   @override
-  PortableNetworkFile? get snapshot {
-    PortableNetworkFile? img = _snapshot;
+  TransportableFile? get snapshot {
+    TransportableFile? img = _snapshot;
     if (img == null) {
       var uri = getString('snapshot');
-      img = _snapshot = PortableNetworkFile.parse(uri);
+      img = _snapshot = TransportableFile.parse(uri);
     }
     return img;
   }
 
   @override
-  set snapshot(PortableNetworkFile? img) {
+  set snapshot(TransportableFile? img) {
     if (img == null || img.isEmpty) {
       remove('snapshot');
     } else {
-      this['snapshot'] = img.toObject();
+      this['snapshot'] = img.serialize();
     }
     _snapshot = img;
   }

@@ -23,44 +23,12 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
 
-abstract interface class TransportableDataWrapper {
-
-  bool get isEmpty;
-  bool get isNotEmpty;
-
-  ///  0. "{BASE64_ENCODE}"
-  ///  1. "base64,{BASE64_ENCODE}"
-  @override
-  String toString();
-
-  ///  Encode with 'Content-Type'
-  ///
-  ///  toString(mimeType)
-  String encode(String mimeType);
-
-  ///
-  ///  Encode Algorithm
-  ///
-  String get algorithm;
-  set algorithm(String name);
-
-  ///
-  ///  Binary Data
-  ///
-  Uint8List? get data;
-  set data(Uint8List? binary);
-
-}
-
-
-abstract interface class PortableNetworkFileWrapper {
+abstract interface class TransportableFileWrapper {
 
   ///  Serialize data
   Map toMap();
@@ -70,8 +38,6 @@ abstract interface class PortableNetworkFileWrapper {
   ///
   TransportableData? get data;
   set data(TransportableData? ted);
-  /// set binary data
-  void setBinary(Uint8List? binary);
 
   ///
   ///  File name
@@ -91,17 +57,102 @@ abstract interface class PortableNetworkFileWrapper {
   DecryptKey? get password;
   set password(DecryptKey? key);
 
+  //
+  //  Factory
+  //
+
+  static TransportableFileWrapper create(Map content, {
+    TransportableData? data,
+    String? filename,
+    Uri? url,
+    DecryptKey? password,
+  }) {
+    var factory = SharedNetworkFormatAccess().pnfWrapperFactory;
+    return factory.createTransportableFileWrapper(content,
+      data: data, filename: filename, url: url, password: password,
+    );
+  }
+
 }
 
 
-abstract class BaseNetworkFormatWrapper {
+abstract interface class TransportableFileWrapperFactory {
+
+  TransportableFileWrapper createTransportableFileWrapper(Map content, {
+    TransportableData? data,
+    String? filename,
+    Uri? url,
+    DecryptKey? password,
+  });
+}
+
+
+///
+///  Singleton
+///
+class SharedNetworkFormatAccess {
+  factory SharedNetworkFormatAccess() => _instance;
+  static final SharedNetworkFormatAccess _instance = SharedNetworkFormatAccess._internal();
+  SharedNetworkFormatAccess._internal();
+
+  TransportableFileWrapperFactory pnfWrapperFactory = _PNFWrapperFactory();
+
+}
+
+
+class _PNFWrapperFactory implements TransportableFileWrapperFactory {
+
+  @override
+  TransportableFileWrapper createTransportableFileWrapper(Map content, {
+    TransportableData? data, String? filename, Uri? url, DecryptKey? password,
+  }) {
+    var wrapper = PortableNetworkFileWrapper(content);
+    if (data != null) {
+      wrapper.data = data;
+    }
+    if (filename != null) {
+      wrapper.filename = filename;
+    }
+    if (url != null) {
+      wrapper.url = url;
+    }
+    if (password != null) {
+      wrapper.password = password;
+    }
+    return wrapper;
+  }
+
+}
+
+
+///  File Content MixIn: {
+///
+///      "data"     : "...",        // base64_encode(fileContent)
+///      "filename" : "photo.png",
+///
+///      "URL"      : "http://...", // download from CDN
+///      // before fileContent uploaded to a public CDN,
+///      // it should be encrypted by a symmetric key
+///      "key"      : {             // symmetric key to decrypt file content
+///          "algorithm" : "AES",   // "DES", ...
+///          "data"      : "{BASE64_ENCODE}",
+///          ...
+///      }
+///  }
+class PortableNetworkFileWrapper implements TransportableFileWrapper {
+  PortableNetworkFileWrapper(Map dict)
+      : _map = dict is Mapper ? dict.toMap() : dict;
 
   final Map _map;
 
-  BaseNetworkFormatWrapper(Map dict)
-      : _map = dict is Mapper ? dict.toMap() : dict;
+  /// file data (not encrypted)
+  TransportableData? _attachment;
 
-  Map toMap() => _map;
+  /// download from CDN
+  Uri? _remoteURL;
+
+  /// key to decrypt data downloaded from CDN
+  DecryptKey? _password;
 
   // get
   dynamic operator [](Object? key) => _map[key];
@@ -109,6 +160,8 @@ abstract class BaseNetworkFormatWrapper {
   void operator []=(String key, dynamic value) => _map[key] = value;
 
   dynamic remove(Object? key) => _map.remove(key);
+
+  bool containsKey(Object? key) => _map.containsKey(key);
 
   String? getString(String key, [String? defaultValue]) =>
       Converter.getString(_map[key], defaultValue);
@@ -119,6 +172,92 @@ abstract class BaseNetworkFormatWrapper {
     } else {
       _map[key] = mapper.toMap();
     }
+  }
+
+  @override
+  Map toMap() {
+    // serialize 'data'
+    var ted = _attachment;
+    if (ted != null && !containsKey('data')) {
+      _map['data'] = ted.serialize();
+    }
+    // serialize 'key'
+    var pwd = _password;
+    if (pwd != null && !containsKey('key')) {
+      _map['key'] = pwd.toMap();
+    }
+    // OK
+    return _map;
+  }
+
+  @override
+  TransportableData? get data {
+    TransportableData? ted = _attachment;
+    if (ted == null) {
+      Object? base64 = _map['data'];
+      ted = TransportableData.parse(base64);
+      _attachment = ted;
+    }
+    return ted;
+  }
+
+  @override
+  set data(TransportableData? ted) {
+    _map.remove('data');
+    // if (ted != null) {
+    //   _map['data'] = ted.toObject();
+    // }
+    _attachment = ted;
+  }
+
+  @override
+  String? get filename => getString('filename');
+
+  @override
+  set filename(String? name) {
+    if (name == null/* || name.isEmpty*/) {
+      _map.remove('filename');
+    } else {
+      _map['filename'] = name;
+    }
+  }
+
+  @override
+  Uri? get url {
+    Uri? remote = _remoteURL;
+    if (remote == null) {
+      String? locator = getString('URL');
+      if (locator != null && locator.isNotEmpty) {
+        _remoteURL = remote = Uri.parse(locator);
+      }
+    }
+    return remote;
+  }
+
+  @override
+  set url(Uri? remote) {
+    if (remote == null) {
+      _map.remove('URL');
+    } else {
+      _map['URL'] = remote.toString();
+    }
+    _remoteURL = remote;
+  }
+
+  @override
+  DecryptKey? get password {
+    DecryptKey? key = _password;
+    if (key == null) {
+      key = SymmetricKey.parse(_map['key']);
+      _password = key;
+    }
+    return key;
+  }
+
+  @override
+  set password(DecryptKey? key) {
+    setMap('key', key);
+    _password = key;
   }
 
 }

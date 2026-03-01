@@ -28,8 +28,6 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dkd/protocol.dart';
 import 'package:mkm/format.dart';
 
@@ -61,7 +59,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   TransportableData? _signature;
 
   @override
-  Uint8List get signature {
+  TransportableData get signature {
     TransportableData? ted = _signature;
     if (ted == null) {
       Object? base64 = this['signature'];
@@ -69,7 +67,7 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
       _signature = ted = TransportableData.parse(base64);
       assert(ted != null, 'failed to decode message signature: $base64');
     }
-    return ted!.data!;
+    return ted!;
   }
 
 }

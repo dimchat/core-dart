@@ -34,6 +34,8 @@ import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
 import 'package:mkm/type.dart';
 
+import '../crypto/data.dart';
+
 
 class BaseDocument extends Dictionary implements Document {
   BaseDocument([super.dict]);
@@ -72,7 +74,7 @@ class BaseDocument extends Dictionary implements Document {
       assert(data.isNotEmpty && signature.isNotEmpty, 'document data/signature error: $data, $signature');
       // 2. Create entity document with data and signature loaded from local storage
       this['data'] = data;
-      this['signature'] = signature.toObject();
+      this['signature'] = signature.serialize();
       _json = data;
       _sig = signature;
       _properties = null;  // lazy
@@ -101,7 +103,7 @@ class BaseDocument extends Dictionary implements Document {
       Object base64 = this['signature'];
       _sig = ted = TransportableData.parse(base64);
     }
-    return ted?.data;
+    return ted?.bytes;
   }
 
   @override
@@ -202,10 +204,10 @@ class BaseDocument extends Dictionary implements Document {
     assert(data.isNotEmpty, 'should not happen: $dict');
     signature = privateKey.sign(UTF8.encode(data));
     assert(signature.isNotEmpty, 'should not happen: $dict');
-    TransportableData ted = TransportableData.create(signature);
+    TransportableData ted = Base64Data.createWithBytes(signature);
     // 3. update 'data' & 'signature' fields
     this['data'] = data;                 // JSON string
-    this['signature'] = ted.toObject();  // BASE-64
+    this['signature'] = ted.serialize();  // BASE-64
     _json = data;
     _sig = ted;
     // 4. update status

@@ -102,7 +102,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     //  fingerprint
     //
     if (fingerprint != null) {
-      this['fingerprint'] = fingerprint.toObject();
+      this['fingerprint'] = fingerprint.serialize();
     }
     _fingerprint = fingerprint;
 
@@ -149,7 +149,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   }
 
   @override
-  Uint8List? get fingerprint {
+  TransportableData? get fingerprint {
     TransportableData? ted = _fingerprint;
     if (ted == null && hasSeed) {
       Object? base64 = this['fingerprint'];
@@ -157,7 +157,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
       _fingerprint = ted = TransportableData.parse(base64);
       assert(ted != null, 'meta.fingerprint error: $base64');
     }
-    return ted?.data;
+    return ted;
   }
 
   //
@@ -194,7 +194,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
       return true;
     }
     String? name = seed;
-    Uint8List? signature = fingerprint;
+    Uint8List? signature = fingerprint?.bytes;
     // check meta seed & signature
     if (signature == null || signature.isEmpty ||
         name == null || name.isEmpty) {

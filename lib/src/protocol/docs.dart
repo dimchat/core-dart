@@ -59,12 +59,12 @@ abstract interface class Visa implements Document {
   ///  Get avatar URL
   ///
   /// @return PNF(URL)
-  PortableNetworkFile? get avatar;
+  TransportableFile? get avatar;
 
   ///  Set avatar URL
   ///
   /// @param img - image URL
-  set avatar(PortableNetworkFile? img);
+  set avatar(TransportableFile? img);
 
 }
 

@@ -18,7 +18,8 @@ export 'src/protocol/algorithms.dart';
 
 
 export 'src/crypto/keys.dart';
-export 'src/crypto/ted.dart';
+export 'src/crypto/base_string.dart';
+export 'src/crypto/base_data.dart';
+export 'src/crypto/data.dart';
 export 'src/crypto/pnf.dart';
 export 'src/crypto/wrapper.dart';
-export 'src/crypto/wrapper_factory.dart';

@@ -51,10 +51,16 @@ class BaseVisa extends BaseDocument implements Visa {
   EncryptKey? _key;
 
   /// Avatar URL
-  PortableNetworkFile? _image;
+  TransportableFile? _image;
 
-  BaseVisa.fromData({String? data, TransportableData? signature})
-      : super.fromType(DocumentType.VISA, data: data, signature: signature);
+  /// Document from local storage
+  BaseVisa.fromData({
+    required String data,
+    required TransportableData signature
+  }) : super.fromType(DocumentType.VISA, data: data, signature: signature);
+
+  /// New document
+  BaseVisa.empty() : super.fromType(DocumentType.VISA);
 
   @override
   String? get name => Converter.getString(getProperty('name'));
@@ -86,22 +92,22 @@ class BaseVisa extends BaseDocument implements Visa {
   }
 
   @override
-  PortableNetworkFile? get avatar {
-    PortableNetworkFile? img = _image;
+  TransportableFile? get avatar {
+    TransportableFile? img = _image;
     if (img == null) {
       var uri = getProperty('avatar');
-      img = PortableNetworkFile.parse(uri);
+      img = TransportableFile.parse(uri);
       _image = img;
     }
     return img;
   }
 
   @override
-  set avatar(PortableNetworkFile? img) {
+  set avatar(TransportableFile? img) {
     if (img == null || img.isEmpty) {
       setProperty('avatar', null);
     } else {
-      setProperty('avatar', img.toObject());
+      setProperty('avatar', img.serialize());
     }
     _image = img;
   }
@@ -116,8 +122,14 @@ class BaseVisa extends BaseDocument implements Visa {
 class BaseBulletin extends BaseDocument implements Bulletin {
   BaseBulletin([super.dict]);
 
-  BaseBulletin.fromData({String? data, TransportableData? signature})
-      : super.fromType(DocumentType.BULLETIN, data: data, signature: signature);
+  /// Document from local storage
+  BaseBulletin.fromData({
+    required String data,
+    required TransportableData signature
+  }) : super.fromType(DocumentType.BULLETIN, data: data, signature: signature);
+
+  /// New document
+  BaseBulletin.empty() : super.fromType(DocumentType.BULLETIN);
 
   @override
   String? get name => Converter.getString(getProperty('name'));

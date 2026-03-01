@@ -23,129 +23,130 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 import 'wrapper.dart';
 
-///  File Content MixIn: {
-///
-///      "data"     : "...",        // base64_encode(fileContent)
-///      "filename" : "photo.png",
-///
-///      "URL"      : "http://...", // download from CDN
-///      // before fileContent uploaded to a public CDN,
-///      // it should be encrypted by a symmetric key
-///      "key"      : {             // symmetric key to decrypt file content
-///          "algorithm" : "AES",   // "DES", ...
-///          "data"      : "{BASE64_ENCODE}",
-///          ...
-///      }
-///  }
-class BaseFileWrapper extends BaseNetworkFormatWrapper implements PortableNetworkFileWrapper {
-  BaseFileWrapper(super.dict);
 
-  /// file data (not encrypted)
-  TransportableData? _attachment;
+class PortableNetworkFile extends Dictionary implements TransportableFile {
+  PortableNetworkFile(Map content, {
+    TransportableData? data,
+    String? filename,
+    Uri? url,
+    DecryptKey? password,
+  }) : super(content) {
+    _wrapper = TransportableFileWrapper.create(super.toMap(),
+      data: data, filename: filename, url: url, password: password,
+    );
+  }
 
-  /// download from CDN
-  Uri? _remoteURL;
+  late TransportableFileWrapper _wrapper;
 
-  /// key to decrypt data downloaded from CDN
-  DecryptKey? _password;
+  // protected
+  String get uriString {
+    // serialize
+    Map dict = _wrapper.toMap();
+    // check 'URL'
+    Uri? remote = url;
+    if (remote != null) {
+      int count = dict.length;
+      if (count == 1) {
+        // this PNF info contains 'URL' only,
+        // so return the URI string here.
+        return remote.toString();
+      } else if (count == 2 && containsKey('filename')) {
+        // ignore 'filename'
+        return remote.toString();
+      }
+      // this PNF info contains other params,
+      // cannot serialize it as a string.
+      return '';
+    }
+    // check data
+    String? text = getString('data');
+    if (text != null && text.startsWith('data:')) {
+      int count = dict.length;
+      if (count == 1) {
+        // this PNF info contains 'data' only,
+        // and it is a data URI,
+        // so return the URI string here.
+        return text;
+      } else if (count == 2) {
+        // check filename
+        String? filename = getString('filename');
+        if (filename != null && filename.isNotEmpty) {
+          // TODO: add 'filename' to data URI
+          return text;
+        }
+      }
+      // this PNF info contains other params,
+      // cannot serialize it as a string.
+      return '';
+    }
+    // the file data was saved into local storage,
+    // so there is just a 'filename' here,
+    // cannot build URI string
+    return '';
+  }
+
+  @override
+  String toString() {
+    var uri = uriString;
+    if (uri.isNotEmpty) {
+      return uri;
+    }
+    // return JSON string
+    var dict = _wrapper.toMap();
+    return JSONMap.encode(dict);
+  }
 
   @override
   Map toMap() {
-    Object? base64 = this['data'];
-    TransportableData? ted = _attachment;
-    if (base64 == null && ted != null) {
-      this['data'] = ted.toObject();
+    return _wrapper.toMap();
+  }
+
+  @override
+  Object serialize() {
+    var uri = uriString;
+    if (uri.isNotEmpty) {
+      return uri;
     }
-    return super.toMap();
+    // return inner map
+    return _wrapper.toMap();
   }
 
-  //-------- getters/setters --------
+  ///  file data
 
   @override
-  TransportableData? get data {
-    TransportableData? ted = _attachment;
-    if (ted == null) {
-      Object? base64 = this['data'];
-      ted = TransportableData.parse(base64);
-      _attachment = ted;
-    }
-    return ted;
-  }
+  TransportableData? get data => _wrapper.data;
 
   @override
-  set data(TransportableData? ted) {
-    remove('data');
-    // if (ted != null) {
-    //   this['data'] = ted.toObject();
-    // }
-    _attachment = ted;
-  }
+  set data(TransportableData? ted) => _wrapper.data = ted;
+
+  ///  file name
 
   @override
-  void setBinary(Uint8List? binary) {
-    remove('data');
-    if (binary == null || binary.isEmpty) {
-      _attachment = null;
-    } else {
-      _attachment = TransportableData.create(binary);
-    }
-  }
+  String? get filename => _wrapper.filename;
+
+  ///  download URL
 
   @override
-  String? get filename => getString('filename');
+  Uri? get url => _wrapper.url;
 
   @override
-  set filename(String? name) {
-    if (name == null/* || name.isEmpty*/) {
-      remove('filename');
-    } else {
-      this['filename'] = name;
-    }
-  }
+  set url(Uri? remote) => _wrapper.url = remote;
 
   @override
-  Uri? get url {
-    Uri? remote = _remoteURL;
-    if (remote == null) {
-      String? locator = getString('URL');
-      if (locator != null && locator.isNotEmpty) {
-        _remoteURL = remote = Uri.parse(locator);
-      }
-    }
-    return remote;
-  }
+  set filename(String? name) => _wrapper.filename = name;
+
+  ///  decrypt key
 
   @override
-  set url(Uri? remote) {
-    if (remote == null) {
-      remove('URL');
-    } else {
-      this['URL'] = remote.toString();
-    }
-    _remoteURL = remote;
-  }
+  DecryptKey? get password => _wrapper.password;
 
   @override
-  DecryptKey? get password {
-    DecryptKey? key = _password;
-    if (key == null) {
-      key = SymmetricKey.parse(this['key']);
-      _password = key;
-    }
-    return key;
-  }
-
-  @override
-  set password(DecryptKey? key) {
-    setMap('key', key);
-    _password = key;
-  }
+  set password(DecryptKey? key) => _wrapper.password = key;
 
 }

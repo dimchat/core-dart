@@ -28,11 +28,10 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dkd/protocol.dart';
 import 'package:mkm/format.dart';
 
+import '../crypto/data.dart';
 import 'base.dart';
 
 ///  Secure Message
@@ -55,30 +54,30 @@ import 'base.dart';
 class EncryptedMessage extends BaseMessage implements SecureMessage {
   EncryptedMessage([super.dict]);
 
-  Uint8List? _data;
+  TransportableData? _data;
   Map? _encKeys;  // String => String
 
   @override
-  Uint8List get data {
-    Uint8List? binary = _data;
-    if (binary == null) {
+  TransportableData get data {
+    TransportableData? ted = _data;
+    if (ted == null) {
       Object? text = this['data'];
       if (text == null) {
         assert(false, 'message data not found: ${toMap()}');
       } else if (!BaseMessage.isBroadcast(this)) {
         // message content had been encrypted by a symmetric key,
         // so the data should be encoded here (with algorithm 'base64' as default).
-        binary = TransportableData.decode(text);
+        ted = TransportableData.parse(text);
       } else if (text is String) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
-        binary = UTF8.encode(text);  // JsON
+        ted = PlainData.createWithString(text);  // JsON
       } else {
         assert(false, 'content data error: $text');
       }
-      _data = binary;
+      _data = ted;
     }
-    return binary!;
+    return ted!;
   }
 
   @override

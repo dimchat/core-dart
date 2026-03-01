@@ -58,10 +58,10 @@ class WebPageContent extends BaseContent implements PageContent {
   Uri? _url;
 
   /// small image
-  PortableNetworkFile? _icon;
+  TransportableFile? _icon;
 
   WebPageContent.from({required Uri? url, required String? html,
-    required String title, PortableNetworkFile? icon, String? desc,})
+    required String title, TransportableFile? icon, String? desc,})
       : super.fromType(ContentType.PAGE) {
     // URL or HTML
     this.url = url;
@@ -87,22 +87,22 @@ class WebPageContent extends BaseContent implements PageContent {
   //
 
   @override
-  PortableNetworkFile? get icon {
-    PortableNetworkFile? img = _icon;
+  TransportableFile? get icon {
+    TransportableFile? img = _icon;
     if (img == null) {
       var uri = getString('icon');
-      img = PortableNetworkFile.parse(uri);
+      img = TransportableFile.parse(uri);
       _icon = img;
     }
     return img;
   }
 
   @override
-  set icon(PortableNetworkFile? img) {
+  set icon(TransportableFile? img) {
     if (img == null || img.isEmpty) {
       remove('icon');
     } else {
-      this['icon'] = img.toObject();
+      this['icon'] = img.serialize();
     }
     _icon = img;
   }
@@ -158,9 +158,9 @@ class WebPageContent extends BaseContent implements PageContent {
 class NameCardContent extends BaseContent implements NameCard {
   NameCardContent([super.dict]);
 
-  PortableNetworkFile? _image;
+  TransportableFile? _image;
 
-  NameCardContent.from(ID did, String name, PortableNetworkFile? avatar)
+  NameCardContent.from(ID did, String name, TransportableFile? avatar)
       : super.fromType(ContentType.NAME_CARD) {
     // ID
     this['did'] = did.toString();
@@ -169,7 +169,7 @@ class NameCardContent extends BaseContent implements NameCard {
     // avatar
     if (avatar != null) {
       // encode
-      this['avatar'] = avatar.toObject();
+      this['avatar'] = avatar.serialize();
     }
     _image = avatar;
   }
@@ -181,11 +181,11 @@ class NameCardContent extends BaseContent implements NameCard {
   String get name => getString('name') ?? '';
 
   @override
-  PortableNetworkFile? get avatar {
-    PortableNetworkFile? img = _image;
+  TransportableFile? get avatar {
+    TransportableFile? img = _image;
     if (img == null) {
       var uri = this['avatar'];
-      img = PortableNetworkFile.parse(uri);
+      img = TransportableFile.parse(uri);
       _image = img;
     }
     return img;

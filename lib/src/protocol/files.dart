@@ -28,8 +28,6 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dkd/protocol.dart';
 import 'package:mkm/protocol.dart';
 
@@ -55,8 +53,8 @@ import 'types.dart';
 ///  }
 abstract interface class FileContent implements Content {
 
-  Uint8List? get data;
-  set data(Uint8List? fileData);
+  TransportableData? get data;
+  set data(TransportableData? fileData);
 
   String? get filename;
   set filename(String? name);
@@ -130,8 +128,8 @@ abstract interface class FileContent implements Content {
 abstract interface class ImageContent implements FileContent {
 
   /// Base-64 image
-  PortableNetworkFile? get thumbnail;
-  set thumbnail(PortableNetworkFile? img);
+  TransportableFile? get thumbnail;
+  set thumbnail(TransportableFile? img);
 
 }
 
@@ -181,7 +179,7 @@ abstract interface class AudioContent implements FileContent {
 abstract interface class VideoContent implements FileContent {
 
   /// Base-64 image
-  PortableNetworkFile? get snapshot;
-  set snapshot(PortableNetworkFile? img);
+  TransportableFile? get snapshot;
+  set snapshot(TransportableFile? img);
 
 }

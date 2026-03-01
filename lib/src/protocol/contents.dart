@@ -76,8 +76,8 @@ abstract interface class PageContent implements Content {
   set title(String string);
 
   /// Base-64 image
-  PortableNetworkFile? get icon;
-  set icon(PortableNetworkFile? img);
+  TransportableFile? get icon;
+  set icon(TransportableFile? img);
 
   String? get desc;
   set desc(String? string);
@@ -93,16 +93,16 @@ abstract interface class PageContent implements Content {
   //
 
   static PageContent create({Uri? url, String? html,
-    required String title, PortableNetworkFile? icon, String? desc}) =>
+    required String title, TransportableFile? icon, String? desc}) =>
       WebPageContent.from(url: url, html: html,
         title: title, icon: icon, desc: desc);
 
   static PageContent createFromURL(Uri url, {
-    required String title, PortableNetworkFile? icon, String? desc}) =>
+    required String title, TransportableFile? icon, String? desc}) =>
       create(url: url, html: null, title: title, icon: icon, desc: desc);
 
   static PageContent createFromHTML(String html, {
-    required String title, PortableNetworkFile? icon, String? desc}) =>
+    required String title, TransportableFile? icon, String? desc}) =>
       create(url: null, html: html, title: title, icon: icon, desc: desc);
 
 }
@@ -122,13 +122,13 @@ abstract interface class NameCard implements Content {
 
   String get name;
 
-  PortableNetworkFile? get avatar;
+  TransportableFile? get avatar;
 
   //
   //  Factory
   //
 
-  static NameCard create(ID did, String name, PortableNetworkFile? avatar) =>
+  static NameCard create(ID did, String name, TransportableFile? avatar) =>
       NameCardContent.from(did, name, avatar);
 
 }
