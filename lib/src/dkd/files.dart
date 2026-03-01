@@ -31,7 +31,7 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
-import '../crypto/wrapper.dart';
+import '../format/wrapper.dart';
 import '../protocol/types.dart';
 import '../protocol/files.dart';
 import 'base.dart';

@@ -34,7 +34,7 @@ import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
 import 'package:mkm/type.dart';
 
-import '../crypto/data.dart';
+import '../format/data.dart';
 
 
 class BaseDocument extends Dictionary implements Document {

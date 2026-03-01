@@ -31,7 +31,7 @@
 import 'package:dkd/protocol.dart';
 import 'package:mkm/format.dart';
 
-import '../crypto/data.dart';
+import '../format/data.dart';
 import 'base.dart';
 
 ///  Secure Message
