@@ -39,14 +39,14 @@ import 'base_data.dart';
 class Base64Data extends BaseData {
   Base64Data(super.encoded, super.bytes);
 
+  factory Base64Data.create(String encoded, Uint8List bytes)=>
+      Base64Data(encoded, bytes);
+
   factory Base64Data.createWithString(String encoded) =>
       Base64Data(encoded, null);
 
   factory Base64Data.createWithBytes(Uint8List bytes) =>
       Base64Data('', bytes);
-
-  factory Base64Data.create(String? encoded, Uint8List? bytes)=>
-      Base64Data(encoded ?? '', bytes);
 
   //
   //  TransportableData
@@ -95,14 +95,17 @@ class Base64Data extends BaseData {
 class PlainData extends BaseData {
   PlainData(super.encoded, super.bytes);
 
+  /// empty data
+  factory PlainData.zero() => PlainData('', Uint8List(0));
+
+  factory PlainData.create(String encoded, Uint8List bytes) =>
+      PlainData(encoded, bytes);
+
   factory PlainData.createWithString(String encoded) =>
       PlainData(encoded, null);
 
   factory PlainData.createWithBytes(Uint8List bytes) =>
       PlainData('', bytes);
-
-  factory PlainData.create(String? encoded, Uint8List? bytes) =>
-      PlainData(encoded ?? '', bytes);
 
   //
   //  TransportableData
@@ -132,7 +135,7 @@ class PlainData extends BaseData {
         txt = UTF8.decode(bin) ?? '';
         setEncodedString(txt);
       }
-      assert(txt.isNotEmpty, 'base64 data error: $bin');
+      assert(txt.isNotEmpty, 'plain data error: $bin');
     }
     return txt;
   }

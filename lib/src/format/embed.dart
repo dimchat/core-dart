@@ -41,73 +41,104 @@ import 'base_data.dart';
 class EmbedData extends BaseData {
   EmbedData(super.encoded, super.bytes);
 
-  UriData? dataUri;
+  UriData? _dataUri;
 
-  // data uri header
-  String mimeType = '';  // default is "text/plain"
-  String charset  = '';  // default is "us-ascii"
-  String filename = '';  // "avatar.png"
+  // data uri headers
+  String? _mimeType;  // default is "text/plain"
+  Map<String, String>? _parameters;
 
-  factory EmbedData.createWithUri(UriData? uri) {
-    var data = EmbedData('', null);
-    data.dataUri = uri;
-    return data;
-  }
-
-  factory EmbedData.createWithString(String dataUri) {
-    var uri = UriData.parse(dataUri);
-    var data = EmbedData('', null);
-    data.dataUri = uri;
-    return data;
-  }
-
-  factory EmbedData.createWithBytes(Uint8List bytes, {
-    String? mimeType, String? charset, String? filename,
-  }) {
-    var data = EmbedData('', bytes);
-    data.mimeType = mimeType ?? 'text/plain';
-    data.charset = charset ?? '';
-    data.filename = filename ?? '';
-    return data;
-  }
-
-  factory EmbedData.create(String? encoded, Uint8List? bytes, {
+  EmbedData.from(String? encoded, Uint8List? bytes, {
     UriData? uri,
-    String? mimeType, String? charset, String? filename,
-  }) {
-    var data = EmbedData(encoded ?? '', bytes);
-    data.dataUri = uri;
-    // data uri headers
-    data.mimeType = mimeType ?? 'text/plain';
-    data.charset = charset ?? '';
-    data.filename = filename ?? '';
-    return data;
+    String? mimeType,
+    Map<String, String>? parameters,
+  }) : super(encoded ?? '', bytes) {
+    _dataUri = uri;
+    _mimeType = mimeType;
+    _parameters = parameters;
   }
+
+  factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
+      EmbedData.from(dataUri, bytes, uri: uri);
+
+  factory EmbedData.createWithUri(UriData uri) =>
+      EmbedData.from(uri.toString(), null, uri: uri);
+
+  factory EmbedData.createWithString(String dataUri) =>
+      EmbedData.from(dataUri, null);
+
+  factory EmbedData.createWithBytes(Uint8List bytes, {required String mimeType}) =>
+      EmbedData.from('', bytes, mimeType: mimeType);
+
+  //
+  //  Data URI:
+  //
+  //      "data:image/jpg;base64,{BASE64_ENCODE}"
+  //      "data:audio/mp4;base64,{BASE64_ENCODE}"
+  //
+
+  factory EmbedData.image(Uint8List jpeg) =>
+      EmbedData.from('', jpeg, mimeType: 'image/jpeg');
+
+  factory EmbedData.audio(Uint8List mp4) =>
+      EmbedData.from('', mp4, mimeType: 'audio/mp4');
+
+  //
+  //  Uri Headers
+  //
+
+  UriData? get uri => _dataUri;
+
+  // default is "text/plain"
+  String? get mimeType => _mimeType ?? (uri?.mimeType);
+  // default is "us-ascii"
+  String? get charset => parameters?['charset'] ?? (uri?.charset);
+  // "avatar.png"
+  String? get filename => parameters?['filename'];
+
+  Map<String, String>? get parameters => _parameters ?? (uri?.parameters);
+
+  //
+  //  Build Uri
+  //
 
   // protected
   UriData? get encodeDataURI {
-    var uri = dataUri;
+    var uri = _dataUri;
     if (uri == null) {
       Uint8List? bin = getDecodedBytes();
       if (bin == null || bin.isEmpty) {
         return null;
       }
-      String base64 = Base64.encode(bin);
-      // build header for data uri
-      String header = mimeType;
-      if (charset.isNotEmpty) {
-        header = '$header;charset=$charset';
-      }
-      if (filename.isNotEmpty) {
-        header = '$header;filename=$filename';
-      }
-      uri = UriData.parse('data:$header;base64,$base64');
-      dataUri = uri;
+      // build header
+      String header = _mimeType ?? 'text/plain';
+      _parameters?.forEach((key, value) {
+        header += ';$key=$value';
+      });
+      // encode body
+      String body = Base64.encode(bin);
+      uri = UriData.parse('data:$header;base64,$body');
+      _dataUri = uri;
     }
     return uri;
   }
 
-  //
+  // protected
+  UriData? get decodeDataURI {
+    var uri = _dataUri;
+    if (uri == null) {
+      String txt = getEncodedString();
+      if (txt.isEmpty) {
+        return null;
+      }
+      assert(txt.startsWith('data:'), 'data uri error: $txt');
+      // parse uri
+      uri = UriData.parse(txt);
+      _dataUri = uri;
+    }
+    return uri;
+  }
+
+//
   //  TransportableData
   //
 
@@ -118,9 +149,9 @@ class EmbedData extends BaseData {
   Uint8List? get bytes {
     Uint8List? bin = getDecodedBytes();
     if (bin == null) {
-      var uri = dataUri;
+      var uri = decodeDataURI;
       if (uri == null) {
-        assert(false, 'data uri error');
+        assert(false, 'failed to decode data uri');
         return null;
       }
       bin = uri.contentAsBytes();
@@ -135,11 +166,12 @@ class EmbedData extends BaseData {
     String txt = getEncodedString();
     if (txt == '') {
       var uri = encodeDataURI;
-      if (uri != null) {
-        txt = uri.toString();
-        setEncodedString(txt);
+      if (uri == null) {
+        assert(false, 'failed to encode data uri');
+        return '';
       }
-      assert(txt.isNotEmpty, 'base64 data error: $uri');
+      txt = uri.toString();
+      setEncodedString(txt);
     }
     return txt;
   }
