@@ -52,19 +52,70 @@ import 'helpers.dart';
 ///          "signature" : "..."
 ///      }
 ///  }
+
+/// Receipt command interface (message acknowledgment/receipt).
+///
+/// Used to send receipt/acknowledgment for a previously received message,
+/// confirming delivery or providing status feedback (via text).
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x88),
+///   "sn"   : 678.90,
+///
+///   "command": "receipt",  // Fixed command name for receipt messages
+///
+///   "text"   : "...",      // Receipt comment/feedback text
+///   "origin" : {           // Metadata of the original message being acknowledged
+///     "sender"   : "...",  // Sender ID of the original message
+///     "receiver" : "...",  // Receiver ID of the original message
+///     "time"     : 123.45, // Timestamp of the original message
+///     "sn"       : 123,    // Serial number of the original message
+///     "signature": "..."   // Signature of the original message (for verification)
+///   }
+/// }
+/// ```
 abstract interface class ReceiptCommand implements Command {
 
+  /// Gets the receipt comment/feedback text.
+  ///
+  /// Can be used to provide status info (e.g., "Message read", "Delivery failed")
+  /// or custom feedback about the original message.
   String get text;
 
+  /// Gets the envelope of the original message being acknowledged.
+  ///
+  /// Contains sender/receiver/time metadata of the message being receipted.
   Envelope? get originalEnvelope;
+
+  /// Gets the serial number (SN) of the original message being acknowledged.
+  ///
+  /// Unique identifier of the original message, used to locate it in conversation history.
   int? get originalSerialNumber;
+
+  /// Gets the digital signature of the original message being acknowledged.
+  ///
+  /// Used to verify the authenticity of the original message in the receipt.
   String? get originalSignature;
 
   //
   //  Factory method
   //
 
-  /// Create base receipt command with text & original message info
+  /// Creates a [ReceiptCommand] instance with receipt text and original message metadata.
+  ///
+  /// Automatically purifies the original message's envelope/content using [QuoteHelper]
+  /// to generate the "origin" field (removes sensitive data). Also handles group message
+  /// receipt by setting the group ID if present in the original content.
+  ///
+  /// @param text - Receipt comment/feedback text
+  ///
+  /// @param head - Optional envelope of the original message being acknowledged
+  ///
+  /// @param body - Optional content of the original message being acknowledged
+  ///
+  /// @return A new [ReceiptCommand] instance
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
     var helper = CommandExtensions().quoteHelper;
     Map? origin = helper.purifyForReceipt(head, body);

@@ -30,59 +30,61 @@
  */
 import 'package:mkm/protocol.dart';
 
-///  User Document
-///  ~~~~~~~~~~~~~
-///  This interface is defined for authorizing other apps to login,
-///  which can generate a temporary asymmetric key pair for messaging.
+
+/// User Visa document interface (user-specific authorization document).
+///
+/// Defines a user's public-facing information and authorization keys, used for:
+/// - Generating temporary asymmetric keys for secure messaging
+/// - Authorizing third-party apps to log in
 abstract interface class Visa implements Document {
 
-  ///  Get nickname
-  ///
-  /// @return user name
+  /// Gets the user's display name/nickname.
   String? get name;
 
-  ///  Set nickname
+  /// Sets the user's display name/nickname.
   ///
-  /// @param nickname - user name
+  /// @param nickname - New display name for the user
   set name(String? nickname);
 
-  ///  Get public key to encrypt message for user
+  /// Gets the user's public encryption key.
   ///
-  /// @return public key as visa.key
+  /// This key is used by other users to encrypt messages sent to this user.
   EncryptKey? get publicKey;
 
-  ///  Set public key for other user to encrypt message
+  /// Sets the user's public encryption key.
   ///
-  /// @param pKey - public key as visa.key
+  /// @param pKey - New public key for message encryption
   set publicKey(EncryptKey? pKey);
 
-  ///  Get avatar URL
+  /// Gets the user's avatar image (URL/Base64).
   ///
-  /// @return PNF(URL)
+  /// Returns a [TransportableFile] containing the avatar's URL or Base64 data.
   TransportableFile? get avatar;
 
-  ///  Set avatar URL
+  /// Sets the user's avatar image (URL/Base64).
   ///
-  /// @param img - image URL
+  /// @param img - New avatar image (URL/Base64)
   set avatar(TransportableFile? img);
 
 }
 
+
+/// Group Bulletin document interface (group-specific announcement document).
+///
+/// Defines a group's public-facing information and core attributes.
 abstract interface class Bulletin implements Document {
 
-  ///  Get title
-  ///
-  /// @return group name
+  /// Gets the group's display name/title.
   String? get name;
 
-  ///  Set title
+  /// Sets the group's display name/title.
   ///
-  /// @param title - group name
+  /// @param title - New title for the group
   set name(String? title);
 
-  ///  Get group founder
+  /// Gets the group founder's user ID.
   ///
-  ///  @return user ID
+  /// Identifies the original creator of the group.
   ID? get founder;
 
 }

@@ -1,3 +1,7 @@
+## 2.3.0
+
+- Remove base keys.
+
 ## 2.2.2
 
 - Remove group admin commands.

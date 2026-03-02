@@ -50,7 +50,9 @@ class BaseDocument extends Dictionary implements Document {
   ///  2. Create entity document with data and signature loaded from local storage
   ///
   /// @param docType   - document type
+  ///
   /// @param data      - document data in JsON format
+  ///
   /// @param signature - signature of document data in Base64 format
   BaseDocument.fromType(String docType, {String? data, TransportableData? signature}) {
 

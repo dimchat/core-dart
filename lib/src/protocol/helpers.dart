@@ -61,19 +61,45 @@ class CommandExtensions {
 }
 
 
+/// Helper interface for processing quote/receipt metadata.
 ///
-///  Helper for QuoteContent & ReceiptCommand
-///
+/// Provides methods to purify (normalize) message envelope and content data
+/// for [QuoteContent] (quote reply) and [ReceiptCommand] (message receipt) scenarios,
+/// ensuring consistent structure of the "origin" field in these messages.
 abstract interface class QuoteHelper {
 
-  /// purify for QuoteContent
+  /// Purifies message data for use in [QuoteContent].
+  ///
+  /// Extracts core metadata (sender, receiver, type, serial number) from the original
+  /// message envelope and content to form the "origin" field in quote messages.
+  ///
+  /// @param envelope - Envelope of the original message being quoted
+  ///
+  /// @param content - Content of the original message being quoted
+  ///
+  /// @return Normalized map containing core quote origin metadata
   Map purifyForQuote(Envelope envelope, Content content);
 
-  /// purify for ReceiptCommand
+  /// Purifies message data for use in [ReceiptCommand].
+  ///
+  /// Extracts and cleans up metadata from the original message envelope/content
+  /// to form the "origin" field in receipt commands (removes sensitive/redundant fields).
+  /// Returns null if the envelope is null (invalid original message).
+  ///
+  /// @param envelope - Optional envelope of the original message for receipt
+  ///
+  /// @param content - Optional content of the original message for receipt
+  ///
+  /// @return Normalized map containing core receipt origin metadata (null if envelope is null)
   Map? purifyForReceipt(Envelope? envelope, Content? content);
 
 }
 
+
+/// Default implementation of [QuoteHelper] for quote/receipt data purification.
+///
+/// Provides standard logic to extract and normalize origin metadata for
+/// quote messages and receipt commands.
 class QuotePurifier implements QuoteHelper {
 
   @override

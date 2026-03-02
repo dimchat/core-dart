@@ -35,14 +35,25 @@ import '../dkd/groups.dart';
 import 'base.dart';
 
 
-///  History command: {
-///      type : i2s(0x89),
-///      sn   : 123,
+/// History command interface for recording operational history.
 ///
-///      command : "...", // command name
-///      time    : 0,     // command timestamp
-///      extra   : info   // command parameters
-///  }
+/// Base interface for all history-tracking commands, which record the timestamp
+/// and parameters of system operations (e.g., group member changes).
+///
+/// All group-related commands implement this interface to form the group's change history.
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x89),
+///   "sn"   : 123,
+///
+///   "command" : "...",   // Unique history command name
+///   "time"    : 123.45,  // Timestamp when the command was executed
+///
+///   "extra"   : info     // Optional command-specific parameters
+/// }
+/// ```
 abstract interface class HistoryCommand implements Command {
 
   //-------- history command names begin --------
@@ -54,16 +65,24 @@ abstract interface class HistoryCommand implements Command {
 // ignore_for_file: constant_identifier_names
 
 
-///  Group command: {
-///      "type" : i2s(0x89),
-///      "sn"   : 123,
+/// Group command interface for tracking group member/role changes.
 ///
-///      "command" : "reset",   // "invite", "quit", "query", ...
-///      "time"    : 123.456,   // command timestamp
+/// Extends [HistoryCommand] to define group-specific operations, which collectively
+/// form the complete change history of a group's member information (members, admins, owner).
 ///
-///      "group"   : "{GROUP_ID}",
-///      "members" : ["{MEMBER_ID}",]
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x89),
+///   "sn"   : 123,
+///
+///   "command" : "reset",          // "invite", "quit", "query", ...
+///   "time"    : 123.45,           // Timestamp of the group operation
+///
+///   "group"   : "{GROUP_ID}",     // Target group ID
+///   "members" : ["{MEMBER_ID}",]  // List of affected member IDs
+/// }
+/// ```
 abstract interface class GroupCommand implements HistoryCommand {
 
   //-------- group command names begin --------
@@ -83,6 +102,7 @@ abstract interface class GroupCommand implements HistoryCommand {
   static const String RESIGN   = "resign";
   //-------- group command names end --------
 
+  /// List of member IDs affected by this group command.
   List<ID>? get members;
   set members(List<ID>? users);
 
@@ -108,32 +128,56 @@ abstract interface class GroupCommand implements HistoryCommand {
 }
 
 
+/// Group invite command interface.
+///
+/// Used to record the history of inviting users to join a group.
+/// The [members] field contains the IDs of users being invited.
 abstract interface class InviteCommand implements GroupCommand {
 }
 
 
+/// Group expel command interface (DEPRECATED).
+///
+/// Originally used to record the history of expelling members from a group.
+/// This command is deprecated - use [ResetCommand] (RESET) instead for member removal.
 abstract interface class ExpelCommand implements GroupCommand {
   /// Deprecated (use 'reset' instead)
 }
 
 
+/// Group join command interface.
+///
+/// Used to record the history of users voluntarily joining a group.
+/// The [members] field contains the ID of the user joining the group.
 abstract interface class JoinCommand implements GroupCommand {
 }
 
 
+/// Group quit command interface.
+///
+/// Used to record the history of members voluntarily leaving a group.
+/// The [members] field contains the ID of the member quitting the group.
 abstract interface class QuitCommand implements GroupCommand {
 }
 
-
-///  History command: {
-///      type : i2s(0x89),
-///      sn   : 123,
+/// Group reset command interface.
 ///
-///      command : "reset",
-///      time    : 123.456,
+/// Used to record the history of resetting the full list of group members,
+/// replacing deprecated commands like EXPEL and QUERY. This command is the
+/// standard way to update the complete member list (add/remove multiple members).
 ///
-///      group   : "{GROUP_ID}",
-///      members : []
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x89),
+///   "sn"   : 123,
+///
+///   "command" : "reset",
+///   "time"    : 123.45,        // Timestamp of the reset operation
+///
+///   "group"   : "{GROUP_ID}",  // Target group ID
+///   "members" : [...]          // Full list of current group members after reset
+/// }
+/// ```
 abstract interface class ResetCommand implements GroupCommand {
 }

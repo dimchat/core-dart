@@ -35,9 +35,8 @@ import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
 import 'package:mkm/type.dart';
 
-///  User/Group Meta data
-///  ~~~~~~~~~~~~~~~~~~~~
-///  This class is used to generate entity meta
+/// User/Group Meta data
+/// # This class is used to generate entity meta
 ///
 ///      data format: {
 ///          "type"        : i2s(1),         // algorithm version

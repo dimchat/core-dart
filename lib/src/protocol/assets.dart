@@ -34,17 +34,24 @@ import 'package:mkm/protocol.dart';
 import '../dkd/assets.dart';
 
 
-///  Money message: {
-///      "type" : i2s(0x40),
-///      "sn"   : 123,
+/// Money content interface.
 ///
-///      "currency" : "RMB", // USD, USDT, ...
-///      "amount"   : 100.00
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x40),
+///   "sn"   : 123,
+///
+///   "currency" : "RMB", // USD, USDT, ...
+///   "amount"   : 100.00
+/// }
+/// ```
 abstract interface class MoneyContent implements Content {
 
+  /// Currency unit, e.g. RMB, USD, USDT.
   String get currency;
 
+  /// Money amount value.
   num get amount;
   set amount(num value);
 
@@ -62,22 +69,28 @@ abstract interface class MoneyContent implements Content {
 }
 
 
-///  Transfer money message: {
-///      "type" : i2s(0x41),
-///      "sn"   : 123,
+/// Transfer money content interface.
+/// Extends [MoneyContent] with sender and receiver.
 ///
-///      "currency" : "RMB",    // USD, USDT, ...
-///      "amount"   : 100.00,
-///      "remitter" : "{FROM}", // sender ID
-///      "remittee" : "{TO}"    // receiver ID
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x41),
+///   "sn"   : 123,
+///
+///   "currency" : "RMB",     // USD, USDT, ...
+///   "amount"   : 100.00,
+///   "remitter" : "{FROM}",  // sender ID
+///   "remittee" : "{TO}"     // receiver ID
+/// }
+/// ```
 abstract interface class TransferContent implements MoneyContent {
 
-  /// sender
+  /// Payer / sender ID.
   ID? get remitter;
   set remitter(ID? sender);
 
-  /// receiver
+  /// Payee / receiver ID.
   ID? get remittee;
   set remittee(ID? receiver);
 

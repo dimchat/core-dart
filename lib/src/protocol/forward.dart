@@ -33,16 +33,22 @@ import 'package:dkd/protocol.dart';
 import '../dkd/forward.dart';
 
 
-///  Top-Secret message: {
-///      "type" : i2s(0xFF),
-///      "sn"   : 456,
+/// Top-secret forward content.
+/// Wraps secure and certified messages.
 ///
-///      "forward" : {...}  // reliable (secure + certified) message
-///      "secrets" : [...]  // reliable (secure + certified) messages
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0xFF),
+///   "sn"   : 456,
+///
+///   "forward" : {...},  // reliable (secure + certified) message
+///   "secrets" : [...]   // reliable (secure + certified) messages
+/// }
+/// ```
 abstract interface class ForwardContent implements Content {
 
-  /// secret messages
+  /// List of secure, certified reliable messages.
   List<ReliableMessage> get secrets;
 
   //
@@ -55,17 +61,26 @@ abstract interface class ForwardContent implements Content {
 }
 
 
-///  Combine Forward message: {
-///      "type" : i2s(0xCF),
-///      "sn"   : 123,
+/// Combined forward content for chat history forwarding.
 ///
-///      "title"    : "...",  // chat title
-///      "messages" : [...]   // chat history
-///  }
+/// Special message format designed to forward a set of chat records as a single message.
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0xCF),
+///   "sn"   : 123,
+///
+///   "title"    : "...",  // Chat history title
+///   "messages" : [...]   // List of chat records to forward
+/// }
+/// ```
 abstract interface class CombineContent implements Content {
 
+  /// Title for the forwarded chat history set.
   String get title;
 
+  /// List of chat records (instant messages) to be forwarded.
   List<InstantMessage> get messages;
 
   //
@@ -78,14 +93,22 @@ abstract interface class CombineContent implements Content {
 }
 
 
-///  Content Array message: {
-///      "type" : i2s(0xCA),
-///      "sn"   : 123,
+/// Content array interface for sending multiple contents in one message.
 ///
-///      "contents" : [...]  // content array
-///  }
+/// Enables packaging multiple different types of [Content] into a single message.
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0xCA),
+///   "sn"   : 123,
+///
+///   "contents" : [...]  // Array of different content types
+/// }
+/// ```
 abstract interface class ArrayContent implements Content {
 
+  /// Array of multiple message contents (can be different types).
   List<Content> get contents;
 
   //

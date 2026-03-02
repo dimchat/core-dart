@@ -35,35 +35,50 @@ import '../dkd/files.dart';
 import 'types.dart';
 
 
-///  File message: {
-///      "type" : i2s(0x10),
-///      "sn"   : 123,
+/// File message content interface.
 ///
-///      "data"     : "...",        // base64_encode(fileContent)
-///      "filename" : "photo.png",
+/// Defines the base structure for all file-type messages (image, audio, video, etc.).
+/// Files can be embedded as base64 data or downloaded via CDN URL (with encryption).
 ///
-///      "URL"      : "http://...", // download from CDN
-///      // before fileContent uploaded to a public CDN,
-///      // it should be encrypted by a symmetric key
-///      "key"      : {             // symmetric key to decrypt file content
-///          "algorithm" : "AES",   // "DES", ...
-///          "data"      : "{BASE64_ENCODE}",
-///          ...
-///      }
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x10),
+///   "sn"   : 123,
+///
+///   "data"     : "...",         // Base64 encoded file content
+///   "filename" : "photo.png",
+///
+///   "URL"      : "http://...",  // CDN download URL (file is encrypted before upload)
+///   "key"      : {              // Symmetric key to decrypt CDN-downloaded file
+///     "algorithm" : "AES",      // Encryption algorithm (e.g. AES, DES)
+///     "data"      : "{BASE64_ENCODE}"
+///   }
+/// }
+/// ```
 abstract interface class FileContent implements Content {
 
+  /// Embedded file content (Base64 encoded).
+  ///
+  /// Null if file is only available via CDN URL.
   TransportableData? get data;
   set data(TransportableData? fileData);
 
+  /// Original filename of the file (including extension).
+  ///
+  /// e.g. "photo.png", "document.pdf"
   String? get filename;
   set filename(String? name);
 
-  // URL for download the file data from CDN
+  /// CDN URL for downloading the encrypted file content.
+  ///
+  /// File content on CDN is encrypted with a symmetric key ([password]).
   Uri? get url;
   set url(Uri? remote);
 
-  /// symmetric key to decrypt the downloaded data from URL
+  /// Symmetric decryption key for CDN-downloaded file content.
+  ///
+  /// Required to decrypt files downloaded from [url] (file is encrypted before upload to CDN).
   DecryptKey? get password;
   set password(DecryptKey? key);
 
@@ -108,77 +123,96 @@ abstract interface class FileContent implements Content {
 }
 
 
-///  Image message: {
-///      "type" : i2s(0x12),
-///      "sn"   : 123,
+/// Image message content interface.
 ///
-///      "data"     : "...",        // base64_encode(fileContent)
-///      "filename" : "photo.png",
+/// Extends [FileContent] with thumbnail support for previewing images.
 ///
-///      "URL"      : "http://...", // download from CDN
-///      // before fileContent uploaded to a public CDN,
-///      // it should be encrypted by a symmetric key
-///      "key"      : {             // symmetric key to decrypt file content
-///          "algorithm" : "AES",   // "DES", ...
-///          "data"      : "{BASE64_ENCODE}",
-///          ...
-///      },
-///      "thumbnail" : "data:image/jpeg;base64,..."
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x12),
+///   "sn"   : 123,
+///
+///   "data"     : "...",         // Base64 encoded image content
+///   "filename" : "photo.png",
+///
+///   "URL"      : "http://...",  // CDN download URL (encrypted)
+///   "key"      : {              // Symmetric key to decrypt image
+///     "algorithm" : "AES",
+///     "data"      : "{BASE64_ENCODE}"
+///   },
+///   "thumbnail": "data:image/jpeg;base64,..."
+/// }
+/// ```
 abstract interface class ImageContent implements FileContent {
 
-  /// Base-64 image
+  /// Thumbnail preview of the image (Base64 encoded).
+  ///
+  /// Used for quick preview without downloading the full image file.
   TransportableFile? get thumbnail;
   set thumbnail(TransportableFile? img);
 
 }
 
 
-///  Audio message: {
-///      "type" : i2s(0x14),
-///      "sn"   : 123,
+/// Audio message content interface.
 ///
-///      "data"     : "...",        // base64_encode(fileContent)
-///      "filename" : "voice.mp4",
+/// Extends [FileContent] with speech-to-text (ASR) support for audio messages.
 ///
-///      "URL"      : "http://...", // download from CDN
-///      // before fileContent uploaded to a public CDN,
-///      // it should be encrypted by a symmetric key
-///      "key"      : {             // symmetric key to decrypt file content
-///          "algorithm" : "AES",   // "DES", ...
-///          "data"      : "{BASE64_ENCODE}",
-///          ...
-///      },
-///      "text"     : "..."         // Automatic Speech Recognition
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x14),
+///   "sn"   : 123,
+///
+///   "data"     : "...",         // Base64 encoded audio content
+///   "filename" : "voice.mp4",
+///
+///   "URL"      : "http://...",  // CDN download URL (encrypted)
+///   "key"      : {              // Symmetric key to decrypt audio
+///     "algorithm" : "AES",
+///     "data"      : "{BASE64_ENCODE}"
+///   },
+///   "text": "..."               // Automatic Speech Recognition (ASR) result
+/// }
+/// ```
 abstract interface class AudioContent implements FileContent {
 
+  /// Automatic Speech Recognition (ASR) text of the audio.
+  ///
+  /// Transcribed text from the audio content (null if not transcribed).
   String? get text;
   set text(String? asr);
 
 }
 
 
-///  Video message: {
-///      "type" : i2s(0x16),
-///      "sn"   : 123,
+/// Video message content interface.
 ///
-///      "data"     : "...",        // base64_encode(fileContent)
-///      "filename" : "movie.mp4",
+/// Extends [FileContent] with snapshot support for previewing videos.
 ///
-///      "URL"      : "http://...", // download from CDN
-///      // before fileContent uploaded to a public CDN,
-///      // it should be encrypted by a symmetric key
-///      "key"      : {             // symmetric key to decrypt file content
-///          "algorithm" : "AES",   // "DES", ...
-///          "data"      : "{BASE64_ENCODE}",
-///          ...
-///      },
-///      "snapshot" : "data:image/jpeg;base64,..."
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x16),
+///   "sn"   : 123,
+///
+///   "data"     : "...",         // Base64 encoded video content
+///   "filename" : "movie.mp4",
+///
+///   "URL"      : "http://...",  // CDN download URL (encrypted)
+///   "key"      : {              // Symmetric key to decrypt video
+///     "algorithm" : "AES",
+///     "data"      : "{BASE64_ENCODE}"
+///   },
+///   "snapshot": "data:image/jpeg;base64,..."
+/// }
+/// ```
 abstract interface class VideoContent implements FileContent {
 
-  /// Base-64 image
+  /// Snapshot (preview image) of the video (Base64 encoded).
+  ///
+  /// Usually the first frame of the video for quick preview.
   TransportableFile? get snapshot;
   set snapshot(TransportableFile? img);
 

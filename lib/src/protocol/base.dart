@@ -32,20 +32,29 @@ import 'package:dkd/protocol.dart';
 
 import 'helpers.dart';
 
-///  Command message: {
-///      "type" : i2s(0x88),
-///      "sn"   : 123,
+
+/// Command message content interface.
 ///
-///      "command" : "...", // command name
-///      "extra"   : info   // command parameters
-///  }
+/// Base interface for all command-type messages, which are used to send
+/// operational instructions with parameters between entities.
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x88),
+///   "sn"   : 123,
+///
+///   "command" : "...",  // Unique command name/identifier
+///   "extra"   : info    // Optional command parameters (dynamic structure)
+/// }
+/// ```
 abstract interface class Command implements Content {
   // ignore_for_file: constant_identifier_names
 
   //-------- command names begin --------
-  static const String META      = 'meta';
-  static const String DOCUMENTS = 'documents';
-  static const String RECEIPT   = 'receipt';
+  static const String META      = 'meta';       // querying/updating entity metadata
+  static const String DOCUMENTS = 'documents';  // querying/updating entity documents
+  static const String RECEIPT   = 'receipt';    // message receipt/acknowledgment
   //-------- command names end --------
 
   ///  Get command name
@@ -72,13 +81,16 @@ abstract interface class Command implements Content {
   }
 }
 
-///  Command Factory
-///  ~~~~~~~~~~~~~~~
+/// Factory interface for parsing command messages from map objects.
+///
+/// Provides a standardized way to convert raw map data (from JSON) into
+/// strongly-typed [Command] instances.
 abstract interface class CommandFactory {
 
-  ///  Parse map object to command
+  /// Parses a map object (from JSON) into a [Command] instance.
   ///
-  /// @param content - command content
-  /// @return Command
+  /// @param content - Raw map data containing command information
+  ///
+  /// @return A [Command] instance if parsing succeeds, null otherwise
   Command? parseCommand(Map content);
 }

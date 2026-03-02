@@ -87,8 +87,9 @@ abstract interface class HandshakeCommand implements Command {
       BaseHandshakeCommand.from('DIM!', sessionKey: session);
 
 }
+```
 
-
+```dart
 class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
   BaseHandshakeCommand(super.dict);
 
@@ -120,25 +121,79 @@ class BaseHandshakeCommand extends BaseCommand implements HandshakeCommand {
 import 'package:dimp/protocol.dart';
 
 
-///  Application Customized message: {
+///  Content for Application 0nly: {
 ///      "type" : i2s(0xA0),
 ///      "sn"   : 123,
 ///
 ///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
 ///      "extra" : info         // others
 ///  }
-class ApplicationContent extends BaseContent implements AppContent {
-  ApplicationContent(super.dict);
+abstract interface class AppContent implements Content {
 
-  ApplicationContent({required String app}) : super.fromType(ContentType.APPLICATION) {
+  /// get App ID
+  String get application;
+
+}
+
+
+///  Customized Content: {
+///      "type" : i2s(0xCC),
+///      "sn"   : 123,
+///
+///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+///      "mod"   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+///      "act"   : "{ACTION}",  // action name (3.g.: "throw")
+///      "extra" : info         // action parameters
+///  }
+abstract interface class CustomizedContent implements Content {
+
+  /// get Module name
+  String get module;
+
+  /// get Action name
+  String get action;
+
+  //
+  //  Factory
+  //
+
+  static CustomizedContent create({String? type,
+    required String app, required String mod, required String act
+  }) => type == null
+      ? AppCustomizedContent.from(app: app, mod: mod, act: act)
+      : AppCustomizedContent.fromType(type, app: app, mod: mod, act: act);
+
+}
+```
+
+```dart
+/// Application Customized Content
+class AppCustomizedContent extends BaseContent implements AppContent, CustomizedContent {
+  AppCustomizedContent(super.dict);
+
+  AppCustomizedContent.fromType(String msgType, {
+    required String app, required String mod, required String act
+  }) : super.fromType(msgType) {
     this['app'] = app;
+    this['mod'] = mod;
+    this['act'] = act;
   }
+  AppCustomizedContent.from({
+    required String app, required String mod, required String act
+  }) : this.fromType(ContentType.CUSTOMIZED, app: app, mod: mod, act: act);
 
   @override
   String get application => getString('app') ?? '';
 
+  @override
+  String get module => getString('mod') ?? '';
+
+  @override
+  String get action => getString('act') ?? '';
+
 }
 ```
+
 
 ### Extends ID Address
 

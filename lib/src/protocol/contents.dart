@@ -34,12 +34,16 @@ import 'package:dkd/protocol.dart';
 import '../dkd/contents.dart';
 
 
-///  Text message: {
-///      "type" : i2s(0x01),
-///      "sn"   : 123,
+/// Text message content interface.
 ///
-///      "text" : "..."
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x01),
+///   "sn"   : 123,
+///   "text" : "..."
+/// }
+/// ```
 abstract interface class TextContent implements Content {
 
   String get text;
@@ -54,37 +58,45 @@ abstract interface class TextContent implements Content {
 }
 
 
-///  Web Page message: {
-///      "type" : i2s(0x20),
-///      "sn"   : 123,
+/// Web page message content interface.
 ///
-///      "title" : "...",                // Web title
-///      "desc"  : "...",
-///      "icon"  : "data:image/x-icon;base64,...",
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x20),
+///   "sn"   : 123,
 ///
-///      "URL"   : "https://github.com/moky/dimp",
+///   "title" : "...",             // Web title
+///   "desc"  : "...",
+///   "icon"  : "data:image/x-icon;base64,...",
 ///
-///      "HTML"      : "...",            // Web content
-///      "mime_type" : "text/html",      // Content-Type
-///      "encoding"  : "utf8",
-///      "base"      : "about:blank"     // Base URL
+///   "URL"   : "https://github.com/moky/dimp",
 ///
-///  }
+///   "HTML"      : "...",         // Web content
+///   "mime_type" : "text/html",   // Content-Type
+///   "encoding"  : "utf8",
+///   "base"      : "about:blank"  // Base URL
+/// }
+/// ```
 abstract interface class PageContent implements Content {
 
+  /// Web page title.
   String get title;
   set title(String string);
 
-  /// Base-64 image
+  /// Web icon, usually base64 encoded image.
   TransportableFile? get icon;
   set icon(TransportableFile? img);
 
+  /// Web page description.
   String? get desc;
   set desc(String? string);
 
+  /// Web page URL.
   Uri? get url;
   set url(Uri? locator);
 
+  /// Web page HTML content.
   String? get html;
   set html(String? content);
 
@@ -108,20 +120,28 @@ abstract interface class PageContent implements Content {
 }
 
 
-///  Name Card content: {
-///      "type" : i2s(0x33),
-///      "sn"   : 123,
+/// Name card (contact) content interface.
 ///
-///      "did"    : "{ID}",        // contact's ID
-///      "name"   : "{nickname}}", // contact's name
-///      "avatar" : "{URL}",       // avatar - PNF(URL)
-///  }
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0x33),
+///   "sn"   : 123,
+///
+///   "did"    : "{ID}",        // contact's ID
+///   "name"   : "{nickname}",  // contact's name
+///   "avatar" : "{URL}"        // avatar - PNF(URL)
+/// }
+/// ```
 abstract interface class NameCard implements Content {
 
+  /// Contact identifier.
   ID get identifier;
 
+  /// Contact name or nickname.
   String get name;
 
+  /// Contact avatar image.
   TransportableFile? get avatar;
 
   //

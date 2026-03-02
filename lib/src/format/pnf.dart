@@ -130,6 +130,9 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
   @override
   String? get filename => _wrapper.filename;
 
+  @override
+  set filename(String? name) => _wrapper.filename = name;
+
   ///  download URL
 
   @override
@@ -137,9 +140,6 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
 
   @override
   set url(Uri? remote) => _wrapper.url = remote;
-
-  @override
-  set filename(String? name) => _wrapper.filename = name;
 
   ///  decrypt key
 
