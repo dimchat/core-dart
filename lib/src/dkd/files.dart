@@ -124,22 +124,31 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
       : super.from(ContentType.IMAGE, data, filename, url, password);
 
   @override
+  Map toMap() {
+    // serialize 'thumbnail'
+    var img = _thumbnail;
+    if (img != null && !containsKey('thumbnail')) {
+      this['thumbnail'] = img.serialize();
+    }
+    // OK
+    return super.toMap();
+  }
+
+  @override
   TransportableFile? get thumbnail {
     TransportableFile? img = _thumbnail;
     if (img == null) {
-      var uri = getString('thumbnail');
-      img = _thumbnail = TransportableFile.parse(uri);
+      var uri = this['thumbnail'];
+      img = TransportableFile.parse(uri);
+      _thumbnail = img;
     }
     return img;
   }
 
   @override
   set thumbnail(TransportableFile? img) {
-    if (img == null || img.isEmpty) {
-      remove('thumbnail');
-    } else {
-      this['thumbnail'] = img.serialize();
-    }
+    remove('thumbnail');
+    // this['thumbnail'] = img?.serialize();
     _thumbnail = img;
   }
 
@@ -179,22 +188,31 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
       : super.from(ContentType.VIDEO, data, filename, url, password);
 
   @override
+  Map toMap() {
+    // serialize 'snapshot'
+    var img = _snapshot;
+    if (img != null && !containsKey('snapshot')) {
+      this['snapshot'] = img.serialize();
+    }
+    // OK
+    return super.toMap();
+  }
+
+  @override
   TransportableFile? get snapshot {
     TransportableFile? img = _snapshot;
     if (img == null) {
-      var uri = getString('snapshot');
-      img = _snapshot = TransportableFile.parse(uri);
+      var uri = this['snapshot'];
+      img = TransportableFile.parse(uri);
+      _snapshot = img;
     }
     return img;
   }
 
   @override
   set snapshot(TransportableFile? img) {
-    if (img == null || img.isEmpty) {
-      remove('snapshot');
-    } else {
-      this['snapshot'] = img.serialize();
-    }
+    remove('snapshot');
+    // this['snapshot'] = img?.serialize();
     _snapshot = img;
   }
 

@@ -34,6 +34,8 @@ import 'package:mkm/protocol.dart';
 import '../dkd/receipt.dart';
 
 import 'base.dart';
+import 'helpers.dart';
+
 
 ///  Command message: {
 ///      "type" : i2s(0x88),
@@ -64,15 +66,8 @@ abstract interface class ReceiptCommand implements Command {
 
   /// Create base receipt command with text & original message info
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
-    Map? origin;
-    if (head == null) {
-      origin = null;
-    } else if (body == null) {
-      origin = purify(head);
-    } else {
-      origin = purify(head);
-      origin['sn'] = body.sn;
-    }
+    var helper = CommandExtensions().quoteHelper;
+    Map? origin = helper.purifyForReceipt(head, body);
     var command = BaseReceiptCommand.from(text, origin);
     if (body != null) {
       // check group
@@ -82,18 +77,6 @@ abstract interface class ReceiptCommand implements Command {
       }
     }
     return command;
-  }
-
-  static Map purify(Envelope envelope) {
-    Map origin = envelope.copyMap();
-    if (origin.containsKey('data')) {
-      origin.remove('data');
-      origin.remove('key');
-      origin.remove('keys');
-      origin.remove('meta');
-      origin.remove('visa');
-    }
-    return origin;
   }
 
 }

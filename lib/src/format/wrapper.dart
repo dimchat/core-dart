@@ -204,9 +204,7 @@ class PortableNetworkFileWrapper implements TransportableFileWrapper {
   @override
   set data(TransportableData? ted) {
     _map.remove('data');
-    // if (ted != null) {
-    //   _map['data'] = ted.toObject();
-    // }
+    // _map['data'] = ted?.serialize();
     _attachment = ted;
   }
 

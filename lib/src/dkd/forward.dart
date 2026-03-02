@@ -40,26 +40,25 @@ import 'base.dart';
 class SecretContent extends BaseContent implements ForwardContent {
   SecretContent([super.dict]);
 
-  ReliableMessage? _forward;
   List<ReliableMessage>? _secrets;
 
-  SecretContent.fromMessage(ReliableMessage msg)
-      : super.fromType(ContentType.FORWARD) {
-    _forward = msg;
-    _secrets = null;
-    this['forward'] = msg.toMap();
-  }
   SecretContent.fromMessages(List<ReliableMessage> messages)
       : super.fromType(ContentType.FORWARD) {
-    _forward = null;
+    // secret messages
     _secrets = messages;
-    this['secrets'] = ReliableMessage.revert(messages);
+    // this['secrets'] = ReliableMessage.revert(messages);
   }
 
   @override
-  ReliableMessage? get forward {
-    _forward ??= ReliableMessage.parse(this['forward']);
-    return _forward;
+  Map toMap() {
+    // serialize secret messages
+    var messages = _secrets;
+    if (messages != null && !containsKey('secrets')) {
+      this['secrets'] = ReliableMessage.revert(messages);
+      remove('forward');
+    }
+    // OK
+    return super.toMap();
   }
 
   @override
@@ -73,8 +72,13 @@ class SecretContent extends BaseContent implements ForwardContent {
       } else {
         assert(info == null, 'secret messages error: $info');
         // get from 'forward'
-        ReliableMessage? msg = forward;
-        messages = msg == null ? [] : [msg];
+        var forward = this['forward'];
+        var msg = ReliableMessage.parse(forward);
+        if (msg != null) {
+          messages = [msg];
+        } else {
+          messages = [];
+        }
       }
       _secrets = messages;
     }
@@ -90,13 +94,24 @@ class CombineForwardContent extends BaseContent implements CombineContent {
 
   List<InstantMessage>? _history;
 
-  CombineForwardContent.from(String title, List<InstantMessage> messages)
+  CombineForwardContent.fromTitle(String title, List<InstantMessage> messages)
       : super.fromType(ContentType.COMBINE_FORWARD) {
     // chat name
     this['title'] = title;
     // chat history
-    this['messages'] = InstantMessage.revert(messages);
     _history = messages;
+    // this['messages'] = InstantMessage.revert(messages);
+  }
+
+  @override
+  Map toMap() {
+    // serialize 'messages' messages
+    var messages = _history;
+    if (messages != null && !containsKey('messages')) {
+      this['messages'] = InstantMessage.revert(messages);
+    }
+    // OK
+    return super.toMap();
   }
 
   @override
@@ -129,9 +144,20 @@ class ListContent extends BaseContent implements ArrayContent {
 
   ListContent.fromContents(List<Content> contents)
       : super.fromType(ContentType.ARRAY) {
-    // set contents
-    this['contents'] = Content.revert(contents);
+    // content list
     _list = contents;
+    // this['contents'] = Content.revert(contents);
+  }
+
+  @override
+  Map toMap() {
+    // serialize 'contents'
+    var contents = _list;
+    if (contents != null && !containsKey('contents')) {
+      this['contents'] = Content.revert(contents);
+    }
+    // OK
+    return super.toMap();
   }
 
   @override

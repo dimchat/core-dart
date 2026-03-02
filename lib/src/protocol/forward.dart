@@ -42,9 +42,6 @@ import '../dkd/forward.dart';
 ///  }
 abstract interface class ForwardContent implements Content {
 
-  /// forward message
-  ReliableMessage? get forward;
-
   /// secret messages
   List<ReliableMessage> get secrets;
 
@@ -52,15 +49,8 @@ abstract interface class ForwardContent implements Content {
   //  Factory
   //
 
-  static ForwardContent create({ReliableMessage? forward, List<ReliableMessage>? secrets}) {
-    if (forward != null) {
-      assert(secrets == null, 'parameters error');
-      return SecretContent.fromMessage(forward);
-    } else {
-      assert(secrets != null, 'parameters error');
-      return SecretContent.fromMessages(secrets!);
-    }
-  }
+  static ForwardContent create({List<ReliableMessage>? secrets}) =>
+      SecretContent.fromMessages(secrets!);
 
 }
 
@@ -83,7 +73,7 @@ abstract interface class CombineContent implements Content {
   //
 
   static CombineContent create(String title, List<InstantMessage> messages) =>
-      CombineForwardContent.from(title, messages);
+      CombineForwardContent.fromTitle(title, messages);
 
 }
 

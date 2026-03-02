@@ -28,7 +28,11 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/protocol.dart';
+import 'package:mkm/protocol.dart';
+
 import 'base.dart';
+
 
 ///  General Helper
 ///  ~~~~~~~~~~~~~~
@@ -51,5 +55,58 @@ class CommandExtensions {
   CommandExtensions._internal();
 
   CommandHelper? cmdHelper;
+
+  QuoteHelper quoteHelper = QuotePurifier();
+
+}
+
+
+///
+///  Helper for QuoteContent & ReceiptCommand
+///
+abstract interface class QuoteHelper {
+
+  /// purify for QuoteContent
+  Map purifyForQuote(Envelope envelope, Content content);
+
+  /// purify for ReceiptCommand
+  Map? purifyForReceipt(Envelope? envelope, Content? content);
+
+}
+
+class QuotePurifier implements QuoteHelper {
+
+  @override
+  Map purifyForQuote(Envelope head, Content body) {
+    ID from = head.sender;
+    ID? to = body.group;
+    to ??= head.receiver;
+    // build origin info
+    return {
+      'sender': from.toString(),
+      'receiver': to.toString(),
+      'type': body.type,
+      'sn': body.sn,
+    };
+  }
+
+  @override
+  Map? purifyForReceipt(Envelope? head, Content? body) {
+    if (head == null) {
+      return null;
+    }
+    Map origin = head.copyMap();
+    if (origin.containsKey('data')) {
+      origin.remove('data');
+      origin.remove('key');
+      origin.remove('keys');
+      origin.remove('meta');
+      origin.remove('visa');
+    }
+    if (body != null) {
+      origin['sn'] = body.sn;
+    }
+    return origin;
+  }
 
 }

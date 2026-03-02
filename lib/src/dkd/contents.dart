@@ -72,6 +72,17 @@ class WebPageContent extends BaseContent implements PageContent {
     this.icon = icon;
   }
 
+  @override
+  Map toMap() {
+    // serialize 'icon'
+    var img = _icon;
+    if (img != null && !containsKey('icon')) {
+      this['icon'] = img.serialize();
+    }
+    // OK
+    return super.toMap();
+  }
+
   //
   //  title
   //
@@ -90,7 +101,7 @@ class WebPageContent extends BaseContent implements PageContent {
   TransportableFile? get icon {
     TransportableFile? img = _icon;
     if (img == null) {
-      var uri = getString('icon');
+      var uri = this['icon'];
       img = TransportableFile.parse(uri);
       _icon = img;
     }
@@ -99,11 +110,8 @@ class WebPageContent extends BaseContent implements PageContent {
 
   @override
   set icon(TransportableFile? img) {
-    if (img == null || img.isEmpty) {
-      remove('icon');
-    } else {
-      this['icon'] = img.serialize();
-    }
+    remove('icon');
+    // this['icon'] = img?.serialize();
     _icon = img;
   }
 
@@ -167,11 +175,19 @@ class NameCardContent extends BaseContent implements NameCard {
     // name
     this['name'] = name;
     // avatar
-    if (avatar != null) {
-      // encode
-      this['avatar'] = avatar.serialize();
-    }
     _image = avatar;
+    // this['avatar'] = avatar?.serialize();
+  }
+
+  @override
+  Map toMap() {
+    // serialize 'avatar'
+    var img = _image;
+    if (img != null && !containsKey('avatar')) {
+      this['avatar'] = img.serialize();
+    }
+    // OK
+    return super.toMap();
   }
 
   @override
