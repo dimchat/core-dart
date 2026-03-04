@@ -1,3 +1,7 @@
+## 2.3.1
+
+- Serialization.
+
 ## 2.3.0
 
 - Remove base keys.

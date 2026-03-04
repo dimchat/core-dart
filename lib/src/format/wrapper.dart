@@ -107,15 +107,19 @@ class _PNFWrapperFactory implements TransportableFileWrapperFactory {
     TransportableData? data, String? filename, Uri? url, DecryptKey? password,
   }) {
     var wrapper = PortableNetworkFileWrapper(content);
+    // file data
     if (data != null) {
       wrapper.data = data;
     }
+    // file name
     if (filename != null) {
       wrapper.filename = filename;
     }
+    // remote URL
     if (url != null) {
       wrapper.url = url;
     }
+    // decrypt key
     if (password != null) {
       wrapper.password = password;
     }
@@ -254,7 +258,9 @@ class PortableNetworkFileWrapper implements TransportableFileWrapper {
 
   @override
   set password(DecryptKey? key) {
-    setMap('key', key);
+    _map.remove('key');
+    // setMap('key', key);
+    // _map['key'] = key?.toMap();
     _password = key;
   }
 

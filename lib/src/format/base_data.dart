@@ -33,33 +33,28 @@ import 'base_string.dart';
 
 abstract class BaseData extends BaseString implements TransportableData {
   BaseData(String encoded, Uint8List? bytes) : super(encoded) {
-    _bytes = bytes;
+    binary = bytes;
   }
 
-  Uint8List? _bytes;
-
   // protected
-  Uint8List? getDecodedBytes() => _bytes;
-  void setDecodedBytes(Uint8List bytes) => _bytes = bytes;
+  Uint8List? binary;  // decoded bytes
 
   @override
   bool get isEmpty {
-    var b = getDecodedBytes();
-    if (b != null && b.isNotEmpty) {
+    var bin = binary;
+    if (bin != null && bin.isNotEmpty) {
       return false;
     }
-    var s = getEncodedString();
-    return s.isEmpty;
+    return string.isEmpty;
   }
 
   @override
   bool get isNotEmpty {
-    var b = getDecodedBytes();
+    var b = binary;
     if (b != null && b.isNotEmpty) {
       return true;
     }
-    var s = getEncodedString();
-    return s.isNotEmpty;
+    return string.isNotEmpty;
   }
 
   //
@@ -114,14 +109,14 @@ bool _dataEquals(BaseData self, BaseData other) {
     return self.isEmpty;
   }
   // compare with inner string
-  String thisString = self.getEncodedString();
-  String thatString = other.getEncodedString();
+  String thisString = self.string;
+  String thatString = other.string;
   if (thisString != '' && thatString != '') {
     return thisString == thatString;
   }
   // compare with inner bytes
-  Uint8List? thisBytes = self.getDecodedBytes();
-  Uint8List? thatBytes = other.getDecodedBytes();
+  Uint8List? thisBytes = self.binary;
+  Uint8List? thatBytes = other.binary;
   if (thisBytes != null && thatBytes != null) {
     return thisBytes == thatBytes;
   }
@@ -134,13 +129,13 @@ bool _tedEquals(BaseData self, TransportableData other) {
     return self.isEmpty;
   }
   // compare with encoded string
-  String thisString = self.getEncodedString();
+  String thisString = self.string;
   if (thisString != '') {
     String thatString = other.toString();
     return thisString == thatString;
   }
   // compare with decoded bytes
-  Uint8List? thisBytes = self.getDecodedBytes();
+  Uint8List? thisBytes = self.binary;
   Uint8List? thatBytes = other.bytes;
   return thisBytes == thatBytes;
 }

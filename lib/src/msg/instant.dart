@@ -78,8 +78,20 @@ class PlainMessage extends BaseMessage implements InstantMessage {
 
   // @override
   set content(Content body) {
-    setMap('content', body);
+    remove('content');
+    //setMap('content', body);
     _content = body;
+  }
+
+  @override
+  Map toMap() {
+    // serialize 'content'
+    var body = _content;
+    if (body != null && !containsKey('content')) {
+      this['content'] = body.toMap();
+    }
+    // OK
+    return super.toMap();
   }
 
 }

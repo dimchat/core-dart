@@ -50,23 +50,9 @@ class BaseFileContent extends BaseContent implements FileContent {
   BaseFileContent.from(String? msgType, TransportableData? data, String? filename,
       Uri? url, DecryptKey? password)
       : super.fromType(msgType ?? ContentType.FILE) {
-    _wrapper = TransportableFileWrapper.create(super.toMap());
-    // file data
-    if (data != null) {
-      _wrapper.data = data;
-    }
-    // file name
-    if (filename != null) {
-      _wrapper.filename = filename;
-    }
-    // remote URL
-    if (url != null) {
-      _wrapper.url = url;
-    }
-    // decrypt key
-    if (password != null) {
-      _wrapper.password = password;
-    }
+    _wrapper = TransportableFileWrapper.create(super.toMap(),
+      data: data, filename: filename, url: url, password: password,
+    );
   }
 
   @override

@@ -57,15 +57,12 @@ class Base64Data extends BaseData {
 
   @override
   Uint8List? get bytes {
-    Uint8List? bin = getDecodedBytes();
+    Uint8List? bin = binary;
     if (bin == null) {
-      String base64 = getEncodedString();
+      String base64 = string;
       bin = Base64.decode(base64);
-      if (bin != null) {
-        setDecodedBytes(bin);
-      } else {
-        assert(false, 'base64 string error: $base64');
-      }
+      binary = bin;
+      assert(bin != null, 'failed to decode base64 string: $base64');
     }
     return bin;
   }
@@ -73,14 +70,14 @@ class Base64Data extends BaseData {
 
   @override
   String toString() {
-    String base64 = getEncodedString();
+    String base64 = string;
     if (base64 == '') {
-      Uint8List? bin = getDecodedBytes();
+      Uint8List? bin = binary;
       if (bin != null) {
         base64 = Base64.encode(bin);
-        setEncodedString(base64);
+        string = base64;
       }
-      assert(base64.isNotEmpty, 'base64 data error: $bin');
+      assert(base64.isNotEmpty, 'failed to encode base64 data: ${bin?.length} byte(s)');
     }
     return base64;
   }
@@ -116,11 +113,11 @@ class PlainData extends BaseData {
 
   @override
   Uint8List? get bytes {
-    Uint8List? bin = getDecodedBytes();
+    Uint8List? bin = binary;
     if (bin == null) {
-      String txt = getEncodedString();
+      String txt = string;
       bin = UTF8.encode(txt);
-      setDecodedBytes(bin);
+      binary = bin;
     }
     return bin;
   }
@@ -128,12 +125,12 @@ class PlainData extends BaseData {
 
   @override
   String toString() {
-    String txt = getEncodedString();
+    String txt = string;
     if (txt == '') {
-      Uint8List? bin = getDecodedBytes();
+      Uint8List? bin = binary;
       if (bin != null) {
         txt = UTF8.decode(bin) ?? '';
-        setEncodedString(txt);
+        string = txt;
       }
       assert(txt.isNotEmpty, 'plain data error: $bin');
     }

@@ -31,7 +31,7 @@ import 'wrapper.dart';
 
 
 class PortableNetworkFile extends Dictionary implements TransportableFile {
-  PortableNetworkFile(Map content, {
+  PortableNetworkFile(Map? content, {
     TransportableData? data,
     String? filename,
     Uri? url,
@@ -43,6 +43,12 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
   }
 
   late TransportableFileWrapper _wrapper;
+
+  factory PortableNetworkFile.createWithData(TransportableData data, String? filename) =>
+      PortableNetworkFile(null, data: data, filename: filename);
+
+  factory PortableNetworkFile.createWithURL(Uri url, DecryptKey? password) =>
+      PortableNetworkFile(null, url: url, password: password);
 
   // protected
   String get uriString {

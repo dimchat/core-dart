@@ -58,16 +58,34 @@ class EmbedData extends BaseData {
   }
 
   factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
-      EmbedData.from(dataUri, bytes, uri: uri);
+      EmbedData.from(dataUri, bytes,
+        uri: uri,
+        mimeType: uri?.mimeType,
+        parameters: uri?.parameters,
+      );
 
   factory EmbedData.createWithUri(UriData uri) =>
-      EmbedData.from(uri.toString(), null, uri: uri);
+      EmbedData.from(uri.toString(), null,
+        uri: uri,
+        mimeType: uri.mimeType,
+        parameters: uri.parameters,
+      );
 
   factory EmbedData.createWithString(String dataUri) =>
       EmbedData.from(dataUri, null);
 
-  factory EmbedData.createWithBytes(Uint8List bytes, {required String mimeType}) =>
-      EmbedData.from('', bytes, mimeType: mimeType);
+  factory EmbedData.createWithBytes(Uint8List bytes, {
+    required String mimeType,
+    String? filename,
+  }) {
+    Map<String, String>? parameters;
+    if (filename != null && filename.isNotEmpty) {
+      parameters = {
+        'filename': filename,
+      };
+    }
+    return EmbedData.from('', bytes, mimeType: mimeType, parameters: parameters);
+  }
 
   //
   //  Data URI:
@@ -86,59 +104,64 @@ class EmbedData extends BaseData {
   //  Uri Headers
   //
 
-  UriData? get uri => _dataUri;
+  String? getHeader(String name) {
+    String? value = parameters?[name];
+    if (value != null) {
+      // charset
+      // filename
+      return value;
+    }
+    switch (name.toLowerCase()) {
+      // case 'encoding':
+      //   return EncodeAlgorithms.BASE_64;
+      case 'mime-type':
+        return mimeType;
+      case 'content-type':
+        return mimeType;
+    }
+    return null;
+  }
+
+  Map<String, String>? get parameters => _parameters ?? (dataUri?.parameters);
 
   // default is "text/plain"
-  String? get mimeType => _mimeType ?? (uri?.mimeType);
+  String? get mimeType => _mimeType ?? (dataUri?.mimeType);
   // default is "us-ascii"
-  String? get charset => parameters?['charset'] ?? (uri?.charset);
+  String? get charset => parameters?['charset'] ?? (dataUri?.charset);
   // "avatar.png"
   String? get filename => parameters?['filename'];
 
-  Map<String, String>? get parameters => _parameters ?? (uri?.parameters);
-
-  //
-  //  Build Uri
-  //
-
-  // protected
-  UriData? get encodeDataURI {
-    var uri = _dataUri;
-    if (uri == null) {
-      Uint8List? bin = getDecodedBytes();
-      if (bin == null || bin.isEmpty) {
+  // "data:.../...;base64,..."
+  UriData? get dataUri {
+    UriData? uri = _dataUri;
+    if (uri != null) {
+      return uri;
+    }
+    // check encoded data uri
+    String txt = string;
+    if (txt.isEmpty) {
+      // encode data to build uri
+      Uint8List? bin = binary;
+      if (bin == null/* || bin.isEmpty*/) {
         return null;
       }
+      assert(bin.isNotEmpty, 'embed data empty');
+      // encode body
+      String body = Base64.encode(bin);
       // build header
       String header = _mimeType ?? 'text/plain';
       _parameters?.forEach((key, value) {
         header += ';$key=$value';
       });
-      // encode body
-      String body = Base64.encode(bin);
-      uri = UriData.parse('data:$header;base64,$body');
-      _dataUri = uri;
+      txt = 'data:$header;base64,$body';
+      // string = txt;
     }
+    uri = UriData.parse(txt);
+    _dataUri = uri;
     return uri;
   }
 
-  // protected
-  UriData? get decodeDataURI {
-    var uri = _dataUri;
-    if (uri == null) {
-      String txt = getEncodedString();
-      if (txt.isEmpty) {
-        return null;
-      }
-      assert(txt.startsWith('data:'), 'data uri error: $txt');
-      // parse uri
-      uri = UriData.parse(txt);
-      _dataUri = uri;
-    }
-    return uri;
-  }
-
-//
+  //
   //  TransportableData
   //
 
@@ -147,15 +170,14 @@ class EmbedData extends BaseData {
 
   @override
   Uint8List? get bytes {
-    Uint8List? bin = getDecodedBytes();
+    Uint8List? bin = binary;
     if (bin == null) {
-      var uri = decodeDataURI;
-      if (uri == null) {
-        assert(false, 'failed to decode data uri');
-        return null;
+      var uri = dataUri;
+      if (uri != null) {
+        bin = uri.contentAsBytes();
+        binary = bin;
       }
-      bin = uri.contentAsBytes();
-      setDecodedBytes(bin);
+      assert(uri != null, 'failed to decode data uri');
     }
     return bin;
   }
@@ -163,15 +185,14 @@ class EmbedData extends BaseData {
 
   @override
   String toString() {
-    String txt = getEncodedString();
+    String txt = string;
     if (txt == '') {
-      var uri = encodeDataURI;
-      if (uri == null) {
-        assert(false, 'failed to encode data uri');
-        return '';
+      var uri = dataUri;
+      if (uri != null) {
+        txt = uri.toString();
+        string = txt;
       }
-      txt = uri.toString();
-      setEncodedString(txt);
+      assert(uri != null, 'failed to encode data uri');
     }
     return txt;
   }

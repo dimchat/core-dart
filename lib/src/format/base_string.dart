@@ -27,16 +27,13 @@ import 'package:mkm/type.dart';
 
 
 class BaseString implements Stringer {
-  BaseString(String string) : _str = string;
-
-  String _str;
+  BaseString(String s) : string = s;
 
   // protected
-  String getEncodedString() => _str;
-  void setEncodedString(String string) => _str = string;
+  String string;  // encoded string
 
   @override
-  String toString() => _str;
+  String toString() => string;
 
   @override
   bool operator ==(Object other) {
