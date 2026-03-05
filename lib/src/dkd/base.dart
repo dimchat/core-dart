@@ -64,9 +64,9 @@ class BaseContent extends Dictionary implements Content {
   String get type {
     if (_type == null) {
       var helper = SharedMessageExtensions.helper;
-      _type = helper!.getContentType(toMap()) ?? '';
+      _type = helper!.getContentType(super.toMap()) ?? '';
       // _type = getInt('type', 0);
-      assert(_type != null, 'message type error: ${toMap()}');
+      assert(_type != null, 'message type error: ${super.toMap()}');
     }
     return _type ?? '';
   }
@@ -74,7 +74,7 @@ class BaseContent extends Dictionary implements Content {
   @override
   int get sn {
     _sn ??= getInt('sn', 0);
-    assert(_sn! > 0, 'serial number error: $toMap()');
+    assert(_sn! > 0, 'serial number error: ${super.toMap()}');
     return _sn ?? 0;
   }
 
@@ -106,7 +106,7 @@ class BaseCommand extends BaseContent implements Command  {
   @override
   String get cmd {
     var helper = SharedCommandExtensions.helper;
-    return helper!.getCmd(toMap()) ?? '';
+    return helper!.getCmd(super.toMap()) ?? '';
     // return getString('command') ?? '';
   }
 }

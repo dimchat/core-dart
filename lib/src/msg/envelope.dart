@@ -65,7 +65,7 @@ class MessageEnvelope extends Dictionary implements Envelope {
     ID? did = _sender;
     if (did == null) {
       did = ID.parse(this['sender']);
-      assert(did != null, 'message sender error: ${toMap()}');
+      assert(did != null, 'message sender error: ${super.toMap()}');
       _sender = did;
     }
     return did!;

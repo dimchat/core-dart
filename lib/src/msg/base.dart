@@ -78,7 +78,7 @@ abstract class BaseMessage extends Dictionary implements Message {
 
   @override
   Envelope get envelope {
-    _envelope ??= Envelope.parse(toMap());
+    _envelope ??= Envelope.parse(super.toMap());
     return _envelope!;
   }
 

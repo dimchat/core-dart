@@ -31,6 +31,7 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
+import '../format/pnf.dart';
 import '../format/wrapper.dart';
 import '../protocol/types.dart';
 import '../protocol/files.dart';
@@ -59,6 +60,12 @@ class BaseFileContent extends BaseContent implements FileContent {
   Map toMap() {
     // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
+  }
+
+  @override
+  TransportableFile toTransportableFile() {
+    // clone without serializations
+    return PortableNetworkFile(super.toMap(), wrapper: _wrapper);
   }
 
   /// file data
@@ -118,6 +125,17 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
     }
     // OK
     return super.toMap();
+  }
+
+  @override
+  TransportableFile toTransportableFile() {
+    // serialize 'thumbnail'
+    var img = _thumbnail;
+    if (img != null && !containsKey('thumbnail')) {
+      this['thumbnail'] = img.serialize();
+    }
+    // clone without other serializations
+    return super.toTransportableFile();
   }
 
   @override
@@ -182,6 +200,17 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
     }
     // OK
     return super.toMap();
+  }
+
+  @override
+  TransportableFile toTransportableFile() {
+    // serialize 'snapshot'
+    var img = _snapshot;
+    if (img != null && !containsKey('snapshot')) {
+      this['snapshot'] = img.serialize();
+    }
+    // clone without other serializations
+    return super.toTransportableFile();
   }
 
   @override

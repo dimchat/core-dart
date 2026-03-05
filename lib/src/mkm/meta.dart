@@ -115,7 +115,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     String? version = _type;
     if (version == null) {
       var helper = SharedAccountExtensions.helper;
-      version = helper!.getMetaType(toMap());
+      version = helper!.getMetaType(super.toMap());
       version ??= '';
       _type = version;
       // _type ??= getInt('type', 0);
@@ -153,7 +153,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     TransportableData? ted = _fingerprint;
     if (ted == null && hasSeed) {
       Object? base64 = this['fingerprint'];
-      assert(base64 != null, 'meta.fingerprint should not be empty: ${toMap()}');
+      assert(base64 != null, 'meta.fingerprint should not be empty: ${super.toMap()}');
       _fingerprint = ted = TransportableData.parse(base64);
       assert(ted != null, 'meta.fingerprint error: $base64');
     }
@@ -198,7 +198,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
     // check meta seed & signature
     if (signature == null || signature.isEmpty ||
         name == null || name.isEmpty) {
-      assert(false, 'meta error: $toMap()');
+      assert(false, 'meta error: ${super.toMap()}');
       return false;
     }
     // verify fingerprint

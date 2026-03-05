@@ -63,7 +63,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     if (ted == null) {
       Object? text = this['data'];
       if (text == null) {
-        assert(false, 'message data not found: ${toMap()}');
+        assert(false, 'message data not found: ${super.toMap()}');
       } else if (!BaseMessage.isBroadcast(this)) {
         // message content had been encrypted by a symmetric key,
         // so the data should be encoded here (with algorithm 'base64' as default).

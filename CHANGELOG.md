@@ -1,3 +1,7 @@
+## 2.3.2
+
+- Singleton.
+
 ## 2.3.1
 
 - Serialization.
