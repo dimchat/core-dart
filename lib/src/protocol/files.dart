@@ -88,7 +88,7 @@ abstract interface class FileContent implements Content {
 
   static FileContent create(String msgType, {
     TransportableData? data, String? filename,
-    Uri? url, DecryptKey? password
+    Uri? url, DecryptKey? password,
   }) {
     if (msgType == ContentType.IMAGE) {
       return ImageFileContent.from(data, filename, url, password);
@@ -100,25 +100,25 @@ abstract interface class FileContent implements Content {
     return BaseFileContent.from(msgType, data, filename, url, password);
   }
 
-  static FileContent file({TransportableData? data, String? filename,
-                           Uri? url, DecryptKey? password}) {
-    return BaseFileContent.from(ContentType.FILE, data, filename, url, password);
-  }
+  static FileContent file({
+    TransportableData? data, String? filename,
+    Uri? url, DecryptKey? password,
+  }) => BaseFileContent.from(ContentType.FILE, data, filename, url, password);
 
-  static ImageContent image({TransportableData? data, String? filename,
-                             Uri? url, DecryptKey? password}) {
-    return ImageFileContent.from(data, filename, url, password);
-  }
+  static ImageContent image({
+    TransportableData? data, String? filename,
+    Uri? url, DecryptKey? password,
+  }) => ImageFileContent.from(data, filename, url, password);
 
-  static AudioContent audio({TransportableData? data, String? filename,
-                             Uri? url, DecryptKey? password}) {
-    return AudioFileContent.from(data, filename, url, password);
-  }
+  static AudioContent audio({
+    TransportableData? data, String? filename,
+    Uri? url, DecryptKey? password,
+  }) => AudioFileContent.from(data, filename, url, password);
 
-  static VideoContent video({TransportableData? data, String? filename,
-                             Uri? url, DecryptKey? password}) {
-    return VideoFileContent.from(data, filename, url, password);
-  }
+  static VideoContent video({
+    TransportableData? data, String? filename,
+    Uri? url, DecryptKey? password,
+  }) => VideoFileContent.from(data, filename, url, password);
 
 }
 

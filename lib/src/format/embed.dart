@@ -78,13 +78,12 @@ class EmbedData extends BaseData {
     required String mimeType,
     String? filename,
   }) {
-    Map<String, String>? parameters;
-    if (filename != null && filename.isNotEmpty) {
-      parameters = {
-        'filename': filename,
-      };
+    if (filename == null || filename.isEmpty) {
+      return EmbedData.from('', bytes, mimeType: mimeType);
     }
-    return EmbedData.from('', bytes, mimeType: mimeType, parameters: parameters);
+    return EmbedData.from('', bytes, mimeType: mimeType, parameters: {
+      'filename': filename,
+    });
   }
 
   //
@@ -94,11 +93,11 @@ class EmbedData extends BaseData {
   //      "data:audio/mp4;base64,{BASE64_ENCODE}"
   //
 
-  factory EmbedData.image(Uint8List jpeg) =>
-      EmbedData.from('', jpeg, mimeType: 'image/jpeg');
+  factory EmbedData.image(Uint8List jpeg, {String? filename}) =>
+      EmbedData.createWithBytes(jpeg, mimeType: 'image/jpeg', filename: filename);
 
-  factory EmbedData.audio(Uint8List mp4) =>
-      EmbedData.from('', mp4, mimeType: 'audio/mp4');
+  factory EmbedData.audio(Uint8List mp4, {String? filename}) =>
+      EmbedData.createWithBytes(mp4, mimeType: 'audio/mp4', filename: filename);
 
   //
   //  Uri Headers

@@ -114,7 +114,8 @@ abstract class BaseMeta extends Dictionary implements Meta {
   String get type {
     String? version = _type;
     if (version == null) {
-      version = SharedAccountExtensions().helper!.getMetaType(toMap());
+      var helper = SharedAccountExtensions.helper;
+      version = helper!.getMetaType(toMap());
       version ??= '';
       _type = version;
       // _type ??= getInt('type', 0);

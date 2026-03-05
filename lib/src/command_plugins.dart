@@ -45,17 +45,18 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
 
 /// Command FactoryManager
 /// ~~~~~~~~~~~~~~~~~~~~~~
-class SharedCommandExtensions {
-  factory SharedCommandExtensions() => _instance;
-  static final SharedCommandExtensions _instance = SharedCommandExtensions._internal();
-  SharedCommandExtensions._internal();
+
+// ignore: non_constant_identifier_names
+final SharedCommandExtensions = _SharedCommandExtension();
+
+class _SharedCommandExtension {
 
   /// Command
   CommandHelper? get cmdHelper =>
-      CommandExtensions().cmdHelper;
+      CommandExtensions.cmdHelper;
 
   set cmdHelper(CommandHelper? helper) =>
-      CommandExtensions().cmdHelper = helper;
+      CommandExtensions.cmdHelper = helper;
 
   /// General Helper
   GeneralCommandHelper? helper;

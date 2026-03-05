@@ -63,8 +63,8 @@ class BaseContent extends Dictionary implements Content {
   @override
   String get type {
     if (_type == null) {
-      var ext = SharedMessageExtensions();
-      _type = ext.helper!.getContentType(toMap()) ?? '';
+      var helper = SharedMessageExtensions.helper;
+      _type = helper!.getContentType(toMap()) ?? '';
       // _type = getInt('type', 0);
       assert(_type != null, 'message type error: ${toMap()}');
     }
@@ -105,8 +105,8 @@ class BaseCommand extends BaseContent implements Command  {
 
   @override
   String get cmd {
-    var ext = SharedCommandExtensions();
-    return ext.helper!.getCmd(toMap()) ?? '';
+    var helper = SharedCommandExtensions.helper;
+    return helper!.getCmd(toMap()) ?? '';
     // return getString('command') ?? '';
   }
 }

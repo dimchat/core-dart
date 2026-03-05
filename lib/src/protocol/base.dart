@@ -67,17 +67,17 @@ abstract interface class Command implements Content {
   //
 
   static Command? parse(Object? content) {
-    var ext = CommandExtensions();
-    return ext.cmdHelper!.parseCommand(content);
+    var helper = CommandExtensions.cmdHelper;
+    return helper!.parseCommand(content);
   }
 
   static CommandFactory? getFactory(String cmd) {
-    var ext = CommandExtensions();
-    return ext.cmdHelper!.getCommandFactory(cmd);
+    var helper = CommandExtensions.cmdHelper;
+    return helper!.getCommandFactory(cmd);
   }
   static void setFactory(String cmd, CommandFactory factory) {
-    var ext = CommandExtensions();
-    ext.cmdHelper!.setCommandFactory(cmd, factory);
+    var helper = CommandExtensions.cmdHelper;
+    helper!.setCommandFactory(cmd, factory);
   }
 }
 

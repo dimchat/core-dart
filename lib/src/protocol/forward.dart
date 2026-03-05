@@ -55,8 +55,8 @@ abstract interface class ForwardContent implements Content {
   //  Factory
   //
 
-  static ForwardContent create({List<ReliableMessage>? secrets}) =>
-      SecretContent.fromMessages(secrets!);
+  static ForwardContent create(List<ReliableMessage> secrets) =>
+      SecretContent.fromMessages(secrets);
 
 }
 

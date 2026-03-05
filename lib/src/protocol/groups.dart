@@ -113,10 +113,10 @@ abstract interface class GroupCommand implements HistoryCommand {
   static GroupCommand create(String cmd, ID group, {List<ID>? members}) =>
       BaseGroupCommand.fromCmd(cmd, group, members: members);
 
-  static InviteCommand invite(ID group, {List<ID>? members}) =>
+  static InviteCommand invite(ID group, {required List<ID> members}) =>
       InviteGroupCommand.from(group, members: members);
   /// Deprecated (use 'reset' instead)
-  static ExpelCommand expel(ID group, {List<ID>? members}) =>
+  static ExpelCommand expel(ID group, {required List<ID> members}) =>
       ExpelGroupCommand.from(group, members: members);
 
   static JoinCommand join(ID group) => JoinGroupCommand.from(group);
