@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 import 'package:mkm/protocol.dart';
 
@@ -117,7 +118,7 @@ abstract interface class ReceiptCommand implements Command {
   ///
   /// @return A new [ReceiptCommand] instance
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
-    var helper = CommandExtensions.quoteHelper;
+    var helper = sharedMessageExtensions.quoteHelper;
     Map? origin = helper.purifyForReceipt(head, body);
     var command = BaseReceiptCommand.from(text, origin);
     if (body != null) {

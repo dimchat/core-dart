@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  Ming-Ke-Ming : Decentralized User Identity Authentication
+ *  DIMP : Decentralized Instant Messaging Protocol
  *
  *                                Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -31,20 +31,20 @@
 
 // ignore_for_file: constant_identifier_names
 
-///  @enum MKMMetaVersion
+///  @enum MetaType
 ///
 ///  @abstract Defined for algorithm that generating address.
 ///
 ///  @discussion Generate and check ID/Address
 ///
-///      MKMMetaVersion_MKM give a seed string first, and sign this seed to get
+///      MetaType_MKM give a seed string first, and sign this seed to get
 ///      fingerprint; after that, use the fingerprint to generate address.
 ///      This will get a firmly relationship between (username, address and key).
 ///
-///      MKMMetaVersion_BTC use the key data to generate address directly.
+///      MetaType_BTC use the key data to generate address directly.
 ///      This can build a BTC address for the entity ID (no username).
 ///
-///      MKMMetaVersion_ExBTC use the key data to generate address directly, and
+///      MetaType_ExBTC use the key data to generate address directly, and
 ///      sign the seed to get fingerprint (just for binding username and key).
 ///      This can build a BTC address, and bind a username to the entity ID.
 ///

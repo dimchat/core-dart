@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 
 import '../dkd/quote.dart';
@@ -88,7 +89,7 @@ abstract interface class QuoteContent implements Content {
   ///
   /// @return A new [QuoteContent] instance
   static QuoteContent create(String text, Envelope head, Content body) {
-    var helper = CommandExtensions.quoteHelper;
+    var helper = sharedMessageExtensions.quoteHelper;
     Map origin = helper.purifyForQuote(head, body);
     return BaseQuoteContent.from(text, origin);
   }

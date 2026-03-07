@@ -1,3 +1,7 @@
+## 2.3.3
+
+- TransportableFile Wrapper Factory.
+
 ## 2.3.2
 
 - Singleton.

@@ -30,6 +30,7 @@
  */
 import 'package:mkm/protocol.dart';
 
+import '../format/file.dart';
 import '../protocol/types.dart';
 import '../protocol/contents.dart';
 

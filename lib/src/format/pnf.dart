@@ -27,7 +27,8 @@ import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
-import 'wrapper.dart';
+import 'file.dart';
+import 'file_wrapper.dart';
 
 
 class PortableNetworkFile extends Dictionary implements TransportableFile {
@@ -118,6 +119,7 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
 
   @override
   Map toMap() {
+    // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
   }
 

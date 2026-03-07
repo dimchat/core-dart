@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  Ming-Ke-Ming : Decentralized User Identity Authentication
+ *  DIMP : Decentralized Instant Messaging Protocol
  *
  *                                Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -28,7 +28,10 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/crypto.dart';
 import 'package:mkm/protocol.dart';
+
+import '../format/file.dart';
 
 
 /// User Visa document interface (user-specific authorization document).

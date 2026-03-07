@@ -32,6 +32,7 @@ import 'package:mkm/protocol.dart';
 import 'package:dkd/protocol.dart';
 
 import '../dkd/contents.dart';
+import '../format/file.dart';
 
 
 /// Text message content interface.

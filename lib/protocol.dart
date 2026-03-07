@@ -4,6 +4,7 @@
 library dimp;
 
 
+export 'package:mkm/crypto.dart';       // -> 'crypto.dart'
 export 'package:mkm/protocol.dart';
 export 'package:dkd/protocol.dart';
 
@@ -24,5 +25,5 @@ export 'src/protocol/commands.dart';
 export 'src/protocol/groups.dart';
 export 'src/protocol/receipt.dart';
 
-// export 'src/protocol/helpers.dart';     // -> "ext.dart'
+// export 'src/protocol/helpers.dart';  // -> "ext.dart'
 

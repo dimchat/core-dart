@@ -30,10 +30,12 @@
  */
 import 'dart:typed_data';
 
+import 'package:mkm/crypto.dart';
 import 'package:mkm/ext.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
 import 'package:mkm/type.dart';
+
 
 /// User/Group Meta data
 /// # This class is used to generate entity meta
@@ -114,7 +116,7 @@ abstract class BaseMeta extends Dictionary implements Meta {
   String get type {
     String? version = _type;
     if (version == null) {
-      var helper = SharedAccountExtensions.helper;
+      var helper = sharedAccountExtensions.helper;
       version = helper!.getMetaType(super.toMap());
       version ??= '';
       _type = version;

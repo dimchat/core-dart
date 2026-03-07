@@ -31,10 +31,12 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 
+import '../format/file.dart';
+import '../format/file_wrapper.dart';
 import '../format/pnf.dart';
-import '../format/wrapper.dart';
 import '../protocol/types.dart';
 import '../protocol/files.dart';
+
 import 'base.dart';
 
 
@@ -74,7 +76,7 @@ class BaseFileContent extends BaseContent implements FileContent {
   TransportableData? get data => _wrapper.data;
 
   @override
-  set data(TransportableData? binary) => _wrapper.data = data;
+  set data(TransportableData? ted) => _wrapper.data = ted;
 
   /// file name
 

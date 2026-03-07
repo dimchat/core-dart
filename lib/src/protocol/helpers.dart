@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 import 'package:mkm/protocol.dart';
 
@@ -46,18 +47,23 @@ abstract interface class CommandHelper {
 
 }
 
-/// Command FactoryManager
-/// ~~~~~~~~~~~~~~~~~~~~~~
-// protected
+/// Command Extension
+CommandHelper? _commandHelper;
 
-// ignore: non_constant_identifier_names
-final CommandExtensions = _CommandExtension();
+extension CommandExtension on MessageExtensions {
 
-class _CommandExtension {
+  CommandHelper? get commandHelper => _commandHelper;
+  set commandHelper(CommandHelper? ext) => _commandHelper = ext;
 
-  CommandHelper? cmdHelper;
+}
 
-  QuoteHelper quoteHelper = QuotePurifier();
+/// Quote(Receipt) Extension
+QuoteHelper _quoteHelper = QuotePurifier();
+
+extension QuoteExtension on MessageExtensions {
+
+  QuoteHelper get quoteHelper => _quoteHelper;
+  set quoteHelper(QuoteHelper ext) => _quoteHelper = ext;
 
 }
 

@@ -28,37 +28,45 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'protocol/helpers.dart';
+import 'package:dkd/ext.dart';
 
-///  Command GeneralFactory
-///  ~~~~~~~~~~~~~~~~~~~~~~
+// -----------------------------------------------------------------------------
+//  General Command Helpers
+// -----------------------------------------------------------------------------
+
+/// A helper interface for extracting command names from structured command content.
+///
+/// This interface provides a standardized way to retrieve command identifiers
+/// from command payloads (typically Map-based), with support for default values.
 abstract interface class GeneralCommandHelper /*implements CommandHelper */{
 
   //
   //  CMD - Command, Method, Declaration
   //
 
-  /// Get command name
+  /// Retrieves the command name from a structured command content Map.
+  ///
+  /// Looks up the command name key (e.g., "command")
+  /// in the [content] Map and returns its value. If the key is not found or the value
+  /// is null, returns the [defaultValue] (if provided).
+  ///
+  /// Parameters:
+  /// - [content]      : The structured command payload (Map) to extract the command name from
+  /// - [defaultValue] : Optional fallback value if the command name is not found
+  ///
+  /// Returns: Extracted command name (String), or [defaultValue], or null if neither exists
   String? getCmd(Map content, [String? defaultValue]);
 
 }
 
-/// Command FactoryManager
-/// ~~~~~~~~~~~~~~~~~~~~~~
+/// General Extensions
+/// ~~~~~~~~~~~~~~~~~~
 
-// ignore: non_constant_identifier_names
-final SharedCommandExtensions = _SharedCommandExtension();
+GeneralCommandHelper? _cmdHelper;
 
-class _SharedCommandExtension {
+extension GeneralCommandExtension on MessageExtensions {
 
-  /// Command
-  CommandHelper? get cmdHelper =>
-      CommandExtensions.cmdHelper;
-
-  set cmdHelper(CommandHelper? helper) =>
-      CommandExtensions.cmdHelper = helper;
-
-  /// General Helper
-  GeneralCommandHelper? helper;
+  GeneralCommandHelper? get cmdHelper => _cmdHelper;
+  set cmdHelper(GeneralCommandHelper? ext) => _cmdHelper = ext;
 
 }

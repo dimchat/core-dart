@@ -30,6 +30,7 @@
  */
 import 'dart:typed_data';
 
+import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
 import 'package:mkm/type.dart';

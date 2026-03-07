@@ -35,7 +35,7 @@ import 'package:mkm/type.dart';
 
 import '../protocol/types.dart';
 import '../protocol/base.dart';
-import '../command_plugins.dart';
+import '../cmd_ext.dart';
 
 
 class BaseContent extends Dictionary implements Content {
@@ -63,7 +63,7 @@ class BaseContent extends Dictionary implements Content {
   @override
   String get type {
     if (_type == null) {
-      var helper = SharedMessageExtensions.helper;
+      var helper = sharedMessageExtensions.helper;
       _type = helper!.getContentType(super.toMap()) ?? '';
       // _type = getInt('type', 0);
       assert(_type != null, 'message type error: ${super.toMap()}');
@@ -105,7 +105,7 @@ class BaseCommand extends BaseContent implements Command  {
 
   @override
   String get cmd {
-    var helper = SharedCommandExtensions.helper;
+    var helper = sharedMessageExtensions.cmdHelper;
     return helper!.getCmd(super.toMap()) ?? '';
     // return getString('command') ?? '';
   }

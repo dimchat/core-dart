@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 
 import 'helpers.dart';
@@ -67,16 +68,16 @@ abstract interface class Command implements Content {
   //
 
   static Command? parse(Object? content) {
-    var helper = CommandExtensions.cmdHelper;
+    var helper = sharedMessageExtensions.commandHelper;
     return helper!.parseCommand(content);
   }
 
   static CommandFactory? getFactory(String cmd) {
-    var helper = CommandExtensions.cmdHelper;
+    var helper = sharedMessageExtensions.commandHelper;
     return helper!.getCommandFactory(cmd);
   }
   static void setFactory(String cmd, CommandFactory factory) {
-    var helper = CommandExtensions.cmdHelper;
+    var helper = sharedMessageExtensions.commandHelper;
     helper!.setCommandFactory(cmd, factory);
   }
 }
