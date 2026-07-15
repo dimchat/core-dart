@@ -43,7 +43,7 @@ import 'package:mkm/type.dart';
  *     |  time       |     |  time      |     |  time        |
  *     |             |     |            |     |              |
  *     |  content    |     |  data      |     |  data        |
- *     +-------------+     |  key/keys  |     |  key/keys    |
+ *     +-------------+     |  keys      |     |  keys        |
  *                         +------------+     |  signature   |
  *                                            +--------------+
  *     Algorithm:
@@ -62,7 +62,7 @@ import 'package:mkm/type.dart';
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
-///      "time"     : 123,
+///      "time"     : 123.45,
 ///
 ///      //-- body
 ///      ...

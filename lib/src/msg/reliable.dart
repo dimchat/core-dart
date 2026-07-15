@@ -42,16 +42,16 @@ import 'secure.dart';
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
-///      "time"     : 123,
+///      "time"     : 123.45,
 ///
-///      //-- content data and key/keys
-///      "data"     : "...",  // base64_encode( symmetric_encrypt(content))
+///      //-- content data and keys
+///      "data"     : "...",    // base64_encode( symmetric_encrypt(content))
 ///      "keys"     : {
 ///          "{ID}"   : "...",  // base64_encode(asymmetric_encrypt(pwd))
 ///          "digest" : "..."   // hash(pwd.data)
 ///      },
 ///      //-- signature
-///      "signature": "..."   // base64_encode(asymmetric_sign(data))
+///      "signature": "..."     // base64_encode(asymmetric_sign(data))
 ///  }
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
   NetworkMessage([super.dict]);
@@ -64,8 +64,9 @@ class NetworkMessage extends EncryptedMessage implements ReliableMessage {
     if (ted == null) {
       Object? base64 = this['signature'];
       assert(base64 != null, 'message signature cannot be empty: $this');
-      _signature = ted = TransportableData.parse(base64);
+      ted = TransportableData.parse(base64);
       assert(ted != null, 'failed to decode message signature: $base64');
+      _signature = ted;
     }
     return ted!;
   }

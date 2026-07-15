@@ -131,7 +131,6 @@ class QuotePurifier implements QuoteHelper {
     Map origin = head.copyMap();
     if (origin.containsKey('data')) {
       origin.remove('data');
-      origin.remove('key');
       origin.remove('keys');
       origin.remove('meta');
       origin.remove('visa');

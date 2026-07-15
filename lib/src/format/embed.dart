@@ -54,7 +54,7 @@ class EmbedData extends BaseData {
   }) : super(encoded ?? '', bytes) {
     _dataUri = uri;
     _mimeType = mimeType;
-    _parameters = parameters;
+    _parameters = parameters ?? uri?.parameters;
   }
 
   factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
@@ -112,7 +112,7 @@ class EmbedData extends BaseData {
     }
     switch (name.toLowerCase()) {
       // case 'encoding':
-      //   return EncodeAlgorithms.BASE_64;
+      //   return encoding;
       case 'mime-type':
         return mimeType;
       case 'content-type':
@@ -130,7 +130,9 @@ class EmbedData extends BaseData {
   // "avatar.png"
   String? get filename => parameters?['filename'];
 
-  // "data:.../...;base64,..."
+  //
+  //  Build Data URI: "data:.../...;base64,..."
+  //
   UriData? get dataUri {
     UriData? uri = _dataUri;
     if (uri != null) {
@@ -165,7 +167,17 @@ class EmbedData extends BaseData {
   //
 
   @override
-  String? get encoding => EncodeAlgorithms.BASE_64;
+  String? get encoding {
+    var uri = dataUri;
+    if (uri == null) {
+      assert(false, 'data uri error');
+      return null;
+    } else if (uri.isBase64) {
+      return EncodeAlgorithms.BASE_64;
+    }
+    // plaintext
+    return '';
+  }
 
   @override
   Uint8List? get bytes {

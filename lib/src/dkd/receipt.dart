@@ -51,7 +51,6 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
     if (origin != null) {
       assert(!(origin.isEmpty ||
           origin.containsKey('data') ||
-          origin.containsKey('key') ||
           origin.containsKey('keys') ||
           origin.containsKey('meta') ||
           origin.containsKey('visa')), 'impure envelope: $origin');

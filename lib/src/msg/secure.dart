@@ -42,10 +42,10 @@ import 'base.dart';
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
-///      "time"     : 123,
+///      "time"     : 123.45,
 ///
-///      //-- content data and key/keys
-///      "data"     : "...",  // base64_encode( symmetric_encrypt(content))
+///      //-- content data and keys
+///      "data"     : "...",    // base64_encode( symmetric_encrypt(content))
 ///      "keys"     : {
 ///          "{ID}"   : "...",  // base64_encode(asymmetric_encrypt(pwd))
 ///          "digest" : "..."   // hash(pwd.data)
@@ -88,7 +88,6 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
         _encKeys = keys;
       } else {
         assert(keys == null, 'message keys error: $keys');
-        // TODO: get from 'key'
       }
     }
     return _encKeys;
