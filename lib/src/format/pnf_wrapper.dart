@@ -33,7 +33,7 @@ import 'file_wrapper.dart';
 class PortableNetworkFileWrapper implements TransportableFileWrapper {
   PortableNetworkFileWrapper(Mapping dict)
       : _map = dict is Mapper ? dict.toMap()
-      : (dict as Map).asMutableMapping();
+      : dict;
 
   final MutableMapping _map;
 

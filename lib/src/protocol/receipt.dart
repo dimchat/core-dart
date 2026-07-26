@@ -31,7 +31,6 @@
 import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 import 'package:mkm/protocol.dart';
-import 'package:mkm/type.dart';
 
 import '../dkd/receipt.dart';
 
@@ -121,7 +120,7 @@ abstract interface class ReceiptCommand implements Command {
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
     var helper = sharedMessageExtensions.quoteHelper;
     Map? origin = helper.purifyForReceipt(head, body);
-    var command = BaseReceiptCommand.from(text, origin?.asMapping());
+    var command = BaseReceiptCommand.from(text, origin);
     if (body != null) {
       // check group
       ID? group = body.group;

@@ -59,7 +59,7 @@ class HandshakeState {
 
 ///  Handshake command: {
 ///      "type" : i2s(0x88),
-///      "sn"   : 123,
+///      "sn"   : 12345,
 ///
 ///      "command" : "handshake",    // command name
 ///      "title"   : "Hello world!", // "DIM?", "DIM!"
@@ -123,7 +123,7 @@ import 'package:dimp/protocol.dart';
 
 ///  Content for Application 0nly: {
 ///      "type" : i2s(0xA0),
-///      "sn"   : 123,
+///      "sn"   : 12345,
 ///
 ///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
 ///      "extra" : info         // others
@@ -138,7 +138,7 @@ abstract interface class AppContent implements Content {
 
 ///  Customized Content: {
 ///      "type" : i2s(0xCC),
-///      "sn"   : 123,
+///      "sn"   : 12345,
 ///
 ///      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
 ///      "mod"   : "{MODULE}",  // module name (e.g.: "drift_bottle")

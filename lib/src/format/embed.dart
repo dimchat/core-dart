@@ -55,21 +55,21 @@ class EmbedData extends BaseData {
   }) : super(encoded ?? '', bytes) {
     _dataUri = uri;
     _mimeType = mimeType;
-    _parameters = parameters ?? uri?.parameters.asMapping();
+    _parameters = parameters ?? uri?.parameters;
   }
 
   factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
       EmbedData.from(dataUri, bytes,
         uri: uri,
         mimeType: uri?.mimeType,
-        parameters: uri?.parameters.asMapping(),
+        parameters: uri?.parameters,
       );
 
   factory EmbedData.createWithUri(UriData uri) =>
       EmbedData.from(uri.toString(), null,
         uri: uri,
         mimeType: uri.mimeType,
-        parameters: uri.parameters.asMapping(),
+        parameters: uri.parameters,
       );
 
   factory EmbedData.createWithString(String dataUri) =>
@@ -84,7 +84,7 @@ class EmbedData extends BaseData {
     }
     return EmbedData.from('', bytes, mimeType: mimeType, parameters: {
       'filename': filename,
-    }.asMapping());
+    });
   }
 
   //
@@ -123,7 +123,7 @@ class EmbedData extends BaseData {
   }
 
   Mapping<String, String>? get parameters =>
-      _parameters ?? (dataUri?.parameters.asMapping());
+      _parameters ?? (dataUri?.parameters);
 
   // default is "text/plain"
   String? get mimeType => _mimeType ?? (dataUri?.mimeType);

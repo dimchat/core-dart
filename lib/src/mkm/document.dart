@@ -203,7 +203,7 @@ class BaseDocument extends Dictionary implements Document {
       assert(false, 'document invalid: ${toMap()}');
       return null;
     }
-    String data = JSONMap.encode(dict.asMapping());
+    String data = JSONMap.encode(dict);
     assert(data.isNotEmpty, 'should not happen: $dict');
     signature = privateKey.sign(UTF8.encode(data));
     assert(signature.isNotEmpty, 'should not happen: $dict');
