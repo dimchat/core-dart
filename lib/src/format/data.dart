@@ -89,7 +89,7 @@ class Base64Data extends BaseData {
 ///  UTF-8 encoding
 ///
 
-class PlainData extends BaseData {
+final class PlainData extends BaseData {
   PlainData(super.encoded, super.bytes);
 
   /// empty data

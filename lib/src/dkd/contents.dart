@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
 
 import '../format/file.dart';
@@ -74,7 +75,7 @@ class WebPageContent extends BaseContent implements PageContent {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'icon'
     var img = _icon;
     if (img != null && !containsKey('icon')) {
@@ -181,7 +182,7 @@ class NameCardContent extends BaseContent implements NameCard {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'avatar'
     var img = _image;
     if (img != null && !containsKey('avatar')) {

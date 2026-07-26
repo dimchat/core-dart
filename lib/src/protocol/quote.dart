@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 
@@ -44,14 +45,14 @@ import 'helpers.dart';
 /// ```json
 /// {
 ///   "type" : i2s(0x37),
-///   "sn"   : 678.90,
+///   "sn"   : 67890,
 ///
 ///   "text"   : "...",  // Reply text content
 ///   "origin" : {       // Metadata of the original message being quoted
 ///     "sender"   : "...",      // Sender ID of the original message
 ///     "receiver" : "...",      // Receiver ID (or group ID) of the original message
 ///     "type"     : i2s(0x01),  // Content type of the original message
-///     "sn"       : 123.45      // Serial number of the original message
+///     "sn"       : 12345       // Serial number of the original message
 ///   }
 /// }
 /// ```
@@ -91,7 +92,7 @@ abstract interface class QuoteContent implements Content {
   static QuoteContent create(String text, Envelope head, Content body) {
     var helper = sharedMessageExtensions.quoteHelper;
     Map origin = helper.purifyForQuote(head, body);
-    return BaseQuoteContent.from(text, origin);
+    return BaseQuoteContent.from(text, origin.asMapping());
   }
 
 }

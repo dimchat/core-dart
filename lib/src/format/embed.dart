@@ -26,6 +26,7 @@
 import 'dart:typed_data';
 
 import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 import '../protocol/algorithms.dart';
 
@@ -45,30 +46,30 @@ class EmbedData extends BaseData {
 
   // data uri headers
   String? _mimeType;  // default is "text/plain"
-  Map<String, String>? _parameters;
+  Mapping<String, String>? _parameters;
 
   EmbedData.from(String? encoded, Uint8List? bytes, {
     UriData? uri,
     String? mimeType,
-    Map<String, String>? parameters,
+    Mapping<String, String>? parameters,
   }) : super(encoded ?? '', bytes) {
     _dataUri = uri;
     _mimeType = mimeType;
-    _parameters = parameters ?? uri?.parameters;
+    _parameters = parameters ?? uri?.parameters.asMapping();
   }
 
   factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
       EmbedData.from(dataUri, bytes,
         uri: uri,
         mimeType: uri?.mimeType,
-        parameters: uri?.parameters,
+        parameters: uri?.parameters.asMapping(),
       );
 
   factory EmbedData.createWithUri(UriData uri) =>
       EmbedData.from(uri.toString(), null,
         uri: uri,
         mimeType: uri.mimeType,
-        parameters: uri.parameters,
+        parameters: uri.parameters.asMapping(),
       );
 
   factory EmbedData.createWithString(String dataUri) =>
@@ -83,7 +84,7 @@ class EmbedData extends BaseData {
     }
     return EmbedData.from('', bytes, mimeType: mimeType, parameters: {
       'filename': filename,
-    });
+    }.asMapping());
   }
 
   //
@@ -121,7 +122,8 @@ class EmbedData extends BaseData {
     return null;
   }
 
-  Map<String, String>? get parameters => _parameters ?? (dataUri?.parameters);
+  Mapping<String, String>? get parameters =>
+      _parameters ?? (dataUri?.parameters.asMapping());
 
   // default is "text/plain"
   String? get mimeType => _mimeType ?? (dataUri?.mimeType);

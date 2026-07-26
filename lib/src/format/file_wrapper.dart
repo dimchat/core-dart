@@ -26,6 +26,7 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/ext.dart';
 import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 import 'helper.dart';
 
@@ -59,7 +60,7 @@ abstract interface class TransportableFileWrapper {
   ///   (e.g., defer encoding large file data until this method is called)
   ///
   /// Returns: Serialized Map containing the file metadata and serialized [data]
-  Map toMap();
+  MutableMapping toMap();
 
   /// Binary file data (encoded as [TransportableData]).
   ///
@@ -85,7 +86,7 @@ abstract interface class TransportableFileWrapper {
   //  Factory
   //
 
-  static TransportableFileWrapper create(Map content, {
+  static TransportableFileWrapper create(Mapping content, {
     TransportableData? data,
     String? filename,
     Uri? url,
@@ -116,7 +117,7 @@ abstract interface class TransportableFileWrapperFactory {
   /// - [password] : Decryption key (overrides `content["key"]` if provided)
   ///
   /// Returns: Custom [TransportableFileWrapper] implementation
-  TransportableFileWrapper createTransportableFileWrapper(Map content, {
+  TransportableFileWrapper createTransportableFileWrapper(Mapping content, {
     TransportableData? data,
     String? filename,
     Uri? url,

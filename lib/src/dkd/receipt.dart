@@ -43,7 +43,7 @@ class BaseReceiptCommand extends BaseCommand implements ReceiptCommand {
   /// original message envelope
   Envelope? _env;
 
-  BaseReceiptCommand.from(String text, Map? origin) : super.fromCmd(Command.RECEIPT) {
+  BaseReceiptCommand.from(String text, Mapping? origin) : super.fromCmd(Command.RECEIPT) {
     // text message
     this['text'] = text;
     // original envelope of message responding to,

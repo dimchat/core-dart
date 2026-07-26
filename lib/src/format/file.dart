@@ -94,7 +94,7 @@ abstract interface class TransportableFile implements Mapper, TransportableResou
   ///
   /// Returns: Map representation of the PNF (matches JSON structure)
   @override
-  Map toMap();
+  MutableMapping toMap();
 
   /// Serializes the PNF to a transportable format.
   ///
@@ -161,5 +161,5 @@ abstract interface class TransportableFileFactory {
   /// [pnf]: Map representation of PNF (matches format 3 JSON structure)
   ///
   /// Returns: [TransportableFile] instance, or null if parsing fails
-  TransportableFile? parseTransportableFile(Map pnf);
+  TransportableFile? parseTransportableFile(Mapping pnf);
 }

@@ -107,7 +107,7 @@ abstract interface class QuoteHelper {
 ///
 /// Provides standard logic to extract and normalize origin metadata for
 /// quote messages and receipt commands.
-class QuotePurifier implements QuoteHelper {
+final class QuotePurifier implements QuoteHelper {
 
   @override
   Map purifyForQuote(Envelope head, Content body) {

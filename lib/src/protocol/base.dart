@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 
@@ -43,7 +44,7 @@ import 'helpers.dart';
 /// ```json
 /// {
 ///   "type" : i2s(0x88),
-///   "sn"   : 123,
+///   "sn"   : 12345,
 ///
 ///   "command" : "...",  // Unique command name/identifier
 ///   "extra"   : info    // Optional command parameters (dynamic structure)
@@ -93,5 +94,5 @@ abstract interface class CommandFactory {
   /// @param content - Raw map data containing command information
   ///
   /// @return A [Command] instance if parsing succeeds, null otherwise
-  Command? parseCommand(Map content);
+  Command? parseCommand(Mapping content);
 }

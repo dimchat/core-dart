@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:dkd/ext.dart';
 
 // -----------------------------------------------------------------------------
@@ -55,7 +56,7 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
   /// - [defaultValue] : Optional fallback value if the command name is not found
   ///
   /// Returns: Extracted command name (String), or [defaultValue], or null if neither exists
-  String? getCmd(Map content, [String? defaultValue]);
+  String? getCmd(Mapping content, [String? defaultValue]);
 
 }
 

@@ -44,7 +44,7 @@ class BaseQuoteContent extends BaseContent implements QuoteContent {
   /// original message envelope
   Envelope? _env;
 
-  BaseQuoteContent.from(String text, Map origin) : super.fromType(ContentType.QUOTE) {
+  BaseQuoteContent.from(String text, Mapping origin) : super.fromType(ContentType.QUOTE) {
     // text message
     this['text'] = text;
     // original envelope of message quote with,

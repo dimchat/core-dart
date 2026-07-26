@@ -53,7 +53,8 @@
 ///      0000 0010 - this meta generate BTC address
 ///      0000 0100 - this meta generate ETH address
 /// ...
-abstract interface class MetaType {
+final class MetaType {
+  MetaType._();
 
   static const DEFAULT = '1';
   static const MKM     = '1';  // 0000 0001: username@address
@@ -71,7 +72,8 @@ abstract interface class MetaType {
 }
 
 
-abstract interface class DocumentType {
+final class DocumentType {
+  DocumentType._();
 
   static const VISA     = 'visa';     // for user info (communicate key)
 

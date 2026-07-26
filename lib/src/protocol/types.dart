@@ -45,7 +45,7 @@
 ///      somewhere and here is just a URL to retrieve it.
 ///
 ///      ContentType_Image indicates this is an image, it may send the image
-///      data directly(encrypt the image data with Base64), but we suggest to
+///      data directly(encode the image data with Base64), but we suggest to
 ///      include a URL for this image just like the 'File' message, of course
 ///      you can get a thumbnail of this image here.
 ///
@@ -76,7 +76,8 @@
 ///      1000 0000 - this is a message send by the system, not human.
 ///
 ///      (All above are just some advices to help choosing numbers :P)
-abstract interface class ContentType {
+final class ContentType {
+  ContentType._();
 
   static const ANY       = '${0x00}'; // 0000 0000 (Undefined)
 

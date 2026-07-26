@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:dkd/protocol.dart';
 
 import '../protocol/forward.dart';
@@ -50,7 +51,7 @@ class SecretContent extends BaseContent implements ForwardContent {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize secret messages
     var messages = _secrets;
     if (messages != null && !containsKey('secrets')) {
@@ -104,7 +105,7 @@ class CombineForwardContent extends BaseContent implements CombineContent {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'messages' messages
     var messages = _history;
     if (messages != null && !containsKey('messages')) {
@@ -150,7 +151,7 @@ class ListContent extends BaseContent implements ArrayContent {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'contents'
     var contents = _list;
     if (contents != null && !containsKey('contents')) {

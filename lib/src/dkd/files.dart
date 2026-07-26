@@ -30,6 +30,7 @@
  */
 import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 import '../format/file.dart';
 import '../format/file_wrapper.dart';
@@ -59,7 +60,7 @@ class BaseFileContent extends BaseContent implements FileContent {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
   }
@@ -119,7 +120,7 @@ class ImageFileContent extends BaseFileContent implements ImageContent {
       : super.from(ContentType.IMAGE, data, filename, url, password);
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'thumbnail'
     var img = _thumbnail;
     if (img != null && !containsKey('thumbnail')) {
@@ -194,7 +195,7 @@ class VideoFileContent extends BaseFileContent implements VideoContent {
       : super.from(ContentType.VIDEO, data, filename, url, password);
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'snapshot'
     var img = _snapshot;
     if (img != null && !containsKey('snapshot')) {

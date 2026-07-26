@@ -26,6 +26,7 @@
 import 'package:mkm/crypto.dart';
 import 'package:mkm/ext.dart';
 import 'package:mkm/format.dart';
+import 'package:mkm/type.dart';
 
 import 'file.dart';
 import 'file_wrapper.dart';
@@ -91,10 +92,10 @@ TransportableFileWrapperFactory _pnfWrapperFactory = _PNFWrapperFactory();
 /// Private implementation of [TransportableFileWrapperFactory].
 ///
 /// Creates [PortableNetworkFileWrapper] instances with the given parameters.
-class _PNFWrapperFactory implements TransportableFileWrapperFactory {
+final class _PNFWrapperFactory implements TransportableFileWrapperFactory {
 
   @override
-  TransportableFileWrapper createTransportableFileWrapper(Map content, {
+  TransportableFileWrapper createTransportableFileWrapper(Mapping content, {
     TransportableData? data, String? filename, Uri? url, DecryptKey? password,
   }) {
     var wrapper = PortableNetworkFileWrapper(content);

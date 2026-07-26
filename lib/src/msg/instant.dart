@@ -28,8 +28,9 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dkd/protocol.dart';
+import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
+import 'package:dkd/protocol.dart';
 
 import 'base.dart';
 
@@ -40,7 +41,7 @@ import 'base.dart';
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
-///      "time"     : 123,
+///      "time"     : 123.45,
 ///
 ///      //-- content
 ///      "content"  : {...}
@@ -84,7 +85,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'content'
     var body = _content;
     if (body != null && !containsKey('content')) {

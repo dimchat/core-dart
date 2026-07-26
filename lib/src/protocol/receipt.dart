@@ -31,6 +31,7 @@
 import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
 import 'package:mkm/protocol.dart';
+import 'package:mkm/type.dart';
 
 import '../dkd/receipt.dart';
 
@@ -40,7 +41,7 @@ import 'helpers.dart';
 
 ///  Command message: {
 ///      "type" : i2s(0x88),
-///      "sn"   : 456,
+///      "sn"   : 67890,
 ///
 ///      "command" : "receipt",
 ///      "text"    : "...",  // text message
@@ -49,7 +50,7 @@ import 'helpers.dart';
 ///          "receiver"  : "...",
 ///          "time"      : 0,
 ///
-///          "sn"        : 123,
+///          "sn"        : 12345,
 ///          "signature" : "..."
 ///      }
 ///  }
@@ -63,7 +64,7 @@ import 'helpers.dart';
 /// ```json
 /// {
 ///   "type" : i2s(0x88),
-///   "sn"   : 678.90,
+///   "sn"   : 67890,
 ///
 ///   "command": "receipt",  // Fixed command name for receipt messages
 ///
@@ -72,7 +73,7 @@ import 'helpers.dart';
 ///     "sender"   : "...",  // Sender ID of the original message
 ///     "receiver" : "...",  // Receiver ID of the original message
 ///     "time"     : 123.45, // Timestamp of the original message
-///     "sn"       : 123,    // Serial number of the original message
+///     "sn"       : 12345,  // Serial number of the original message
 ///     "signature": "..."   // Signature of the original message (for verification)
 ///   }
 /// }
@@ -120,7 +121,7 @@ abstract interface class ReceiptCommand implements Command {
   static ReceiptCommand create(String text, Envelope? head, Content? body) {
     var helper = sharedMessageExtensions.quoteHelper;
     Map? origin = helper.purifyForReceipt(head, body);
-    var command = BaseReceiptCommand.from(text, origin);
+    var command = BaseReceiptCommand.from(text, origin?.asMapping());
     if (body != null) {
       // check group
       ID? group = body.group;

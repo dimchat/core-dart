@@ -32,7 +32,7 @@ import 'file_wrapper.dart';
 
 
 class PortableNetworkFile extends Dictionary implements TransportableFile {
-  PortableNetworkFile(Map? content, {
+  PortableNetworkFile(Mapping? content, {
     TransportableData? data,
     String? filename,
     Uri? url,
@@ -62,7 +62,7 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
   // protected
   String get uriString {
     // serialize
-    Map dict = _wrapper.toMap();
+    MutableMapping dict = _wrapper.toMap();
     // check 'URL'
     Uri? remote = url;
     if (remote != null) {
@@ -118,7 +118,7 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
   }

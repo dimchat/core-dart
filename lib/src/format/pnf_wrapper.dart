@@ -31,10 +31,11 @@ import 'file_wrapper.dart';
 
 
 class PortableNetworkFileWrapper implements TransportableFileWrapper {
-  PortableNetworkFileWrapper(Map dict)
-      : _map = dict is Mapper ? dict.toMap() : dict;
+  PortableNetworkFileWrapper(Mapping dict)
+      : _map = dict is Mapper ? dict.toMap()
+      : (dict as Map).asMutableMapping();
 
-  final Map _map;
+  final MutableMapping _map;
 
   /// file data (not encrypted)
   TransportableData? _attachment;
@@ -66,7 +67,7 @@ class PortableNetworkFileWrapper implements TransportableFileWrapper {
   }
 
   @override
-  Map toMap() {
+  MutableMapping toMap() {
     // serialize 'data'
     var ted = _attachment;
     if (ted != null && !containsKey('data')) {

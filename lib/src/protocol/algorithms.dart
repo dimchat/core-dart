@@ -33,7 +33,8 @@
 
 
 /// Algorithms for Asymmetric Key
-abstract interface class AsymmetricAlgorithms {
+final class AsymmetricAlgorithms {
+  AsymmetricAlgorithms._();
 
   static const RSA = 'RSA';  //-- "RSA/ECB/PKCS1Padding", "SHA256withRSA"
   static const ECC = 'ECC';
@@ -42,7 +43,8 @@ abstract interface class AsymmetricAlgorithms {
 
 
 /// Algorithms for Symmetric Key
-abstract interface class SymmetricAlgorithms {
+final class SymmetricAlgorithms {
+  SymmetricAlgorithms._();
 
   static const AES = 'AES';  //-- "AES/CBC/PKCS7Padding"
   static const DES = 'DES';
@@ -55,7 +57,8 @@ abstract interface class SymmetricAlgorithms {
 
 
 /// Algorithms for Encoding Data
-abstract interface class EncodeAlgorithms {
+final class EncodeAlgorithms {
+  EncodeAlgorithms._();
 
   static const DEFAULT = 'base64';
 
