@@ -1,3 +1,7 @@
+## 2.4.0
+
+- Remove app extensions.
+
 ## 2.3.6
 
 - Type alias.

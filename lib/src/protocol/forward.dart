@@ -40,7 +40,7 @@ import '../dkd/forward.dart';
 /// ```json
 /// {
 ///   "type" : i2s(0xFF),
-///   "sn"   : 456,
+///   "sn"   : 67890,
 ///
 ///   "forward" : {...},  // reliable (secure + certified) message
 ///   "secrets" : [...]   // reliable (secure + certified) messages
@@ -61,38 +61,6 @@ abstract interface class ForwardContent implements Content {
 }
 
 
-/// Combined forward content for chat history forwarding.
-///
-/// Special message format designed to forward a set of chat records as a single message.
-///
-/// JSON format:
-/// ```json
-/// {
-///   "type" : i2s(0xCF),
-///   "sn"   : 123,
-///
-///   "title"    : "...",  // Chat history title
-///   "messages" : [...]   // List of chat records to forward
-/// }
-/// ```
-abstract interface class CombineContent implements Content {
-
-  /// Title for the forwarded chat history set.
-  String get title;
-
-  /// List of chat records (instant messages) to be forwarded.
-  List<InstantMessage> get messages;
-
-  //
-  //  Factory
-  //
-
-  static CombineContent create(String title, List<InstantMessage> messages) =>
-      CombineForwardContent.fromTitle(title, messages);
-
-}
-
-
 /// Content array interface for sending multiple contents in one message.
 ///
 /// Enables packaging multiple different types of [Content] into a single message.
@@ -101,7 +69,7 @@ abstract interface class CombineContent implements Content {
 /// ```json
 /// {
 ///   "type" : i2s(0xCA),
-///   "sn"   : 123,
+///   "sn"   : 12345,
 ///
 ///   "contents" : [...]  // Array of different content types
 /// }

@@ -85,7 +85,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   }
 
   @override
-  MutableMapping toMap() {
+  MutableMapping<String, dynamic> toMap() {
     // serialize 'content'
     var body = _content;
     if (body != null && !containsKey('content')) {

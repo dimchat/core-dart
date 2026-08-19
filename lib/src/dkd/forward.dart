@@ -51,7 +51,7 @@ class SecretContent extends BaseContent implements ForwardContent {
   }
 
   @override
-  MutableMapping toMap() {
+  MutableMapping<String, dynamic> toMap() {
     // serialize secret messages
     var messages = _secrets;
     if (messages != null && !containsKey('secrets')) {
@@ -89,54 +89,6 @@ class SecretContent extends BaseContent implements ForwardContent {
 }
 
 
-/// CombineContent
-class CombineForwardContent extends BaseContent implements CombineContent {
-  CombineForwardContent([super.dict]);
-
-  List<InstantMessage>? _history;
-
-  CombineForwardContent.fromTitle(String title, List<InstantMessage> messages)
-      : super.fromType(ContentType.COMBINE_FORWARD) {
-    // chat name
-    this['title'] = title;
-    // chat history
-    _history = messages;
-    // this['messages'] = InstantMessage.revert(messages);
-  }
-
-  @override
-  MutableMapping toMap() {
-    // serialize 'messages' messages
-    var messages = _history;
-    if (messages != null && !containsKey('messages')) {
-      this['messages'] = InstantMessage.revert(messages);
-    }
-    // OK
-    return super.toMap();
-  }
-
-  @override
-  String get title => getString('title') ?? '';
-
-  @override
-  List<InstantMessage> get messages {
-    List<InstantMessage>? array = _history;
-    if (array == null) {
-      var info = this['messages'];
-      if (info is List) {
-        array = InstantMessage.convert(info);
-      } else {
-        assert(info == null, 'combined messages error: $info');
-        array = [];
-      }
-      _history = array;
-    }
-    return array;
-  }
-
-}
-
-
 /// ArrayContent
 class ListContent extends BaseContent implements ArrayContent {
   ListContent([super.dict]);
@@ -151,7 +103,7 @@ class ListContent extends BaseContent implements ArrayContent {
   }
 
   @override
-  MutableMapping toMap() {
+  MutableMapping<String, dynamic> toMap() {
     // serialize 'contents'
     var contents = _list;
     if (contents != null && !containsKey('contents')) {

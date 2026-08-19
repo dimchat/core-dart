@@ -30,6 +30,7 @@
  */
 import 'package:dkd/ext.dart';
 import 'package:dkd/protocol.dart';
+import 'package:mkm/type.dart';
 
 import '../dkd/quote.dart';
 import 'helpers.dart';
@@ -91,7 +92,7 @@ abstract interface class QuoteContent implements Content {
   static QuoteContent create(String text, Envelope head, Content body) {
     var helper = sharedMessageExtensions.quoteHelper;
     Map origin = helper.purifyForQuote(head, body);
-    return BaseQuoteContent.from(text, origin);
+    return BaseQuoteContent.from(text, origin.asMapping());
   }
 
 }

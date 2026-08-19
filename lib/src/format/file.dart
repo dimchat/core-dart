@@ -51,7 +51,7 @@ import 'helper.dart';
 ///   }
 /// }
 /// ```
-abstract interface class TransportableFile implements Mapper, TransportableResource {
+abstract interface class TransportableFile implements TransportableResource, Mapper<String, dynamic> {
 
   /// Binary file data (encoded as [TransportableData]).
   ///
@@ -94,7 +94,7 @@ abstract interface class TransportableFile implements Mapper, TransportableResou
   ///
   /// Returns: Map representation of the PNF (matches JSON structure)
   @override
-  MutableMapping toMap();
+  MutableMapping<String, dynamic> toMap();
 
   /// Serializes the PNF to a transportable format.
   ///

@@ -60,7 +60,7 @@ abstract interface class TransportableFileWrapper {
   ///   (e.g., defer encoding large file data until this method is called)
   ///
   /// Returns: Serialized Map containing the file metadata and serialized [data]
-  MutableMapping toMap();
+  MutableMapping<String, dynamic> toMap();
 
   /// Binary file data (encoded as [TransportableData]).
   ///

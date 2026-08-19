@@ -118,7 +118,7 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
   }
 
   @override
-  MutableMapping toMap() {
+  MutableMapping<String, dynamic> toMap() {
     // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
   }
