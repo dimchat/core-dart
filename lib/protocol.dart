@@ -16,10 +16,7 @@ export 'src/protocol/docs.dart';        // -> 'mkm.dart'
 
 export 'src/protocol/types.dart';
 export 'src/protocol/forward.dart';
-export 'src/protocol/quote.dart';
 export 'src/protocol/base.dart';
-export 'src/protocol/commands.dart';
-export 'src/protocol/receipt.dart';
 
 // export 'src/protocol/helpers.dart';  // -> "ext.dart'
 

@@ -29,8 +29,6 @@
  * ==============================================================================
  */
 import 'package:dkd/ext.dart';
-import 'package:dkd/protocol.dart';
-import 'package:mkm/protocol.dart';
 
 import 'base.dart';
 
@@ -54,91 +52,5 @@ extension CommandExtension on MessageExtensions {
 
   CommandHelper? get commandHelper => _commandHelper;
   set commandHelper(CommandHelper? ext) => _commandHelper = ext;
-
-}
-
-/// Quote(Receipt) Extension
-QuoteHelper _quoteHelper = QuotePurifier();
-
-extension QuoteExtension on MessageExtensions {
-
-  QuoteHelper get quoteHelper => _quoteHelper;
-  set quoteHelper(QuoteHelper ext) => _quoteHelper = ext;
-
-}
-
-
-/// Helper interface for processing quote/receipt metadata.
-///
-/// Provides methods to purify (normalize) message envelope and content data
-/// for [QuoteContent] (quote reply) and [ReceiptCommand] (message receipt) scenarios,
-/// ensuring consistent structure of the "origin" field in these messages.
-abstract interface class QuoteHelper {
-
-  /// Purifies message data for use in [QuoteContent].
-  ///
-  /// Extracts core metadata (sender, receiver, type, serial number) from the original
-  /// message envelope and content to form the "origin" field in quote messages.
-  ///
-  /// @param envelope - Envelope of the original message being quoted
-  ///
-  /// @param content - Content of the original message being quoted
-  ///
-  /// @return Normalized map containing core quote origin metadata
-  Map purifyForQuote(Envelope envelope, Content content);
-
-  /// Purifies message data for use in [ReceiptCommand].
-  ///
-  /// Extracts and cleans up metadata from the original message envelope/content
-  /// to form the "origin" field in receipt commands (removes sensitive/redundant fields).
-  /// Returns null if the envelope is null (invalid original message).
-  ///
-  /// @param envelope - Optional envelope of the original message for receipt
-  ///
-  /// @param content - Optional content of the original message for receipt
-  ///
-  /// @return Normalized map containing core receipt origin metadata (null if envelope is null)
-  Map? purifyForReceipt(Envelope? envelope, Content? content);
-
-}
-
-
-/// Default implementation of [QuoteHelper] for quote/receipt data purification.
-///
-/// Provides standard logic to extract and normalize origin metadata for
-/// quote messages and receipt commands.
-final class QuotePurifier implements QuoteHelper {
-
-  @override
-  Map purifyForQuote(Envelope head, Content body) {
-    ID from = head.sender;
-    ID? to = body.group;
-    to ??= head.receiver;
-    // build origin info
-    return {
-      'sender': from.toString(),
-      'receiver': to.toString(),
-      'type': body.type,
-      'sn': body.sn,
-    };
-  }
-
-  @override
-  Map? purifyForReceipt(Envelope? head, Content? body) {
-    if (head == null) {
-      return null;
-    }
-    Map origin = head.copyMap();
-    if (origin.containsKey('data')) {
-      origin.remove('data');
-      origin.remove('keys');
-      origin.remove('meta');
-      origin.remove('visa');
-    }
-    if (body != null) {
-      origin['sn'] = body.sn;
-    }
-    return origin;
-  }
 
 }

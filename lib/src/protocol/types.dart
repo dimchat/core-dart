@@ -79,7 +79,8 @@
 final class ContentType {
   ContentType._();
 
-  static const ANY       = '${0x00}'; // 0000 0000 (Undefined)
+  static const ANY        = '*';
+  // static const UNKNOWN = '${0x00}'; // 0000 0000 (Undefined)
 
   static const TEXT      = '${0x01}'; // 0000 0001
 

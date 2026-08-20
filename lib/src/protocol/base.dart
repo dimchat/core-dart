@@ -51,13 +51,6 @@ import 'helpers.dart';
 /// }
 /// ```
 abstract interface class Command implements Content {
-  // ignore_for_file: constant_identifier_names
-
-  //-------- command names begin --------
-  static const String META      = 'meta';       // querying/updating entity metadata
-  static const String DOCUMENTS = 'documents';  // querying/updating entity documents
-  static const String RECEIPT   = 'receipt';    // message receipt/acknowledgment
-  //-------- command names end --------
 
   ///  Get command name
   ///

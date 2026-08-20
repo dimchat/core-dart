@@ -40,7 +40,7 @@ import 'package:mkm/type.dart';
 ///  data format: {
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
-///      "time"     : 123
+///      "time"     : 123.45
 ///  }
 class MessageEnvelope extends Dictionary implements Envelope {
   MessageEnvelope([super.dict]);

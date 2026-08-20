@@ -29,7 +29,10 @@
  * ==============================================================================
  */
 import 'package:mkm/type.dart';
+import 'package:dkd/protocol.dart';
 import 'package:dkd/ext.dart';
+
+import 'protocol/base.dart';
 
 // -----------------------------------------------------------------------------
 //  General Command Helpers
@@ -57,6 +60,23 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
   ///
   /// Returns: Extracted command name (String), or [defaultValue], or null if neither exists
   String? getCmd(Mapping content, [String? defaultValue]);
+
+  //
+  //  Receipt
+  //
+
+  /// Create ReceiptCommand with original envelope info
+  ///
+  /// Extracts and cleans up metadata from the original message envelope/content
+  /// to form the "origin" field in receipt commands (removes sensitive/redundant fields).
+  ///
+  /// Parameters:
+  /// - [text]     : message
+  /// - [envelope] : original message envelope
+  /// - [content]  : original instant message content (Optional)
+  ///
+  /// Returns: ReceiptCommand
+  Command createReceipt(String text, Envelope envelope, Content? content);
 
 }
 

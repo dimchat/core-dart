@@ -1,3 +1,7 @@
+## 2.4.1
+
+- Remove meta, document & receipt commands.
+
 ## 2.4.0
 
 - Remove app extensions.
