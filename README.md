@@ -197,7 +197,7 @@ class AppCustomizedContent extends BaseContent implements AppContent, Customized
 
 ### Extends ID Address
 
-* Examples in [dim_plugins](https://pub.dev/packages/dim_plugins)
+* Examples in [Plugins](https://pub.dev/packages/dimap)
 
 ----
 

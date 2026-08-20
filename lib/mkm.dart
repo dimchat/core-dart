@@ -16,6 +16,3 @@ export 'src/protocol/version.dart';
 export 'src/protocol/docs.dart';
 
 
-export 'src/mkm/meta.dart';
-export 'src/mkm/document.dart';
-export 'src/mkm/docs.dart';
