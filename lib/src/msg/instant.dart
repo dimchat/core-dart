@@ -69,7 +69,7 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   Content get content {
     Content? body = _content;
     if (body == null) {
-      var info = this['content'];
+      final info = this['content'];
       body = Content.parse(info);
       assert(body != null, 'message content error: $toMap()');
       _content = body;
@@ -85,9 +85,9 @@ class PlainMessage extends BaseMessage implements InstantMessage {
   }
 
   @override
-  MutableMapping<String, dynamic> toMap() {
+  MutableMapping toMap() {
     // serialize 'content'
-    var body = _content;
+    final body = _content;
     if (body != null && !containsKey('content')) {
       this['content'] = body.toMap();
     }

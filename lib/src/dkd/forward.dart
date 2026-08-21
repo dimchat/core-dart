@@ -51,9 +51,9 @@ class SecretContent extends BaseContent implements ForwardContent {
   }
 
   @override
-  MutableMapping<String, dynamic> toMap() {
+  MutableMapping toMap() {
     // serialize secret messages
-    var messages = _secrets;
+    final messages = _secrets;
     if (messages != null && !containsKey('secrets')) {
       this['secrets'] = ReliableMessage.revert(messages);
       remove('forward');
@@ -66,15 +66,15 @@ class SecretContent extends BaseContent implements ForwardContent {
   List<ReliableMessage> get secrets {
     List<ReliableMessage>? messages = _secrets;
     if (messages == null) {
-      var info = this['secrets'];
+      final info = this['secrets'];
       if (info is List) {
         // get from secrets
         messages = ReliableMessage.convert(info);
       } else {
         assert(info == null, 'secret messages error: $info');
         // get from 'forward'
-        var forward = this['forward'];
-        var msg = ReliableMessage.parse(forward);
+        final forward = this['forward'];
+        final msg = ReliableMessage.parse(forward);
         if (msg != null) {
           messages = [msg];
         } else {
@@ -103,9 +103,9 @@ class ListContent extends BaseContent implements ArrayContent {
   }
 
   @override
-  MutableMapping<String, dynamic> toMap() {
+  MutableMapping toMap() {
     // serialize 'contents'
-    var contents = _list;
+    final contents = _list;
     if (contents != null && !containsKey('contents')) {
       this['contents'] = Content.revert(contents);
     }
@@ -117,7 +117,7 @@ class ListContent extends BaseContent implements ArrayContent {
   List<Content> get contents {
     var array = _list;
     if (array == null) {
-      var info = this['contents'];
+      final info = this['contents'];
       if (info is List) {
         array = Content.convert(info);
       } else {

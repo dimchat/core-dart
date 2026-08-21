@@ -94,7 +94,7 @@ abstract interface class TransportableFile implements TransportableResource, Map
   ///
   /// Returns: Map representation of the PNF (matches JSON structure)
   @override
-  MutableMapping<String, dynamic> toMap();
+  MutableMapping toMap();
 
   /// Serializes the PNF to a transportable format.
   ///
@@ -119,21 +119,21 @@ abstract interface class TransportableFile implements TransportableResource, Map
 
   static TransportableFile create(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password) {
-    var helper = sharedFormatExtensions.pnfHelper;
+    final helper = sharedFormatExtensions.pnfHelper;
     return helper!.createTransportableFile(data, filename, url, password);
   }
 
   static TransportableFile? parse(Object? pnf) {
-    var helper = sharedFormatExtensions.pnfHelper;
+    final helper = sharedFormatExtensions.pnfHelper;
     return helper!.parseTransportableFile(pnf);
   }
 
   static TransportableFileFactory? getFactory() {
-    var helper = sharedFormatExtensions.pnfHelper;
+    final helper = sharedFormatExtensions.pnfHelper;
     return helper!.getTransportableFileFactory();
   }
   static void setFactory(TransportableFileFactory factory) {
-    var helper = sharedFormatExtensions.pnfHelper;
+    final helper = sharedFormatExtensions.pnfHelper;
     helper!.setTransportableFileFactory(factory);
   }
 }

@@ -108,24 +108,24 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
 
   @override
   String toString() {
-    var uri = uriString;
+    final uri = uriString;
     if (uri.isNotEmpty) {
       return uri;
     }
     // return JSON string
-    var dict = _wrapper.toMap();
+    final dict = _wrapper.toMap();
     return JSONMap.encode(dict);
   }
 
   @override
-  MutableMapping<String, dynamic> toMap() {
+  MutableMapping toMap() {
     // call wrapper to serialize 'data' & 'key"
     return _wrapper.toMap();
   }
 
   @override
   Object serialize() {
-    var uri = uriString;
+    final uri = uriString;
     if (uri.isNotEmpty) {
       return uri;
     }

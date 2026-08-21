@@ -60,7 +60,7 @@ abstract interface class TransportableFileWrapper {
   ///   (e.g., defer encoding large file data until this method is called)
   ///
   /// Returns: Serialized Map containing the file metadata and serialized [data]
-  MutableMapping<String, dynamic> toMap();
+  MutableMapping toMap();
 
   /// Binary file data (encoded as [TransportableData]).
   ///
@@ -92,7 +92,7 @@ abstract interface class TransportableFileWrapper {
     Uri? url,
     DecryptKey? password,
   }) {
-    var factory = sharedFormatExtensions.pnfWrapperFactory;
+    final factory = sharedFormatExtensions.pnfWrapperFactory;
     return factory.createTransportableFileWrapper(content,
       data: data, filename: filename, url: url, password: password,
     );

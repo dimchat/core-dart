@@ -1,3 +1,7 @@
+## 2.4.2
+
+- Inner map.
+
 ## 2.4.1
 
 - Remove meta, document & receipt commands.
