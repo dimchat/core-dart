@@ -29,9 +29,8 @@
  * ==============================================================================
  */
 import 'package:mkm/crypto.dart';
+import 'package:mkm/format.dart';
 import 'package:mkm/protocol.dart';
-
-import '../format/file.dart';
 
 
 /// User Visa document interface (user-specific authorization document).

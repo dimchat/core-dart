@@ -28,7 +28,6 @@ import 'package:mkm/ext.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
-import 'file.dart';
 import 'file_wrapper.dart';
 import 'pnf_wrapper.dart';
 
@@ -37,49 +36,11 @@ import 'pnf_wrapper.dart';
 //  Format Helpers
 // -----------------------------------------------------------------------------
 
-/// Helper interface for creating/parsing [TransportableFile] instances.
-///
-/// Provides factory methods to abstract the creation logic of [TransportableFile] implementations.
-abstract interface class TransportableFileHelper {
-
-  void setTransportableFileFactory(TransportableFileFactory factory);
-  TransportableFileFactory? getTransportableFileFactory();
-
-  /// Creates a [TransportableFile] instance with the given metadata.
-  ///
-  /// Parameters:
-  /// - [data]     : Binary file data (encoded as [TransportableData])
-  /// - [filename] : Original file name (e.g., "document.pdf")
-  /// - [url]      : Remote CDN URL (alternative to [data] for large files)
-  /// - [password] : Decryption key for encrypted CDN content
-  ///
-  /// Returns: Initialized [TransportableFile] instance
-  TransportableFile createTransportableFile(TransportableData? data, String? filename,
-      Uri? url, DecryptKey? password);
-
-  /// Parses a raw object into a [TransportableFile] instance.
-  ///
-  /// Converts arbitrary raw data (e.g., string, map) into a standardized
-  /// TransportableFile object.
-  ///
-  /// @param ted - Raw data object to parse
-  ///
-  /// Returns: Parsed [TransportableFile] instance (null if parsing fails)
-  TransportableFile? parseTransportableFile(Object? pnf);
-
-}
-
 // -----------------------------------------------------------------------------
 //  Format Extension Manager
 // -----------------------------------------------------------------------------
 
-/// PNF extension
-TransportableFileHelper? _pnfHelper;
-
-extension TransportableFileExtension on FormatExtensions {
-
-  TransportableFileHelper? get pnfHelper => _pnfHelper;
-  set pnfHelper(TransportableFileHelper? ext) => _pnfHelper = ext;
+extension TransportableFileWrapperExtension on FormatExtensions {
 
   TransportableFileWrapperFactory get pnfWrapperFactory => _pnfWrapperFactory;
   set pnfWrapperFactory(TransportableFileWrapperFactory ext) => _pnfWrapperFactory = ext;
@@ -98,7 +59,7 @@ final class _PNFWrapperFactory implements TransportableFileWrapperFactory {
   TransportableFileWrapper createTransportableFileWrapper(Mapping content, {
     TransportableData? data, String? filename, Uri? url, DecryptKey? password,
   }) {
-    var wrapper = PortableNetworkFileWrapper(content);
+    final wrapper = PortableNetworkFileWrapper(content);
     // file data
     if (data != null) {
       wrapper.data = data;

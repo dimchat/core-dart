@@ -27,7 +27,6 @@ import 'package:mkm/crypto.dart';
 import 'package:mkm/format.dart';
 import 'package:mkm/type.dart';
 
-import 'file.dart';
 import 'file_wrapper.dart';
 
 

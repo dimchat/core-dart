@@ -22,7 +22,6 @@ export 'src/format/base_data.dart';
 export 'src/format/data.dart';
 export 'src/format/embed.dart';
 
-export 'src/format/file.dart';
 export 'src/format/file_wrapper.dart';
 export 'src/format/pnf.dart';
 export 'src/format/pnf_wrapper.dart';
