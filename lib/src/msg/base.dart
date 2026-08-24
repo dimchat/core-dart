@@ -99,19 +99,4 @@ abstract class BaseMessage extends Dictionary implements Message {
   @override
   String? get type => envelope.type;
 
-  //--------
-
-  static bool isBroadcast(Message msg) {
-    if (msg.receiver.isBroadcast) {
-      return true;
-    }
-    // check exposed group
-    Object? overtGroup = msg['group'];
-    if (overtGroup == null) {
-      return false;
-    }
-    ID? group = ID.parse(overtGroup);
-    return group != null && group.isBroadcast;
-  }
-
 }

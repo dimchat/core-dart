@@ -15,8 +15,9 @@ export 'src/protocol/version.dart';     // -> 'mkm.dart'
 export 'src/protocol/docs.dart';        // -> 'mkm.dart'
 
 export 'src/protocol/types.dart';
-export 'src/protocol/forward.dart';
 export 'src/protocol/base.dart';
+export 'src/protocol/array.dart';
+export 'src/protocol/forward.dart';
 
 // export 'src/protocol/helpers.dart';  // -> "ext.dart'
 

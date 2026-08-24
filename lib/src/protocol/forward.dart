@@ -59,31 +59,3 @@ abstract interface class ForwardContent implements Content {
       SecretContent.fromMessages(secrets);
 
 }
-
-
-/// Content array interface for sending multiple contents in one message.
-///
-/// Enables packaging multiple different types of [Content] into a single message.
-///
-/// JSON format:
-/// ```json
-/// {
-///   "type" : i2s(0xCA),
-///   "sn"   : 12345,
-///
-///   "contents" : [...]  // Array of different content types
-/// }
-/// ```
-abstract interface class ArrayContent implements Content {
-
-  /// Array of multiple message contents (can be different types).
-  List<Content> get contents;
-
-  //
-  //  Factory
-  //
-
-  static ArrayContent create(List<Content> contents) =>
-      ListContent.fromContents(contents);
-
-}

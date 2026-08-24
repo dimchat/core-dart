@@ -31,59 +31,48 @@
 import 'package:mkm/type.dart';
 import 'package:dkd/protocol.dart';
 
-import '../protocol/forward.dart';
+import '../protocol/array.dart';
 import '../protocol/types.dart';
 
 import 'base.dart';
 
+/// ArrayContent
+class ListContent extends BaseContent implements ArrayContent {
+  ListContent([super.dict]);
 
-/// ForwardContent
-class SecretContent extends BaseContent implements ForwardContent {
-  SecretContent([super.dict]);
+  List<Content>? _list;
 
-  List<ReliableMessage>? _secrets;
-
-  SecretContent.fromMessages(List<ReliableMessage> messages)
-      : super.fromType(ContentType.FORWARD) {
-    // secret messages
-    _secrets = messages;
-    // this['secrets'] = ReliableMessage.revert(messages);
+  ListContent.fromContents(List<Content> contents)
+      : super.fromType(ContentType.ARRAY) {
+    // content list
+    _list = contents;
+    // this['contents'] = Content.revert(contents);
   }
 
   @override
   MutableMapping toMap() {
-    // serialize secret messages
-    final messages = _secrets;
-    if (messages != null && !containsKey('secrets')) {
-      this['secrets'] = ReliableMessage.revert(messages);
-      remove('forward');
+    // serialize 'contents'
+    final contents = _list;
+    if (contents != null && !containsKey('contents')) {
+      this['contents'] = Content.revert(contents);
     }
     // OK
     return super.toMap();
   }
 
   @override
-  List<ReliableMessage> get secrets {
-    List<ReliableMessage>? messages = _secrets;
-    if (messages == null) {
-      final info = this['secrets'];
+  List<Content> get contents {
+    List<Content>? array = _list;
+    if (array == null) {
+      final info = this['contents'];
       if (info is List) {
-        // get from secrets
-        messages = ReliableMessage.convert(info);
+        array = Content.convert(info);
       } else {
-        assert(info == null, 'secret messages error: $info');
-        // get from 'forward'
-        final forward = this['forward'];
-        final msg = ReliableMessage.parse(forward);
-        if (msg != null) {
-          messages = [msg];
-        } else {
-          messages = [];
-        }
+        array = [];
       }
-      _secrets = messages;
+      _list = array;
     }
-    return messages;
+    return array;
   }
 
 }

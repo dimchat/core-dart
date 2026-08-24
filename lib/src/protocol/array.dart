@@ -28,62 +28,34 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/type.dart';
 import 'package:dkd/protocol.dart';
 
-import '../protocol/forward.dart';
-import '../protocol/types.dart';
-
-import 'base.dart';
+import '../dkd/array.dart';
 
 
-/// ForwardContent
-class SecretContent extends BaseContent implements ForwardContent {
-  SecretContent([super.dict]);
+/// Content array interface for sending multiple contents in one message.
+///
+/// Enables packaging multiple different types of [Content] into a single message.
+///
+/// JSON format:
+/// ```json
+/// {
+///   "type" : i2s(0xCA),
+///   "sn"   : 12345,
+///
+///   "contents" : [...]  // Array of different content types
+/// }
+/// ```
+abstract interface class ArrayContent implements Content {
 
-  List<ReliableMessage>? _secrets;
+  /// Array of multiple message contents (can be different types).
+  List<Content> get contents;
 
-  SecretContent.fromMessages(List<ReliableMessage> messages)
-      : super.fromType(ContentType.FORWARD) {
-    // secret messages
-    _secrets = messages;
-    // this['secrets'] = ReliableMessage.revert(messages);
-  }
+  //
+  //  Factory
+  //
 
-  @override
-  MutableMapping toMap() {
-    // serialize secret messages
-    final messages = _secrets;
-    if (messages != null && !containsKey('secrets')) {
-      this['secrets'] = ReliableMessage.revert(messages);
-      remove('forward');
-    }
-    // OK
-    return super.toMap();
-  }
-
-  @override
-  List<ReliableMessage> get secrets {
-    List<ReliableMessage>? messages = _secrets;
-    if (messages == null) {
-      final info = this['secrets'];
-      if (info is List) {
-        // get from secrets
-        messages = ReliableMessage.convert(info);
-      } else {
-        assert(info == null, 'secret messages error: $info');
-        // get from 'forward'
-        final forward = this['forward'];
-        final msg = ReliableMessage.parse(forward);
-        if (msg != null) {
-          messages = [msg];
-        } else {
-          messages = [];
-        }
-      }
-      _secrets = messages;
-    }
-    return messages;
-  }
+  static ArrayContent create(List<Content> contents) =>
+      ListContent.fromContents(contents);
 
 }
