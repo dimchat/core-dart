@@ -27,62 +27,7 @@ import 'dart:typed_data';
 
 import 'package:mkm/format.dart';
 
-import '../protocol/algorithms.dart';
-
 import 'base_data.dart';
-
-
-///
-///  Base-64 encoding
-///
-
-class Base64Data extends BaseData {
-  Base64Data(super.encoded, super.bytes);
-
-  factory Base64Data.create(String encoded, Uint8List bytes)=>
-      Base64Data(encoded, bytes);
-
-  factory Base64Data.createWithString(String encoded) =>
-      Base64Data(encoded, null);
-
-  factory Base64Data.createWithBytes(Uint8List bytes) =>
-      Base64Data('', bytes);
-
-  //
-  //  TransportableData
-  //
-
-  @override
-  String? get encoding => EncodeAlgorithms.BASE_64;
-
-  @override
-  Uint8List? get bytes {
-    Uint8List? bin = binary;
-    if (bin == null) {
-      String base64 = string;
-      bin = Base64.decode(base64);
-      binary = bin;
-      assert(bin != null, 'failed to decode base64 string: $base64');
-    }
-    return bin;
-  }
-
-
-  @override
-  String toString() {
-    String base64 = string;
-    if (base64 == '') {
-      Uint8List? bin = binary;
-      if (bin != null) {
-        base64 = Base64.encode(bin);
-        string = base64;
-      }
-      assert(base64.isNotEmpty, 'failed to encode base64 data: ${bin?.length} byte(s)');
-    }
-    return base64;
-  }
-
-}
 
 
 ///

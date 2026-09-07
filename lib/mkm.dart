@@ -10,9 +10,3 @@ library dimp;
 // export 'package:mkm/crypto.dart';  // -> 'crypto.dart'
 export 'package:mkm/protocol.dart';
 // export 'package:mkm/ext.dart';     // -> 'ext.dart'
-
-
-export 'src/protocol/version.dart';
-export 'src/protocol/docs.dart';
-
-
