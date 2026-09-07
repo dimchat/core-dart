@@ -78,9 +78,8 @@ abstract interface class TransportableFile implements TransportableResource, Map
 
   /// Returns string representation of the PNF.
   ///
-  /// Returns:
-  /// - URL string (if only [url] and [filename] are present)
-  /// - JSON string of the structured object (for full metadata)
+  /// Returns the URL string (if only [url] and [filename] are present),
+  /// or the JSON string of the structured object (for full metadata).
   @override
   String toString();
 
@@ -92,7 +91,7 @@ abstract interface class TransportableFile implements TransportableResource, Map
   ///   (e.g., defer encoding large file data until this method is called)
   /// - Updates internal state with the serialized [data] before returning the Map
   ///
-  /// Returns: Map representation of the PNF (matches JSON structure)
+  /// Returns a Map representation of the PNF (matches JSON structure).
   @override
   MutableMapping toMap();
 
@@ -144,22 +143,19 @@ abstract interface class TransportableFileFactory {
 
   /// Creates a [TransportableFile] instance with the given parameters.
   ///
-  /// [data]: Encoded file content (null if using [url] instead)
+  /// [data] is the encoded file content (null if using [url] instead).
+  /// [filename] is the original filename of the file.
+  /// [url] is the CDN download URL (alternative to [data]).
+  /// [password] is the decryption key for encrypted content.
   ///
-  /// [filename]: Original filename of the file
-  ///
-  /// [url]: CDN download URL (alternative to [data])
-  ///
-  /// [password]: Decryption key for encrypted content
-  ///
-  /// Returns: New [TransportableFile] instance
+  /// Returns a new [TransportableFile] instance.
   TransportableFile createTransportableFile(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password);
 
   /// Parses a structured Map into a [TransportableFile] instance.
   ///
-  /// [pnf]: Map representation of PNF (matches format 3 JSON structure)
+  /// [pnf] is the Map representation of PNF (matches format 3 JSON structure).
   ///
-  /// Returns: [TransportableFile] instance, or null if parsing fails
+  /// Returns a [TransportableFile] instance, or null if parsing fails.
   TransportableFile? parseTransportableFile(Mapping pnf);
 }

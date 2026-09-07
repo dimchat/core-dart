@@ -31,7 +31,18 @@ import 'package:mkm/type.dart';
 import 'base_string.dart';
 
 
+/// Base Transportable Data
+///
+/// Base class for transportable data.
+///
+/// Holds both an encoded string representation (e.g. base64 string)
+/// and the decoded binary bytes; the missing side is lazy loaded.
 abstract class BaseData extends BaseString implements TransportableData {
+
+  /// Create data with encoded string and (optional) decoded bytes.
+  ///
+  /// [encoded] is the encoded string.
+  /// [bytes] is the decoded bytes (lazy loaded if null).
   BaseData(String encoded, Uint8List? bytes) : super(encoded) {
     binary = bytes;
   }
@@ -104,6 +115,10 @@ abstract class BaseData extends BaseString implements TransportableData {
 
 }
 
+/// Check whether two [BaseData] instances are equal (element-wise).
+///
+/// Compares inner strings first; if both are unavailable,
+/// compares inner bytes, then decoded bytes as fallback.
 bool _dataEquals(BaseData self, BaseData other) {
   if (other.isEmpty) {
     return self.isEmpty;
@@ -124,6 +139,9 @@ bool _dataEquals(BaseData self, BaseData other) {
   return Comparator.listEquals(self.bytes, other.bytes);
 }
 
+/// Check whether [BaseData] equals a [TransportableData] (element-wise).
+///
+/// Compares the encoded string first; otherwise compares decoded bytes.
 bool _tedEquals(BaseData self, TransportableData other) {
   if (other.isEmpty) {
     return self.isEmpty;

@@ -35,11 +35,11 @@ import 'package:dkd/ext.dart';
 import '../format/data.dart';
 import 'base.dart';
 
-///  Secure Message
-///  ~~~~~~~~~~~~~~
-///  Instant Message encrypted by a symmetric key
+/// Secure Message
 ///
-///  data format: {
+/// Instant Message encrypted by a symmetric key
+///
+/// data format: {
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
@@ -51,13 +51,19 @@ import 'base.dart';
 ///          "{ID}"   : "...",  // base64_encode(asymmetric_encrypt(pwd))
 ///          "digest" : "..."   // hash(pwd.data)
 ///      }
-///  }
+/// }
 class EncryptedMessage extends BaseMessage implements SecureMessage {
+
+  /// Create an encrypted message from dictionary
   EncryptedMessage([super.dict]);
 
   TransportableData? _data;
   Map? _encKeys;  // String => String
 
+  /// Get encrypted content data.
+  ///
+  /// If this is a broadcast message, the content will not be encrypted
+  /// (just encoded to JsON), so return the string data directly.
   @override
   TransportableData get data {
     TransportableData? ted = _data;
@@ -82,6 +88,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
     return ted!;
   }
 
+  /// Get encrypted keys map: {ID: base64(key)}, plus a "digest" item
   @override
   Map? get encryptedKeys {
     if (_encKeys == null) {

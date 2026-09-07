@@ -61,7 +61,7 @@ abstract interface class TransportableFileWrapper {
   /// - Subclasses may override this method to implement lazy serialization for other properties
   ///   (e.g., defer encoding large file data until this method is called)
   ///
-  /// Returns: Serialized Map containing the file metadata and serialized [data]
+  /// Returns a serialized Map containing the file metadata and serialized [data].
   MutableMapping toMap();
 
   /// Binary file data (encoded as [TransportableData]).
@@ -111,14 +111,13 @@ abstract interface class TransportableFileWrapperFactory {
 
   /// Creates a [TransportableFileWrapper] instance with the given parameters.
   ///
-  /// Parameters:
-  /// - [content]  : Base Map to initialize the wrapper (may contain partial metadata)
-  /// - [data]     : Binary file data (overrides `content["data"]` if provided)
-  /// - [filename] : Original file name (overrides `content["filename"]` if provided)
-  /// - [url]      : Remote CDN URL (overrides `content["URL"]` if provided)
-  /// - [password] : Decryption key (overrides `content["key"]` if provided)
+  /// [content] is the base Map to initialize the wrapper (may contain partial metadata).
+  /// [data] is the binary file data (overrides `content["data"]` if provided).
+  /// [filename] is the original file name (overrides `content["filename"]` if provided).
+  /// [url] is the remote CDN URL (overrides `content["URL"]` if provided).
+  /// [password] is the decryption key (overrides `content["key"]` if provided).
   ///
-  /// Returns: Custom [TransportableFileWrapper] implementation
+  /// Returns a custom [TransportableFileWrapper] implementation.
   TransportableFileWrapper createTransportableFileWrapper(Mapping content, {
     TransportableData? data,
     String? filename,
@@ -137,7 +136,10 @@ TransportableFileWrapperFactory? _pnfWrapperFactory;
 
 extension TransportableFileWrapperExtension on FormatExtensions {
 
+  /// Get PNF wrapper factory
   TransportableFileWrapperFactory? get pnfWrapperFactory => _pnfWrapperFactory;
+
+  /// Set PNF wrapper factory
   set pnfWrapperFactory(TransportableFileWrapperFactory? ext) => _pnfWrapperFactory = ext;
 
 }

@@ -26,7 +26,15 @@
 import 'package:mkm/type.dart';
 
 
+/// Base String
+///
+/// Wrapper class for a plain string, implementing the [Stringer] interface.
+///
+/// Provides character sequence operations (index, substring, trim, etc.)
+/// by delegating to the inner string value.
 class BaseString implements Stringer {
+
+  /// Create string wrapper with the encoded string
   BaseString(String s) : string = s;
 
   // protected

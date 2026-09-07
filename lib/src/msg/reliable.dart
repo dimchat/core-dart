@@ -33,12 +33,12 @@ import 'package:mkm/format.dart';
 
 import 'secure.dart';
 
-///  Reliable Message signed by an asymmetric key
-///  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///  This class is used to sign the SecureMessage
-///  It contains a 'signature' field which signed with sender's private key
+/// Reliable Message signed by an asymmetric key
 ///
-///  data format: {
+/// This class is used to sign the SecureMessage
+/// It contains a 'signature' field which signed with sender's private key
+///
+/// data format: {
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
@@ -52,18 +52,21 @@ import 'secure.dart';
 ///      },
 ///      //-- signature
 ///      "signature": "..."     // base64_encode(asymmetric_sign(data))
-///  }
+/// }
 class NetworkMessage extends EncryptedMessage implements ReliableMessage {
+
+  /// Create a network message from dictionary
   NetworkMessage([super.dict]);
 
   TransportableData? _signature;
 
+  /// Get message signature (signed by sender's private key)
   @override
   TransportableData get signature {
     TransportableData? ted = _signature;
     if (ted == null) {
       Object? base64 = this['signature'];
-      assert(base64 != null, 'message signature cannot be empty: $this');
+      assert(base64 != null, 'message signature cannot be empty: ${toMap()}');
       ted = TransportableData.parse(base64);
       assert(ted != null, 'failed to decode message signature: $base64');
       _signature = ted;

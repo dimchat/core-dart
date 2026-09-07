@@ -52,24 +52,28 @@ import 'helpers.dart';
 /// ```
 abstract interface class Command implements Content {
 
-  ///  Get command name
+  /// Get command name
   ///
-  /// @return command/method/declaration
+  /// Returns the command/method/declaration name.
   String get cmd;
 
   //
   //  Factory method
   //
 
+  /// Parse any object to command
   static Command? parse(Object? content) {
     final helper = sharedMessageExtensions.commandHelper;
     return helper!.parseCommand(content);
   }
 
+  /// Get command factory for name (cmd)
   static CommandFactory? getFactory(String cmd) {
     final helper = sharedMessageExtensions.commandHelper;
     return helper!.getCommandFactory(cmd);
   }
+
+  /// Set command factory for name (cmd)
   static void setFactory(String cmd, CommandFactory factory) {
     final helper = sharedMessageExtensions.commandHelper;
     helper!.setCommandFactory(cmd, factory);
@@ -84,8 +88,8 @@ abstract interface class CommandFactory {
 
   /// Parses a map object (from JSON) into a [Command] instance.
   ///
-  /// @param content - Raw map data containing command information
+  /// [content] is the raw map data containing command information.
   ///
-  /// @return A [Command] instance if parsing succeeds, null otherwise
+  /// Returns a [Command] instance if parsing succeeds, null otherwise.
   Command? parseCommand(Mapping content);
 }

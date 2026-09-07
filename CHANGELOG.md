@@ -1,3 +1,7 @@
+## 2.5.0
+
+- Simplify.
+
 ## 2.4.4
 
 - Broadcast message.

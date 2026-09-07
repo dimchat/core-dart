@@ -52,38 +52,37 @@ abstract interface class CommandHandler /*implements CommandHelper */{
 
   /// Retrieves the command name from a structured command content Map.
   ///
-  /// Looks up the command name key (e.g., "command")
-  /// in the [content] Map and returns its value. If the key is not found or the value
-  /// is null, returns the [defaultValue] (if provided).
+  /// Looks up the command name key (e.g., "command") in the [content] Map
+  /// and returns its value. If the key is not found or the value is null,
+  /// returns the [defaultValue] (if provided).
   ///
-  /// Parameters:
-  /// - [content]      : The structured command payload (Map) to extract the command name from
-  /// - [defaultValue] : Optional fallback value if the command name is not found
+  /// [content] is the structured command payload (Map) to extract the command name from.
+  /// [defaultValue] is the optional fallback value if the command name is not found.
   ///
-  /// Returns: Extracted command name (String), or [defaultValue], or null if neither exists
+  /// Returns the extracted command name, or the [defaultValue], or null if neither exists.
   String? getCmd(Mapping content, [String? defaultValue]);
 
   //
   //  Receipt
   //
 
-  /// Create ReceiptCommand with original envelope info
+  /// Create ReceiptCommand with original envelope info.
   ///
   /// Extracts and cleans up metadata from the original message envelope/content
   /// to form the "origin" field in receipt commands (removes sensitive/redundant fields).
   ///
-  /// Parameters:
-  /// - [text]     : message
-  /// - [envelope] : original message envelope
-  /// - [content]  : original instant message content (Optional)
+  /// [text] is the message.
+  /// [envelope] is the original message envelope.
+  /// [content] is the original instant message content (optional).
   ///
-  /// Returns: ReceiptCommand
+  /// Returns a [Command] receipt.
   Command createReceipt(String text, Envelope envelope, Content? content);
 
 }
 
 /// General Extensions
-/// ~~~~~~~~~~~~~~~~~~
+///
+/// (Command Handler extension)
 
 CommandHandler? _commandHandler;
 

@@ -40,12 +40,15 @@ final class PlainData extends BaseData {
   /// empty data
   factory PlainData.zero() => PlainData('', Uint8List(0));
 
+  /// Create with encoded string and decoded bytes
   factory PlainData.create(String encoded, Uint8List bytes) =>
       PlainData(encoded, bytes);
 
+  /// Create with encoded string only (decode lazily)
   factory PlainData.createWithString(String encoded) =>
       PlainData(encoded, null);
 
+  /// Create with decoded bytes only (encode lazily)
   factory PlainData.createWithBytes(Uint8List bytes) =>
       PlainData('', bytes);
 

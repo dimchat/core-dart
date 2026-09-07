@@ -39,18 +39,20 @@ import 'pnf.dart';
 /// Provides factory methods to abstract the creation logic of [TransportableFile] implementations.
 abstract interface class TransportableFileHelper {
 
+  /// Set transportable file factory
   void setTransportableFileFactory(TransportableFileFactory factory);
+
+  /// Get transportable file factory
   TransportableFileFactory? getTransportableFileFactory();
 
   /// Creates a [TransportableFile] instance with the given metadata.
   ///
-  /// Parameters:
-  /// - [data]     : Binary file data (encoded as [TransportableData])
-  /// - [filename] : Original file name (e.g., "document.pdf")
-  /// - [url]      : Remote CDN URL (alternative to [data] for large files)
-  /// - [password] : Decryption key for encrypted CDN content
+  /// [data] is the binary file data (encoded as [TransportableData]).
+  /// [filename] is the original file name (e.g., "document.pdf").
+  /// [url] is the remote CDN URL (alternative to [data] for large files).
+  /// [password] is the decryption key for encrypted CDN content.
   ///
-  /// Returns: Initialized [TransportableFile] instance
+  /// Returns an initialized [TransportableFile] instance.
   TransportableFile createTransportableFile(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password);
 
@@ -59,9 +61,9 @@ abstract interface class TransportableFileHelper {
   /// Converts arbitrary raw data (e.g., string, map) into a standardized
   /// TransportableFile object.
   ///
-  /// @param ted - Raw data object to parse
+  /// [pnf] is the raw data object to parse.
   ///
-  /// Returns: Parsed [TransportableFile] instance (null if parsing fails)
+  /// Returns a parsed [TransportableFile] instance (null if parsing fails).
   TransportableFile? parseTransportableFile(Object? pnf);
 
 }
@@ -75,7 +77,10 @@ TransportableFileHelper? _pnfHelper;
 
 extension TransportableFileExtension on FormatExtensions {
 
+  /// Get PNF helper
   TransportableFileHelper? get pnfHelper => _pnfHelper;
+
+  /// Set PNF helper
   set pnfHelper(TransportableFileHelper? ext) => _pnfHelper = ext;
 
 }

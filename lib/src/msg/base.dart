@@ -28,13 +28,12 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
 import 'package:dkd/protocol.dart';
-import 'package:mkm/type.dart';
 
 /*
- *  Message Transforming
- *  ~~~~~~~~~~~~~~~~~~~~
+ * Message Transforming
  *
  *     Instant Message <-> Secure Message <-> Reliable Message
  *     +-------------+     +------------+     +--------------+
@@ -52,13 +51,13 @@ import 'package:mkm/type.dart';
  *         signature = sender.private_key.sign(data)
  */
 
-///  Message with Envelope
-///  ~~~~~~~~~~~~~~~~~~~~~
-///  Base classes for messages
-///  This class is used to create a message
-///  with the envelope fields, such as 'sender', 'receiver', and 'time'
+/// Message with Envelope
 ///
-///  data format: {
+/// Base classes for messages
+/// This class is used to create a message
+/// with the envelope fields, such as 'sender', 'receiver', and 'time'
+///
+/// data format: {
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
@@ -66,12 +65,13 @@ import 'package:mkm/type.dart';
 ///
 ///      //-- body
 ///      ...
-///  }
+/// }
 abstract class BaseMessage extends Dictionary implements Message {
   BaseMessage([super.dict]);
 
   Envelope? _envelope;
 
+  /// Create a message with an existing envelope (shares its dictionary)
   BaseMessage.fromEnvelope(Envelope env) : super(env.toMap()) {
     _envelope = env;
   }

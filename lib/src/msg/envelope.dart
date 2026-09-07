@@ -28,20 +28,20 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
 import 'package:dkd/protocol.dart';
-import 'package:mkm/type.dart';
 
-///  Envelope for message
-///  ~~~~~~~~~~~~~~~~~~~~
-///  This class is used to create a message envelope
-///  which contains 'sender', 'receiver' and 'time'
+/// Envelope for message
 ///
-///  data format: {
+/// This class is used to create a message envelope
+/// which contains 'sender', 'receiver' and 'time'
+///
+/// data format: {
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
 ///      "time"     : 123.45
-///  }
+/// }
 class MessageEnvelope extends Dictionary implements Envelope {
   MessageEnvelope([super.dict]);
 
@@ -49,6 +49,11 @@ class MessageEnvelope extends Dictionary implements Envelope {
   ID? _receiver;
   DateTime? _time;
 
+  /// Create a new envelope with sender, receiver and time.
+  ///
+  /// [sender] is the message sender (required).
+  /// [receiver] is the message receiver, default is ANYONE.
+  /// [time] is the message time, default is now.
   MessageEnvelope.from({required ID sender, required ID? receiver, DateTime? time}) {
     receiver ??= ID.ANYONE;
     time ??= DateTime.now();

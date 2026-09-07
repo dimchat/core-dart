@@ -34,10 +34,9 @@ import 'package:dkd/protocol.dart';
 
 import 'base.dart';
 
-///  Instant Message
-///  ~~~~~~~~~~~~~~~
+/// Instant Message
 ///
-///  data format: {
+/// data format: {
 ///      //-- envelope
 ///      "sender"   : "moki@xxx",
 ///      "receiver" : "hulk@yyy",
@@ -45,13 +44,14 @@ import 'base.dart';
 ///
 ///      //-- content
 ///      "content"  : {...}
-///  }
+/// }
 class PlainMessage extends BaseMessage implements InstantMessage {
   PlainMessage([super.dict]);
 
   /// message body
   Content? _content;
 
+  /// Create a new instant message with envelope and content
   PlainMessage.from(Envelope head, Content body) : super.fromEnvelope(head) {
     content = body;
   }
@@ -77,6 +77,10 @@ class PlainMessage extends BaseMessage implements InstantMessage {
     return body!;
   }
 
+  /// Set message body (content).
+  ///
+  /// Removes the 'content' field from the dictionary first and keeps
+  /// the body in memory only; it will be serialized in [toMap].
   // @override
   set content(Content body) {
     remove('content');

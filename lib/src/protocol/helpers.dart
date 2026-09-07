@@ -33,14 +33,19 @@ import 'package:dkd/ext.dart';
 import 'command.dart';
 
 
-///  General Helper
-///  ~~~~~~~~~~~~~~
-
+/// General Helper
+///
+/// Helper interface for registering and using command factories
+/// to parse command messages from raw content.
 abstract interface class CommandHelper {
 
+  /// Set command factory for name (cmd)
   void setCommandFactory(String cmd, CommandFactory factory);
+
+  /// Get command factory for name (cmd)
   CommandFactory? getCommandFactory(String cmd);
 
+  /// Parse any object to command
   Command? parseCommand(Object? content);
 
 }
@@ -50,7 +55,10 @@ CommandHelper? _commandHelper;
 
 extension CommandExtension on MessageExtensions {
 
+  /// Get command helper
   CommandHelper? get commandHelper => _commandHelper;
+
+  /// Set command helper
   set commandHelper(CommandHelper? ext) => _commandHelper = ext;
 
 }
