@@ -10,5 +10,6 @@ export 'protocol.dart';
 
 export 'mkm.dart';
 export 'dkd.dart';
+export 'msg.dart';
 
 export 'ext.dart';

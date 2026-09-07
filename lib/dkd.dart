@@ -12,12 +12,5 @@ export 'package:dkd/protocol.dart';        // -> 'protocol.dart'
 // export 'src/protocol/version.dart';     // -> 'mkm.dart'
 // export 'src/protocol/docs.dart';        // -> 'mkm.dart'
 export 'src/protocol/types.dart';
-export 'src/protocol/base.dart';
+export 'src/protocol/command.dart';
 // export 'src/protocol/helpers.dart';     // -> 'ext.dart'
-
-
-export 'src/msg/base.dart';
-export 'src/msg/envelope.dart';
-export 'src/msg/instant.dart';
-export 'src/msg/secure.dart';
-export 'src/msg/reliable.dart';

@@ -32,7 +32,7 @@ import 'package:mkm/type.dart';
 import 'package:dkd/protocol.dart';
 import 'package:dkd/ext.dart';
 
-import 'protocol/base.dart';
+import 'protocol/command.dart';
 
 // -----------------------------------------------------------------------------
 //  General Command Helpers

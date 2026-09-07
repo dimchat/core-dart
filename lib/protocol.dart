@@ -10,7 +10,7 @@ export 'package:dkd/protocol.dart';
 
 
 export 'src/protocol/types.dart';
-export 'src/protocol/base.dart';
+export 'src/protocol/command.dart';
 
 // export 'src/protocol/helpers.dart';  // -> "ext.dart'
 

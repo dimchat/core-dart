@@ -30,7 +30,7 @@
  */
 import 'package:dkd/ext.dart';
 
-import 'base.dart';
+import 'command.dart';
 
 
 ///  General Helper
