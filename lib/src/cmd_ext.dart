@@ -42,7 +42,9 @@ import 'protocol/command.dart';
 ///
 /// This interface provides a standardized way to retrieve command identifiers
 /// from command payloads (typically Map-based), with support for default values.
-abstract interface class GeneralCommandHelper /*implements CommandHelper */{
+///
+/// Corresponds to the Java interface `chat.dim.ext.CommandHandler`.
+abstract interface class CommandHandler /*implements CommandHelper */{
 
   //
   //  CMD - Command, Method, Declaration
@@ -83,11 +85,16 @@ abstract interface class GeneralCommandHelper /*implements CommandHelper */{
 /// General Extensions
 /// ~~~~~~~~~~~~~~~~~~
 
-GeneralCommandHelper? _cmdHelper;
+CommandHandler? _commandHandler;
 
 extension GeneralCommandExtension on MessageExtensions {
 
-  GeneralCommandHelper? get cmdHelper => _cmdHelper;
-  set cmdHelper(GeneralCommandHelper? ext) => _cmdHelper = ext;
+  /// Get the general command handler
+  ///
+  /// Corresponds to the Java static field `SharedCommandExtensions.handler`.
+  /// (Named `commandHandler` to avoid conflict with the `handler` getter
+  /// of [MessageHandler] defined in the dkd package.)
+  CommandHandler? get commandHandler => _commandHandler;
+  set commandHandler(CommandHandler? ext) => _commandHandler = ext;
 
 }

@@ -30,7 +30,7 @@
  */
 import 'package:mkm/format.dart';
 import 'package:dkd/protocol.dart';
-import 'package:dimp/ext.dart';
+import 'package:dkd/ext.dart';
 
 import '../format/data.dart';
 import 'base.dart';
@@ -62,7 +62,7 @@ class EncryptedMessage extends BaseMessage implements SecureMessage {
   TransportableData get data {
     TransportableData? ted = _data;
     if (ted == null) {
-      var helper = sharedMessageExtensions.helper;
+      var helper = sharedMessageExtensions.handler;
       Object? text = this['data'];
       if (text == null) {
         assert(false, 'message data not found: ${super.toMap()}');

@@ -41,7 +41,7 @@ abstract class BaseData extends BaseString implements TransportableData {
 
   @override
   bool get isEmpty {
-    var bin = binary;
+    final bin = binary;
     if (bin != null && bin.isNotEmpty) {
       return false;
     }
@@ -50,8 +50,8 @@ abstract class BaseData extends BaseString implements TransportableData {
 
   @override
   bool get isNotEmpty {
-    var b = binary;
-    if (b != null && b.isNotEmpty) {
+    final bin = binary;
+    if (bin != null && bin.isNotEmpty) {
       return true;
     }
     return string.isNotEmpty;
@@ -82,7 +82,7 @@ abstract class BaseData extends BaseString implements TransportableData {
   //
 
   @override
-  int get hashCode => toString().hashCode;
+  int get hashCode => bytes?.hashCode ?? 0;
 
   @override
   bool operator ==(Object other) {
@@ -118,10 +118,10 @@ bool _dataEquals(BaseData self, BaseData other) {
   Uint8List? thisBytes = self.binary;
   Uint8List? thatBytes = other.binary;
   if (thisBytes != null && thatBytes != null) {
-    return thisBytes == thatBytes;
+    return Comparator.listEquals(thisBytes, thatBytes);
   }
   // compare with decoded bytes
-  return self.bytes == other.bytes;
+  return Comparator.listEquals(self.bytes, other.bytes);
 }
 
 bool _tedEquals(BaseData self, TransportableData other) {
@@ -137,5 +137,5 @@ bool _tedEquals(BaseData self, TransportableData other) {
   // compare with decoded bytes
   Uint8List? thisBytes = self.binary;
   Uint8List? thatBytes = other.bytes;
-  return thisBytes == thatBytes;
+  return Comparator.listEquals(thisBytes, thatBytes);
 }

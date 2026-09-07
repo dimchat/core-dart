@@ -54,7 +54,7 @@ final class PlainData extends BaseData {
   //
 
   @override
-  String? get encoding => '';  // 'PLAIN'
+  String? get encoding => null;  // no encoding, 'PLAIN'
 
   @override
   Uint8List? get bytes {
