@@ -1,9 +1,10 @@
 /// Dao-Ke-Dao
-///
+/// ~~~~~~~~~~
 /// Universal Message Module
 library dimp;
 
 
+export 'package:dkd/crypto.dart';
 export 'package:dkd/protocol.dart';        // -> 'protocol.dart'
 // export 'package:dkd/ext.dart';          // -> 'ext.dart'
 

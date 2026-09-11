@@ -5,6 +5,7 @@ library dimp;
 
 
 export 'crypto.dart';
+export 'format.dart';
 
 export 'protocol.dart';
 

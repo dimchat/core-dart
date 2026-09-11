@@ -1,3 +1,7 @@
+## 2.5.2
+
+- Dictionary.
+
 ## 2.5.1
 
 - Remove IgnoreCase from Stringer.

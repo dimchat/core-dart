@@ -28,9 +28,11 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:mkm/type.dart';
 import 'package:mkm/protocol.dart';
 import 'package:dkd/protocol.dart';
+
+import '../type/dictionary.dart';
+
 
 /*
  * Message Transforming
