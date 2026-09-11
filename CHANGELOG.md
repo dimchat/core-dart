@@ -1,3 +1,7 @@
+## 2.5.1
+
+- Remove IgnoreCase from Stringer.
+
 ## 2.5.0
 
 - Simplify.

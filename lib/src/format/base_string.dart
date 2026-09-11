@@ -71,23 +71,6 @@ class BaseString implements Stringer {
   @override
   int compareTo(String other) => toString().compareTo(other);
 
-  @override
-  int compareToIgnoreCase(Object? other) {
-    String mine = toString().toLowerCase();
-    if (other == null) {
-      return mine.compareTo('');
-    }
-    return mine.compareTo(other.toString().toLowerCase());
-  }
-
-  @override
-  bool equalsIgnoreCase(Object? other) {
-    if (other == null) {
-      return isEmpty;
-    }
-    return toString().toLowerCase() == other.toString().toLowerCase();
-  }
-
   //
   //  CharSequence
   //

@@ -43,8 +43,11 @@ import 'helpers.dart';
 /// JSON format:
 /// ```json
 /// {
-///   "type" : i2s(0x88),
-///   "sn"   : 12345,
+///   "type"  : i2s(0x88),
+///   "sn"    : 12345,
+///
+///   "time"  : 123.45,
+///   "group" : "group@zzz",
 ///
 ///   "command" : "...",  // Unique command name/identifier
 ///   "extra"   : info    // Optional command parameters (dynamic structure)
